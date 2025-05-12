@@ -1,0 +1,62 @@
+﻿@model ETForum.Models.Korisnik
+@{
+    ViewData["Title"] = "Prijava";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">@ViewData["Title"]</h2>
+            </div>
+            <div class="card-body">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="email" class="control-label">Email</label>
+                        <input asp-for="email" class="form-control" placeholder="Unesite email" />
+                        <span asp-validation-for="email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="lozinka" class="control-label">Lozinka</label>
+                        <input asp-for="lozinka" class="form-control" type="password" placeholder="Unesite lozinku" />
+                        <span asp-validation-for="lozinka" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Prijavi se</button>
+                    </div>
+                </form>
+
+                <hr />
+                <div class="text-center">
+                    <p>Nemate račun? <a asp-action="Registracija" asp-controller="Korisnik">Registrujte se</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,51 @@
+﻿@model ETForum.Models.Korisnik
+@{
+    ViewData["Title"] = "Registracija";
+    var korisnik = Model ?? new ETForum.Models.Korisnik();
+}
+<h2>@ViewData["Title"]</h2>
+<form method="post" asp-action="Registracija">
+    <div class="form-group">
+        <label for="Ime">Ime</label>
+        <input type="text" class="form-control" id="Ime" name="Ime" value="@korisnik.ime" required />
+        @Html.ValidationMessageFor(model => model.ime, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        <label for="Prezime">Prezime</label>
+        <input type="text" class="form-control" id="Prezime" name="Prezime" value="@korisnik.prezime" required />
+        @Html.ValidationMessageFor(model => model.prezime, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" class="form-control" id="Email" name="Email" value="@korisnik.email" required />
+        @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        <label for="Lozinka">Lozinka</label>
+        <input type="password" class="form-control" id="Lozinka" name="Lozinka" required />
+        @Html.ValidationMessageFor(model => model.lozinka, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        <label for="Nickname">Nickname</label>
+        <input type="text" class="form-control" id="Nickname" name="Nickname" value="@korisnik.nickname" required />
+        @Html.ValidationMessageFor(model => model.nickname, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        <label for="Smjer">Smjer</label>
+        <select class="form-control" id="Smjer" name="Smjer" required>
+            <option value="RI">Računarstvo i informatika</option>
+            <option value="TK">Telekomunikacije</option>
+            <option value="EE">Elektroenergetika</option>
+            <option value="AiE">Automatika i elektronika</option>
+        </select>
+    </div>
+    <div class="form-group" style="margin-bottom: 20px;">
+        <label for="Uloga">Uloga</label>
+        <select class="form-control" id="Uloga" name="Uloga" required>
+            <option value="profesor">Profesor</option>
+            <option value="student">Student</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Registruj se</button>
+</form>
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
