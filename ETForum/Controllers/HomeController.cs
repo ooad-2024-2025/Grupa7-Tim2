@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using ETForum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ETForum.Controllers
@@ -13,11 +14,13 @@ namespace ETForum.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();

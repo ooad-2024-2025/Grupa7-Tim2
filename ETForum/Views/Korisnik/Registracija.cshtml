@@ -1,23 +1,22 @@
-﻿@model ETForum.Models.Korisnik
+﻿@model ETForum.DTO.RegistracijaDTO
 @{
     ViewData["Title"] = "Registracija";
-    var korisnik = Model ?? new ETForum.Models.Korisnik();
 }
 <h2>@ViewData["Title"]</h2>
 <form method="post" asp-action="Registracija">
     <div class="form-group">
         <label for="Ime">Ime</label>
-        <input type="text" class="form-control" id="Ime" name="Ime" value="@korisnik.ime" required />
+        <input type="text" class="form-control" id="Ime" name="Ime" value="@Model.ime" required />
         @Html.ValidationMessageFor(model => model.ime, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         <label for="Prezime">Prezime</label>
-        <input type="text" class="form-control" id="Prezime" name="Prezime" value="@korisnik.prezime" required />
+        <input type="text" class="form-control" id="Prezime" name="Prezime" value="@Model.prezime" required />
         @Html.ValidationMessageFor(model => model.prezime, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         <label for="Email">Email</label>
-        <input type="email" class="form-control" id="Email" name="Email" value="@korisnik.email" required />
+        <input type="email" class="form-control" id="Email" name="Email" value="@Model.email" required />
         @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
@@ -27,7 +26,7 @@
     </div>
     <div class="form-group">
         <label for="Nickname">Nickname</label>
-        <input type="text" class="form-control" id="Nickname" name="Nickname" value="@korisnik.nickname" required />
+        <input type="text" class="form-control" id="Nickname" name="Nickname" value="@Model.nickname" required />
         @Html.ValidationMessageFor(model => model.nickname, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">

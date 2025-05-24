@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ETForum.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ETForum.Data
 {
-    public class ETForumDbContext : DbContext
+    public class ETForumDbContext : IdentityDbContext<Korisnik>
     {
         public ETForumDbContext(DbContextOptions<ETForumDbContext> options)
             : base(options)
@@ -13,8 +14,8 @@ namespace ETForum.Data
         public DbSet<Korisnik> Korisnici { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Korisnik>().ToTable("Korisnik");
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Korisnik>().ToTable("Korisnik");
         }
     }
 }

@@ -1,59 +1,78 @@
 ﻿using ETForum.Data;
-using Microsoft.AspNetCore.Mvc;
-using ETForum.Models;
 using ETForum.DTO;
+using ETForum.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ETForum.Controllers
 {
     public class KorisnikController : Controller
     {
+        private readonly UserManager<Korisnik> _userManager;
         private readonly ETForumDbContext _context;
-        public KorisnikController(ETForumDbContext context)
+        private readonly SignInManager<Korisnik> _signInManager;
+        public KorisnikController(ETForumDbContext context, UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
         [HttpGet]
         public IActionResult Registracija()
         {
-            return View();
+            return View(new RegistracijaDTO());
         }
         [HttpPost]
         public async Task<IActionResult> Registracija (RegistracijaDTO noviKorisnik)
         {
             if (!ModelState.IsValid) {
-                return View();
+                return View(noviKorisnik);
             }
 
             bool nicknameZauzet = await _context.Korisnici.AnyAsync(k => k.nickname ==  noviKorisnik.nickname);
             if (nicknameZauzet)
             {
                 ModelState.AddModelError("nickname", "Nickname je već zauzet!");
-                return View();
+                return View(noviKorisnik);
             }
 
-            bool emailZauzet = await _context.Korisnici.AnyAsync(k => k.email == noviKorisnik.email);
+            bool emailZauzet = await _context.Korisnici.AnyAsync(k => k.Email == noviKorisnik.email);
             if (emailZauzet)
             {
                 ModelState.AddModelError("email", "E-mail je već zauzet!");
-                return View();
-
+                return View(noviKorisnik);
             }
 
-            var korisnik = new Korisnik
+            var korisnik = new Models.Korisnik
             {
                 ime = noviKorisnik.ime,
                 prezime = noviKorisnik.prezime,
-                email = noviKorisnik.email,
-                lozinka = noviKorisnik.lozinka,
+                Email = noviKorisnik.email,
                 nickname = noviKorisnik.nickname,
+                UserName = noviKorisnik.nickname,
                 uloga = noviKorisnik.uloga,
-                smjer = noviKorisnik.smjer
+                smjer = noviKorisnik.smjer,
+                datumRegistracije = DateTime.Now,
+                podesenProfil = false
             };
-            _context.Korisnici.Add(korisnik);
-            await _context.SaveChangesAsync();
+            var result = await _userManager.CreateAsync(korisnik, noviKorisnik.lozinka);
 
-            return RedirectToAction("Login");
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return View(noviKorisnik);
+            }
         }
         [HttpGet]
         public IActionResult Login () 
@@ -66,16 +85,87 @@ namespace ETForum.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool ispravanLogin = await _context.Korisnici.AnyAsync(u => (u.nickname == loginDTO.nickname || u.email == loginDTO.email)
-                && u.lozinka == loginDTO.lozinka);
-                if (ispravanLogin)
+                var korisnik = await _context.Korisnici.FirstOrDefaultAsync(u => (u.nickname == loginDTO.nickname || u.Email == loginDTO.email));
+                if (korisnik != null)
                 {
-                    
-                    return RedirectToAction("Index", "Home");
+                    var passwordValid = await _userManager.CheckPasswordAsync(korisnik, loginDTO.lozinka);
+
+                    if (passwordValid)
+                    {
+                        await _signInManager.SignInAsync(korisnik, isPersistent: false);
+                        TempData["SuccessMessage"] = "Uspješno ste se prijavili!";
+                        if (!korisnik.podesenProfil)
+                        {
+                            return RedirectToAction("PodesiProfil", "Korisnik");
+                        }
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
+                TempData["ErrorMessage"] = "Prijava nije uspjela!";
                 ModelState.AddModelError("", "Neispravni podaci!");
             }
             return View();
         }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult PodesiProfil()
+        {
+            var userId = _userManager.GetUserId(User);
+
+            var korisnik = _context.Korisnici.FirstOrDefault(k => k.Id == userId);
+
+            if (korisnik != null && korisnik.podesenProfil)
+                return RedirectToAction("Index", "Home");
+            if (korisnik != null)
+            {
+                ViewBag.KorisnikIme = korisnik.ime;
+                return View(korisnik);
+            }
+            return NotFound();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> PodesiProfil (Models.Korisnik korisnik, IFormFile profilnaSlika)
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId != korisnik.Id) return Unauthorized();
+
+            var korisnikIzBaze = _context.Korisnici.FirstOrDefault(k => k.Id == korisnik.Id);
+            if (korisnikIzBaze == null) return NotFound();
+            
+            if(profilnaSlika != null && profilnaSlika.Length > 0)
+            {
+                var fileName = Path.GetFileName(profilnaSlika.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    profilnaSlika.CopyTo(stream);
+                }
+                korisnikIzBaze.urlSlike = "/images/" + fileName;
+            }
+
+            korisnikIzBaze.ime = korisnik.ime;
+            korisnikIzBaze.prezime = korisnik.prezime;
+            korisnikIzBaze.nickname = korisnik.nickname;
+            korisnikIzBaze.UserName = korisnik.nickname;
+            korisnikIzBaze.Email = korisnik.Email;
+            korisnikIzBaze.smjer = korisnik.smjer;
+            korisnikIzBaze.podesenProfil = true;
+
+            await _userManager.UpdateAsync(korisnikIzBaze);
+
+            return RedirectToAction("Index", "Home"); 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            TempData["SuccessMessage"] = "Uspješno ste se odjavili!";
+            return RedirectToAction("Login");
+        }
+
     }
 }
