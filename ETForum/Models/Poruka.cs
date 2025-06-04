@@ -2,14 +2,15 @@
 
 namespace ETForum.Models
 {
-    public class Pitanje
+    public class Poruka
     {
         public int id { get; set; }
-        public string? tekst { get; set; }
-        public DateTime datumPitanja { get; set; }
-        public int brojLajkova { get; set; }
         public string? korisnikId { get; set; }
         [ForeignKey(nameof(korisnikId))]
-        public Korisnik? autor { get; set; }
+        public Korisnik? korisnik { get; set; }
+        public string? tekst {  get; set; }
+        public DateTime datum {  get; set; }
+        public bool procitana { get; set; }
+
     }
 }
