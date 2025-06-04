@@ -98,7 +98,7 @@ namespace ETForum.Controllers
                         {
                             return RedirectToAction("PodesiProfil", "Korisnik");
                         }
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Naslovna", "Home");
                     }
                 }
                 TempData["ErrorMessage"] = "Prijava nije uspjela!";
@@ -116,10 +116,10 @@ namespace ETForum.Controllers
             var korisnik = _context.Korisnici.FirstOrDefault(k => k.Id == userId);
 
             if (korisnik != null && korisnik.podesenProfil)
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Naslovna", "Home");
             if (korisnik != null)
             {
-                ViewBag.KorisnikIme = korisnik.ime;
+                ViewBag.KorisnikIme = User.Identity?.Name ?? "Gost";
                 return View(korisnik);
             }
             return NotFound();
@@ -156,7 +156,7 @@ namespace ETForum.Controllers
 
             await _userManager.UpdateAsync(korisnikIzBaze);
 
-            return RedirectToAction("Index", "Home"); 
+            return RedirectToAction("Naslovna", "Home"); 
         }
 
         [HttpPost]

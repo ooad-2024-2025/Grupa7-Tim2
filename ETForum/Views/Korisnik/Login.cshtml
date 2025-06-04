@@ -27,22 +27,30 @@
                 }
 
                 <form asp-action="Login" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                     <div class="form-group mb-3">
-                        <label asp-for="email" class="control-label">Email</label>
+                        <label asp-for="email" class="form-label">Email</label>
                         <input asp-for="email" class="form-control" placeholder="Unesite email" />
                         <span asp-validation-for="email" class="text-danger"></span>
                     </div>
 
-                    <div class="form-group mb-3">
-                        <label asp-for="lozinka" class="control-label">Lozinka</label>
+                    <div class="form-group mb-4">
+                        <label asp-for="lozinka" class="form-label">Lozinka</label>
                         <input asp-for="lozinka" class="form-control" type="password" placeholder="Unesite lozinku" />
                         <span asp-validation-for="lozinka" class="text-danger"></span>
                     </div>
 
-                    <div class="form-group d-grid gap-2">
+                    <div class="d-grid mb-2">
                         <button type="submit" class="btn btn-primary">Prijavi se</button>
+                    </div>
+                </form>
+
+                <hr class="my-4" />
+
+                <form asp-action="Naslovna" asp-controller="Home" method="get">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-outline-secondary">Nastavi kao gost</button>
                     </div>
                 </form>
 

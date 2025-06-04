@@ -14,14 +14,23 @@ namespace ETForum.Controllers
             _logger = logger;
         }
 
-        [Authorize]
-        public IActionResult Index()
+        public IActionResult Naslovna()
+        {
+            ViewBag.KorisnikIme = User.Identity?.Name ?? "Gost";
+            return View();
+        }
+
+        public IActionResult QnA()
         {
             return View();
         }
 
-        [Authorize]
-        public IActionResult Privacy()
+        public IActionResult StudyRoom()
+        {
+            return View();
+        }
+
+        public IActionResult LiveChat()
         {
             return View();
         }
