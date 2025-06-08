@@ -107,6 +107,7 @@ namespace ETForum.Controllers
             return View();
         }
 
+
         [Authorize]
         [HttpGet]
         public IActionResult PodesiProfil()
