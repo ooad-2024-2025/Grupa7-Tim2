@@ -1,53 +1,60 @@
 ﻿@model IEnumerable<ETForum.Models.StudySession>
 
-@{
-    ViewData["Title"] = "Index";
+<h2>Moje study sesije</h2>
+
+@if (TempData["Poruka"] != null)
+{
+	<div class="alert alert-warning">
+		@TempData["Poruka"]
+	</div>
 }
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (!(bool)ViewBag.AktivnaSesija)
+{
+	<form asp-action="StartSession" method="post">
+		<button type="submit" class="btn btn-success">Započni novu sesiju</button>
+	</form>
+}
+else
+{
+	<div class="alert alert-info">
+		Već imate aktivnu sesiju. Završite je pre nego što započnete novu.
+	</div>
+}
+
+
+
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.korisnik)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.pocetak)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.kraj)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.trajanje)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.korisnik.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.pocetak)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.kraj)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.trajanje)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
+	<thead>
+	<tr>
+		<th>Početak</th>
+		<th>Kraj</th>
+		<th>Trajanje</th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (var s in Model)
+	{
+		<tr>
+			<td>@s.pocetak?.ToString("g")</td>
+			<td>@s.kraj?.ToString("g")</td>
+			<td>@(s.trajanje?.ToString(@"hh\:mm\:ss") ?? "-")</td>
+			<td>
+				@if (s.kraj == null)
+				{
+					<form asp-action="EndSession" method="post">
+						<input type="hidden" name="id" value="@s.id" />
+						<button type="submit" class="btn btn-danger btn-sm">Završi</button>
+					</form>
+				}
+				else
+				{
+					<span>Završeno</span>
+				}
+			</td>
+		</tr>
+	}
+	</tbody>
 </table>

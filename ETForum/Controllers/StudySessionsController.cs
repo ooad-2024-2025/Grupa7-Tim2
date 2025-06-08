@@ -7,24 +7,41 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETForum.Data;
 using ETForum.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace ETForum.Controllers
 {
+    [Authorize]
     public class StudySessionsController : Controller
     {
         private readonly ETForumDbContext _context;
+        private readonly UserManager<Korisnik> _userManager;
 
-        public StudySessionsController(ETForumDbContext context)
+        public StudySessionsController(ETForumDbContext context, UserManager<Korisnik> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+
 
         // GET: StudySessions
         public async Task<IActionResult> Index()
         {
-            var eTForumDbContext = _context.StudySession.Include(s => s.korisnik);
-            return View(await eTForumDbContext.ToListAsync());
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var sessions = await _context.StudySession
+                .Where(s => s.korisnikId == user.Id)
+                .OrderByDescending(s => s.pocetak)
+                .ToListAsync();
+
+            var postojiAktivna = sessions.Any(s => s.kraj == null);
+            ViewBag.AktivnaSesija = postojiAktivna;
+
+            return View(sessions);
         }
+
 
         // GET: StudySessions/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -52,22 +69,6 @@ namespace ETForum.Controllers
             return View();
         }
 
-        // POST: StudySessions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,korisnikId,pocetak,kraj,trajanje")] StudySession studySession)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(studySession);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["korisnikId"] = new SelectList(_context.Korisnici, "Id", "Id", studySession.korisnikId);
-            return View(studySession);
-        }
 
         // GET: StudySessions/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -123,6 +124,7 @@ namespace ETForum.Controllers
         }
 
         // GET: StudySessions/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -160,5 +162,53 @@ namespace ETForum.Controllers
         {
             return _context.StudySession.Any(e => e.id == id);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> StartSession()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            bool postojiAktivna = await _context.StudySession
+                .AnyAsync(s => s.korisnikId == user.Id && s.kraj == null);
+
+            if (postojiAktivna)
+            {
+                TempData["Poruka"] = "Već imate aktivnu sesiju. Završite je pre nego što započnete novu.";
+                return RedirectToAction("Index");
+            }
+
+            var session = new StudySession
+            {
+                korisnikId = user.Id,
+                pocetak = DateTime.Now
+            };
+
+            _context.StudySession.Add(session);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EndSession(int id)
+        {
+            var session = await _context.StudySession.FirstOrDefaultAsync(s => s.id == id);
+            if (session == null || session.kraj != null) return NotFound();
+
+            session.kraj = DateTime.Now;
+            session.trajanje = session.kraj - session.pocetak;
+
+            _context.Update(session);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+
     }
+
 }
