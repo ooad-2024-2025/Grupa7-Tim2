@@ -166,6 +166,33 @@ namespace ETForum.Migrations
                     b.ToTable("Korisnik", (string)null);
                 });
 
+            modelBuilder.Entity("ETForum.Models.LiveChat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("korisnikId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("poruka")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("vrijeme")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("korisnikId");
+
+                    b.ToTable("LiveChat", (string)null);
+                });
+
             modelBuilder.Entity("ETForum.Models.Notifikacija", b =>
                 {
                     b.Property<int>("id")
@@ -541,6 +568,15 @@ namespace ETForum.Migrations
                         .HasForeignKey("korisnikId");
 
                     b.Navigation("autor");
+                });
+
+            modelBuilder.Entity("ETForum.Models.LiveChat", b =>
+                {
+                    b.HasOne("ETForum.Models.Korisnik", "korisnik")
+                        .WithMany()
+                        .HasForeignKey("korisnikId");
+
+                    b.Navigation("korisnik");
                 });
 
             modelBuilder.Entity("ETForum.Models.Notifikacija", b =>
