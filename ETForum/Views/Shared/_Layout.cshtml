@@ -41,14 +41,14 @@
 
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            @if (ViewBag.KorisnikIme != "Gost")
+                            @if (User.Identity.IsAuthenticated)
                             {
                                 <form asp-controller="Korisnik" asp-action="Logout" method="post" style="display:inline;" id="LogoutForm">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
                                 </form>
                             }
-                            @if (ViewBag.KorisnikIme == "Gost")
+                            @if (!(User.Identity.IsAuthenticated))
                             {
                                 <form asp-controller="Korisnik" asp-action="Login" method="post" style="display:inline;" id="Login">
                                     @Html.AntiForgeryToken()

@@ -2,11 +2,13 @@ using ETForum.Data;
 using ETForum.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ETForum.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ETForumDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 builder.Services.AddIdentity<Korisnik, IdentityRole>(options =>
 {
@@ -14,6 +16,11 @@ builder.Services.AddIdentity<Korisnik, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<ETForumDbContext>()
 .AddDefaultTokenProviders();
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+});
+
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -40,7 +47,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.MapHub<ChatHub>("/livechat");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

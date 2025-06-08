@@ -22,11 +22,10 @@ namespace ETForum.Data
         public DbSet<Poruka> Poruka { get; set; }
         public DbSet<Predmeti> Predmeti { get; set; }
         public DbSet<StudySession> StudySession { get; set; }
+        public DbSet<LiveChat> LiveChat { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
-
             modelBuilder.Entity<Korisnik>().ToTable("Korisnik");
             modelBuilder.Entity<Pitanje>().ToTable("Pitanje");
             modelBuilder.Entity<Odgovor>().ToTable("Odgovor");
@@ -38,6 +37,7 @@ namespace ETForum.Data
             modelBuilder.Entity<Poruka>().ToTable("Poruka");
             modelBuilder.Entity<Predmeti>().ToTable("Predmeti");
             modelBuilder.Entity<StudySession>().ToTable("StudySession");
+            modelBuilder.Entity<LiveChat>().ToTable("LiveChat");
         }
     }
 }
