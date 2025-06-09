@@ -25,10 +25,12 @@ namespace ETForum.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult StudyRoom()
         {
-            return View();
+            return RedirectToAction("Index", "StudySessions");
         }
+
 
         public IActionResult LiveChat()
         {

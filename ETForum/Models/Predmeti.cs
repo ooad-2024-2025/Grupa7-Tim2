@@ -10,7 +10,6 @@ namespace ETForum.Models
         public string? profesorId { get; set; }
         [ForeignKey(nameof(profesorId))]
         public Korisnik? profesor { get; set; }
-
         public string? asistentId { get; set; }
         [ForeignKey(nameof(asistentId))]
         public Korisnik? asistent { get; set; }

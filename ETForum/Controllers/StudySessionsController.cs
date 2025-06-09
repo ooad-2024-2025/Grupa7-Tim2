@@ -9,6 +9,7 @@ using ETForum.Data;
 using ETForum.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ETForum.Controllers
 {
@@ -38,6 +39,16 @@ namespace ETForum.Controllers
 
             var postojiAktivna = sessions.Any(s => s.kraj == null);
             ViewBag.AktivnaSesija = postojiAktivna;
+
+            var rangLista = await _context.StudySession
+                .Where(s => s.kraj != null && s.trajanje != null)
+                .Include(s => s.korisnik)
+                .OrderByDescending(s => s.trajanje)
+                .Take(10)
+                .ToListAsync();
+
+
+            ViewBag.Tabela = rangLista;
 
             return View(sessions);
         }
@@ -185,7 +196,6 @@ namespace ETForum.Controllers
                 korisnikId = user.Id,
                 pocetak = DateTime.Now
             };
-
             _context.StudySession.Add(session);
             await _context.SaveChangesAsync();
 
@@ -208,7 +218,8 @@ namespace ETForum.Controllers
             return RedirectToAction("Index");
         }
 
-
     }
+
+
 
 }
