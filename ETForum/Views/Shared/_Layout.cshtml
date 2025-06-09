@@ -37,14 +37,20 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
                         </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Dostignuce" asp-action="Leaderboard">Dostignuća</a>
+                            </li>
                     </ul>
 
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
                             @if (User.Identity.IsAuthenticated)
                             {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojaDostignuća">Moj profil</a>
+                                </li>
                                 <form asp-controller="Korisnik" asp-action="Logout" method="post" style="display:inline;" id="LogoutForm">
-                                    @Html.AntiForgeryToken()
+                                        @Html.AntiForgeryToken()
                                     <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
                                 </form>
                             }

@@ -10,6 +10,6 @@ namespace ETForum.Models
         [ForeignKey(nameof(korisnikId))]
         public Korisnik? korisnik {  get; set; }
         public string? opis  { get; set; }
-        public string? tip { get; set; }
+        public TipDostignuca tip { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using ETForum.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETForum.Migrations
 {
     [DbContext(typeof(ETForumDbContext))]
-    partial class ETForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250609144939_DodanTipEnumUDostignuce")]
+    partial class DodanTipEnumUDostignuce
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -409,17 +412,12 @@ namespace ETForum.Migrations
                     b.Property<DateTime?>("pocetak")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("predmetId")
-                        .HasColumnType("int");
-
                     b.Property<TimeSpan?>("trajanje")
                         .HasColumnType("time");
 
                     b.HasKey("id");
 
                     b.HasIndex("korisnikId");
-
-                    b.HasIndex("predmetId");
 
                     b.ToTable("StudySession", (string)null);
                 });
@@ -560,7 +558,7 @@ namespace ETForum.Migrations
             modelBuilder.Entity("ETForum.Models.Dostignuce", b =>
                 {
                     b.HasOne("ETForum.Models.Korisnik", "korisnik")
-                        .WithMany("Dostignuca")
+                        .WithMany()
                         .HasForeignKey("korisnikId");
 
                     b.Navigation("korisnik");
@@ -689,13 +687,7 @@ namespace ETForum.Migrations
                         .WithMany()
                         .HasForeignKey("korisnikId");
 
-                    b.HasOne("ETForum.Models.Predmeti", "predmet")
-                        .WithMany()
-                        .HasForeignKey("predmetId");
-
                     b.Navigation("korisnik");
-
-                    b.Navigation("predmet");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -747,11 +739,6 @@ namespace ETForum.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ETForum.Models.Korisnik", b =>
-                {
-                    b.Navigation("Dostignuca");
                 });
 #pragma warning restore 612, 618
         }

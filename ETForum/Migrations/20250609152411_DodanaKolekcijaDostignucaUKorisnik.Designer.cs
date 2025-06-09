@@ -4,6 +4,7 @@ using ETForum.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETForum.Migrations
 {
     [DbContext(typeof(ETForumDbContext))]
-    partial class ETForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250609152411_DodanaKolekcijaDostignucaUKorisnik")]
+    partial class DodanaKolekcijaDostignucaUKorisnik
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -409,17 +412,12 @@ namespace ETForum.Migrations
                     b.Property<DateTime?>("pocetak")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("predmetId")
-                        .HasColumnType("int");
-
                     b.Property<TimeSpan?>("trajanje")
                         .HasColumnType("time");
 
                     b.HasKey("id");
 
                     b.HasIndex("korisnikId");
-
-                    b.HasIndex("predmetId");
 
                     b.ToTable("StudySession", (string)null);
                 });
@@ -689,13 +687,7 @@ namespace ETForum.Migrations
                         .WithMany()
                         .HasForeignKey("korisnikId");
 
-                    b.HasOne("ETForum.Models.Predmeti", "predmet")
-                        .WithMany()
-                        .HasForeignKey("predmetId");
-
                     b.Navigation("korisnik");
-
-                    b.Navigation("predmet");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
