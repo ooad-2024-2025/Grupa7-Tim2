@@ -33,7 +33,7 @@ namespace ETForum.Controllers
             if (user == null) return Challenge();
 
             var sessions = await _context.StudySession
-                .Where(s => s.korisnikId == user.Id)
+                .Where(s => s.korisnikId == user.Id).Include(s => s.predmet)
                 .OrderByDescending(s => s.pocetak)
                 .ToListAsync();
 
@@ -177,7 +177,8 @@ namespace ETForum.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> StartSession()
+        public async Task<IActionResult> StartSession(int? predmetId)
+
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
@@ -194,10 +195,14 @@ namespace ETForum.Controllers
             var session = new StudySession
             {
                 korisnikId = user.Id,
-                pocetak = DateTime.Now
+                pocetak = DateTime.Now,
+                predmetId = predmetId
             };
+
             _context.StudySession.Add(session);
             await _context.SaveChangesAsync();
+            ViewBag.Predmeti = new SelectList(_context.Predmeti.ToList(), "id", "naziv");
+
 
             return RedirectToAction("Index");
         }

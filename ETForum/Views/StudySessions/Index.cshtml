@@ -15,9 +15,26 @@
 
                     @if (!(bool)ViewBag.AktivnaSesija)
                     {
-                        <form asp-action="StartSession" method="post" class="mt-3 mb-3">
-                            <button type="submit" class="btn btn-success">➕ Započni novu sesiju</button>
-                        </form>
+	                    <form asp-action="StartSession" method="post" class="mb-3">
+		                    <div class="row">
+			                    <div class="col-8">
+				                    <select name="predmetId" class="form-select">
+					                    <option value="">(Odaberi predmet - opcionalno)</option>
+					                    @if (ViewBag.Predmeti != null)
+					                    {
+						                    foreach (var p in ViewBag.Predmeti as SelectList)
+						                    {
+							                    <option value="@p.Value">@p.Text</option>
+						                    }
+					                    }
+				                    </select>
+			                    </div>
+			                    <div class="col-4">
+				                    <button type="submit" class="btn btn-success w-100">➕ Započni sesiju</button>
+			                    </div>
+		                    </div>
+	                    </form>
+
                     }
                     else
                     {
@@ -32,6 +49,7 @@
                                 <th>Početak</th>
                                 <th>Kraj</th>
                                 <th>Trajanje</th>
+                                <th>Predmet</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -42,6 +60,8 @@
                                     <td>@s.pocetak?.ToString("g")</td>
                                     <td>@s.kraj?.ToString("g")</td>
                                     <td>@(s.trajanje?.ToString(@"hh\:mm\:ss") ?? "-")</td>
+                                    <td>@(s.predmet?.naziv ?? "-")</td>
+
                                     <td>
                                         @if (s.kraj == null)
                                         {
@@ -75,6 +95,7 @@
                                 <th>#</th>
                                 <th>Korisnik</th>
                                 <th>Trajanje</th>
+                                <th>Predmet</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,6 +111,7 @@
                                         <td>@rang</td>
                                         <td>@(s.korisnik?.UserName ?? "Nepoznat")</td>
                                         <td>@s.trajanje?.ToString(@"hh\:mm\:ss")</td>
+                                        <td>@(s.predmet?.naziv ?? "-")</td>
                                     </tr>
                                     rang++;
                                 }

@@ -2,6 +2,6 @@
 {
     public enum Uloga
     {
-        STUDENT, PROFESOR, ADMINISTRATOR
+        STUDENT, PROFESOR, ADMINISTRATOR, ASISTENT
     }
 }

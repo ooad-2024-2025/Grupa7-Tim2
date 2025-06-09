@@ -39,6 +39,20 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    string[] uloge = { "Student", "Profesor", "Asistent", "Administrator" };
+
+    foreach (var uloga in uloge)
+    {
+        if (!await roleManager.RoleExistsAsync(uloga))
+        {
+            await roleManager.CreateAsync(new IdentityRole(uloga));
+        }
+    }
+}
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -62,6 +76,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Korisnik}/{action=Login}/{id?}")
     .WithStaticAssets();
+
 
 
 app.Run();
