@@ -1,0 +1,32 @@
+﻿@model ETForum.Models.Korisnik
+@using ETForum.Models
+
+<h2>Profil korisnika: @Model.ime (@Model.nickname)</h2>
+@if (!string.IsNullOrEmpty(Model.urlSlike))
+{
+    <img src="@Model.urlSlike" width="100" height="100" />
+}
+<ul>
+    <li>Email: @Model.Email</li>
+    <li>Ime: @Model.ime</li>
+    <li>Prezime: @Model.prezime</li>
+    <li>Datum registracije: @Model.datumRegistracije.ToShortDateString()</li>
+</ul>
+
+<h3>Dostignuća:</h3>
+@if (Model.Dostignuca != null && Model.Dostignuca.Any())
+{
+    <ul>
+        <li>Lajkova: @Model.Dostignuca.Count(d => d.tip == TipDostignuca.Lajk)</li>
+        <li>Komentara: @Model.Dostignuca.Count(d => d.tip == TipDostignuca.Komentar)</li>
+        <li>Pitanja: @Model.Dostignuca.Count(d => d.tip == TipDostignuca.Pitanje)</li>
+        <li>Odgovora: @Model.Dostignuca.Count(d => d.tip == TipDostignuca.Odgovor)</li>
+        <li>Najboljih odgovora: @Model.Dostignuca.Count(d => d.tip == TipDostignuca.NajboljiOdgovor)</li>
+        <li>Prijatelja: @Model.Dostignuca.Count(d => d.tip == TipDostignuca.Prijatelj)</li>
+    </ul>
+}
+else
+{
+    <p>Nemate dostignuća.</p>
+}
+

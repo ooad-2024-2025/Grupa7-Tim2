@@ -168,5 +168,24 @@ namespace ETForum.Controllers
             return RedirectToAction("Login");
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> MojaDostignuća(string? id)
+        {
+            // Ako id nije proslijeđen, koristi trenutno prijavljenog korisnika
+            if (string.IsNullOrEmpty(id))
+                id = _userManager.GetUserId(User);
+
+            var korisnik = await _context.Korisnici
+                .Include(k => k.Dostignuca)
+                .FirstOrDefaultAsync(k => k.Id == id);
+
+            if (korisnik == null)
+                return NotFound();
+
+            return View(korisnik);
+        }
+
+
     }
 }
