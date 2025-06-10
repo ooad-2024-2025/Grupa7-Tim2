@@ -1,0 +1,48 @@
+﻿@model ETForum.Models.OcjenaPredmeta
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>OcjenaPredmeta</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.korisnik)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.korisnik.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.predmet)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.predmet.id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ocjena)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ocjena)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.komentar)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.komentar)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DatumUnosa)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DatumUnosa)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

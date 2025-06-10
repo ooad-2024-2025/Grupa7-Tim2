@@ -4,6 +4,7 @@ using ETForum.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETForum.Migrations
 {
     [DbContext(typeof(ETForumDbContext))]
-    partial class ETForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250610001402_DodajDatumUnosaUOcjenaPredmeta")]
+    partial class DodajDatumUnosaUOcjenaPredmeta
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -349,11 +352,8 @@ namespace ETForum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("Smjer")
-                        .HasColumnType("int");
-
-                    b.Property<string>("asistentImePrezime")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("asistentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("naziv")
                         .HasColumnType("nvarchar(max)");
@@ -361,10 +361,14 @@ namespace ETForum.Migrations
                     b.Property<string>("opis")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("profesorImePrezime")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("profesorId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("id");
+
+                    b.HasIndex("asistentId");
+
+                    b.HasIndex("profesorId");
 
                     b.ToTable("Predmeti", (string)null);
                 });
@@ -654,6 +658,21 @@ namespace ETForum.Migrations
                         .HasForeignKey("korisnikId");
 
                     b.Navigation("korisnik");
+                });
+
+            modelBuilder.Entity("ETForum.Models.Predmeti", b =>
+                {
+                    b.HasOne("ETForum.Models.Korisnik", "asistent")
+                        .WithMany()
+                        .HasForeignKey("asistentId");
+
+                    b.HasOne("ETForum.Models.Korisnik", "profesor")
+                        .WithMany()
+                        .HasForeignKey("profesorId");
+
+                    b.Navigation("asistent");
+
+                    b.Navigation("profesor");
                 });
 
             modelBuilder.Entity("ETForum.Models.Prijateljstvo", b =>
