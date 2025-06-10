@@ -2,29 +2,68 @@
 
 <style>
     table {
-        border-collapse: collapse;
-        width: 90%;
-        margin: 20px auto;
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 92%;
+        margin: 30px auto 0 auto;
+        background: linear-gradient(100deg, #e0eafc 0%, #cfdef3 100%);
+        border-radius: 18px;
+        box-shadow: 0 3px 18px rgba(33,147,176,0.08);
+        overflow: hidden;
     }
 
     th, td {
-        border: 1px solid #ddd;
-        padding: 8px 16px;
+        padding: 13px 18px;
         text-align: center;
+        font-size: 1.07em;
     }
 
     th {
-        background-color: #f2f2f2;
+        background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+        color: #fff;
         font-weight: bold;
+        border: none;
+        font-size: 1.13em;
+        letter-spacing: 0.5px;
     }
 
-    tr:nth-child(even) {
-        background-color: #fafafa;
+    tbody tr {
+        background-color: #f5fbfe;
+        transition: background 0.24s;
     }
 
-    tr:hover {
-        background-color: #f1f1f1;
+        tbody tr:nth-child(even) {
+            background-color: #eaf6fb;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(90deg, #e0eafc 0%, #6dd5ed 99%);
+        }
+
+    td {
+        border: none;
+        color: #185a9d;
     }
+
+    table, thead, tbody, tr, th, td {
+        border-radius: 0;
+    }
+
+        table tr:first-child th:first-child {
+            border-top-left-radius: 18px;
+        }
+
+        table tr:first-child th:last-child {
+            border-top-right-radius: 18px;
+        }
+
+        table tr:last-child td:first-child {
+            border-bottom-left-radius: 18px;
+        }
+
+        table tr:last-child td:last-child {
+            border-bottom-right-radius: 18px;
+        }
 </style>
 
 <table>
@@ -60,4 +99,3 @@
         }
     </tbody>
 </table>
-

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ETForum.Models
 {
@@ -11,8 +12,13 @@ namespace ETForum.Models
         public int predmetiId { get; set; }
         [ForeignKey(nameof(predmetiId))]
         public Predmeti? predmet { get; set; }
+
+        [Range(1, 5)]
         public int? ocjena {  get; set; }
+        [MaxLength(500)]
         public string? komentar {  get; set; }
+
+        public DateTime DatumUnosa { get; set; } = DateTime.Now;
 
     }
 }

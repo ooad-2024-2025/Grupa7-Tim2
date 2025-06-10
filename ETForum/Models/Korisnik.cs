@@ -9,6 +9,7 @@ namespace ETForum.Models
         [Required]
         public string? ime {  get; set; }
         public string? prezime { get; set; }
+        public string ImePrezime => ime + " " + prezime;
         public string? nickname { get; set; }
         public Uloga? uloga { get; set; }
         public DateTime datumRegistracije { get; set; }
