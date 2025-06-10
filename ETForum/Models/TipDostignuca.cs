@@ -7,6 +7,7 @@
             Komentar,
             Pitanje,
             Odgovor,
-            Prijatelj
+            Prijatelj,
+            Ostalo
         }
     }
