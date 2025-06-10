@@ -50,6 +50,9 @@ namespace ETForum.Controllers
 
             ViewBag.Tabela = rangLista;
 
+            ViewBag.Predmeti = new SelectList(_context.Predmeti.ToList().Where(p => p.Smjer == user.smjer), "id", "naziv");
+
+
             return View(sessions);
         }
 
@@ -201,8 +204,6 @@ namespace ETForum.Controllers
 
             _context.StudySession.Add(session);
             await _context.SaveChangesAsync();
-            ViewBag.Predmeti = new SelectList(_context.Predmeti.ToList(), "id", "naziv");
-
 
             return RedirectToAction("Index");
         }
