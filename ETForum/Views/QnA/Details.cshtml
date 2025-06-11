@@ -1,0 +1,305 @@
+﻿@model ETForum.Models.Pitanje
+
+@{
+    ViewData["Title"] = "Detalji Pitanja";
+}
+
+<div class="container-fluid">
+    <!-- Pitanje -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-question-circle"></i> 
+                            @(string.IsNullOrEmpty(Model.naslov) ? "Pitanje" : Model.naslov)
+                        </h4>
+                        @if (Model.predmet != null)
+                        {
+                                <span class="badge bg-light text-primary">
+                                    <i class="fas fa-book"></i> @Model.predmet.naziv
+                                </span>
+                        }
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="question-content">
+                                <p class="lead">@Html.Raw(Model.tekst.Replace("\n", "<br>"))</p>
+
+                                @if (!string.IsNullOrEmpty(Model.FilePath))
+                                {
+                                        <div class="mt-3">
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-paperclip"></i> 
+                                                <strong>Priloženi fajl:</strong>
+                                                <a href="@Model.FilePath" target="_blank" class="ms-2 btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-download"></i> @Model.OriginalFileName
+                                                </a>
+                                            </div>
+                                        </div>
+                                }
+                            </div>
+
+                            <hr>
+
+                            <div class="question-meta">
+                                <small class="text-muted">
+                                    <i class="fas fa-user"></i> 
+                                    <strong>@(Model.autor?.UserName ?? "Anonimno")</strong>
+                                    <i class="fas fa-calendar ms-3"></i>
+                                    @Model.datumPitanja.ToString("dd.MM.yyyy HH:mm")
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="stats-panel">
+                                    <div class="stat-item">
+                                        <div class="stat-number text-danger">
+                                            @Model.brojLajkova
+                                        </div>
+                                        <div class="stat-label">Lajkova</div>
+                                    </div>
+
+                                    <div class="stat-item">
+                                        <div class="stat-number text-success">
+                                            @(Model.Odgovori?.Count ?? 0)
+                                        </div>
+                                        <div class="stat-label">Odgovora</div>
+                                    </div>
+                                </div>
+
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                        <div class="mt-3">
+                                            <form asp-action="LikeQuestion" method="post">
+                                                <input type="hidden" name="pitanjeId" value="@Model.id" />
+                                                <button type="submit" class="btn @(ViewBag.HasLikedQuestion == true ? "btn-danger" : "btn-outline-danger") btn-sm">
+                                                    <i class="fas fa-heart"></i> 
+                                                @(ViewBag.HasLikedQuestion == true ? "Ukloni lajk" : "Lajkuj")
+                                                </button>
+                                            </form>
+                                        </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Odgovori -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-reply"></i> 
+                        Odgovori (@(Model.Odgovori?.Count ?? 0))
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Odgovori != null && Model.Odgovori.Any())
+                    {
+                        @foreach (var answer in Model.Odgovori.OrderByDescending(a => a.brojLajkova).ThenByDescending(a => a.datumOdgovora))
+                        {
+                                    <div class="answer-item">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <div class="answer-content">
+                                                            <p>@Html.Raw(answer.tekst.Replace("\n", "<br>"))</p>
+
+                                                    @if (!string.IsNullOrEmpty(answer.FilePath))
+                                                    {
+                                                                    <div class="mt-2">
+                                                                        <div class="alert alert-secondary alert-sm">
+                                                                            <i class="fas fa-paperclip"></i> 
+                                                                            <strong>Prilog:</strong>
+                                                                            <a href="@answer.FilePath" target="_blank" class="ms-1 btn btn-xs btn-outline-secondary">
+                                                                                <i class="fas fa-download"></i> @answer.OriginalFileName
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                    }
+                                                        </div>
+
+                                                        <div class="answer-meta mt-2">
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-user"></i> 
+                                                                <strong>@(answer.korisnik?.UserName ?? "Anonimno")</strong>
+                                                                <i class="fas fa-clock ms-3"></i>
+                                                        @answer.datumOdgovora.ToString("dd.MM.yyyy HH:mm")
+                                                            </small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <div class="text-center">
+                                                            <div class="answer-stats">
+                                                                <div class="stat-number text-danger mb-1">
+                                                            @answer.brojLajkova
+                                                                </div>
+                                                                <div class="stat-label small">Lajkova</div>
+
+                                                        @if (User.Identity.IsAuthenticated)
+                                                        {
+                                                                        <div class="mt-2">
+                                                                            <form asp-action="LikeAnswer" method="post">
+                                                                                <input type="hidden" name="answerId" value="@answer.id" />
+                                                                                <input type="hidden" name="questionId" value="@Model.id" />
+                                                                                <button type="submit" class="btn @(ViewBag.LikedAnswers != null && ((List<int>)ViewBag.LikedAnswers).Contains(answer.id) ? "btn-danger" : "btn-outline-danger") btn-xs">
+                                                                                    <i class="fas fa-heart"></i>
+                                                                                </button>
+                                                                            </form>
+                                                                        </div>
+                                                        }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                        }
+                    }
+                    else
+                    {
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-comment-slash fa-3x mb-3"></i>
+                                <p class="lead">Nema odgovora na ovo pitanje.</p>
+                                <p>Budite prvi koji će odgovoriti!</p>
+                            </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- dodavanje odgovora -->
+    @if (User.Identity.IsAuthenticated)
+    {
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-pen"></i> 
+                                Dodaj odgovor
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form asp-action="AddAnswer" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="pitanjeId" value="@Model.id" />
+
+                                <div class="mb-3">
+                                    <label for="answerText" class="form-label">Vaš odgovor:</label>
+                                    <textarea name="tekst" id="answerText" class="form-control" rows="5" 
+                                              placeholder="Unesite vaš odgovor ovde..." required></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="answerFile" class="form-label">Priloži fajl (opciono):</label>
+                                    <input type="file" name="file" id="answerFile" class="form-control" 
+                                           accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif">
+                                    <div class="form-text">
+                                        Podržani formati: PDF, Word dokumenti, slike, tekstualni fajlovi (maksimalno 5MB)
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <a asp-action="Index" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left"></i> Nazad na pitanja
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-paper-plane"></i> Pošalji odgovor
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    }
+    else
+    {
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="alert alert-warning text-center">
+                        <i class="fas fa-sign-in-alt fa-2x mb-2"></i>
+                        <h5>Prijavite se da biste mogli da odgovorite na pitanje</h5>
+                        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary me-2">
+                            <i class="fas fa-sign-in-alt"></i> Prijavite se
+                        </a>
+                        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus"></i> Registrujte se
+                        </a>
+                    </div>
+                </div>
+            </div>
+    }
+</div>
+
+<style>
+    .stats-panel {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .stat-item {
+        margin-bottom: 15px;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .answer-stats {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+    }
+
+    .answer-item {
+        border-left: 4px solid #28a745;
+        margin-bottom: 15px;
+    }
+
+    .question-content {
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .answer-content {
+        line-height: 1.5;
+    }
+
+    .btn-xs {
+        padding: 0.25rem 0.4rem;
+        font-size: 0.75rem;
+        line-height: 1.5;
+        border-radius: 0.2rem;
+    }
+
+    .alert-sm {
+        padding: 0.5rem 0.75rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+</style>

@@ -14,6 +14,8 @@ namespace ETForum.Data
         public DbSet<Korisnik> Korisnici { get; set; }
         public DbSet<Pitanje> Pitanja { get; set; }
         public DbSet<Odgovor> Odgovori { get; set; }
+        public DbSet<PitanjeLajk> PitanjeLajkovi { get; set; }
+        public DbSet<OdgovorLajk> OdgovorLajkovi { get; set; }
         public DbSet<Komentar> Komentari { get; set; }
         public DbSet<Notifikacija> Notifikacije { get; set; }
         public DbSet<Prijateljstvo> Prijateljstva { get; set; }
@@ -23,12 +25,16 @@ namespace ETForum.Data
         public DbSet<Predmeti> Predmeti { get; set; }
         public DbSet<StudySession> StudySession { get; set; }
         public DbSet<LiveChat> LiveChat { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Korisnik>().ToTable("Korisnik");
             modelBuilder.Entity<Pitanje>().ToTable("Pitanje");
             modelBuilder.Entity<Odgovor>().ToTable("Odgovor");
+            modelBuilder.Entity<PitanjeLajk>().ToTable("PitanjeLajk");
+            modelBuilder.Entity<OdgovorLajk>().ToTable("OdgovorLajk");
             modelBuilder.Entity<Komentar>().ToTable("Komentar");
             modelBuilder.Entity<Notifikacija>().ToTable("Notifikacija");
             modelBuilder.Entity<Prijateljstvo>().ToTable("Prijateljstvo");
@@ -38,6 +44,15 @@ namespace ETForum.Data
             modelBuilder.Entity<Predmeti>().ToTable("Predmeti");
             modelBuilder.Entity<StudySession>().ToTable("StudySession");
             modelBuilder.Entity<LiveChat>().ToTable("LiveChat");
+
+            //za unique lajkove
+            modelBuilder.Entity<PitanjeLajk>()
+                .HasIndex(pl => new { pl.korisnikId, pl.pitanjeId })
+                .IsUnique();
+
+            modelBuilder.Entity<OdgovorLajk>()
+                .HasIndex(ol => new { ol.korisnikId, ol.odgovorId })
+                .IsUnique();
         }
     }
 }

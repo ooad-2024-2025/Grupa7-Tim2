@@ -4,6 +4,7 @@ using ETForum.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETForum.Migrations
 {
     [DbContext(typeof(ETForumDbContext))]
-    partial class ETForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250610225543_FileUploadQnA")]
+    partial class FileUploadQnA
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,9 +285,7 @@ namespace ETForum.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("tekst")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
@@ -293,31 +294,6 @@ namespace ETForum.Migrations
                     b.HasIndex("pitanjeId");
 
                     b.ToTable("Odgovor", (string)null);
-                });
-
-            modelBuilder.Entity("ETForum.Models.OdgovorLajk", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("korisnikId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("odgovorId")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("odgovorId");
-
-                    b.HasIndex("korisnikId", "odgovorId")
-                        .IsUnique();
-
-                    b.ToTable("OdgovorLajk", (string)null);
                 });
 
             modelBuilder.Entity("ETForum.Models.Pitanje", b =>
@@ -343,51 +319,14 @@ namespace ETForum.Migrations
                     b.Property<string>("korisnikId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("naslov")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int?>("predmetId")
-                        .HasColumnType("int");
-
                     b.Property<string>("tekst")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
                     b.HasIndex("korisnikId");
 
-                    b.HasIndex("predmetId");
-
                     b.ToTable("Pitanje", (string)null);
-                });
-
-            modelBuilder.Entity("ETForum.Models.PitanjeLajk", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("korisnikId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("pitanjeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("pitanjeId");
-
-                    b.HasIndex("korisnikId", "pitanjeId")
-                        .IsUnique();
-
-                    b.ToTable("PitanjeLajk", (string)null);
                 });
 
             modelBuilder.Entity("ETForum.Models.Poruka", b =>
@@ -714,57 +653,13 @@ namespace ETForum.Migrations
                     b.Navigation("pitanje");
                 });
 
-            modelBuilder.Entity("ETForum.Models.OdgovorLajk", b =>
-                {
-                    b.HasOne("ETForum.Models.Korisnik", "korisnik")
-                        .WithMany()
-                        .HasForeignKey("korisnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ETForum.Models.Odgovor", "odgovor")
-                        .WithMany("OdgovorLajkovi")
-                        .HasForeignKey("odgovorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("korisnik");
-
-                    b.Navigation("odgovor");
-                });
-
             modelBuilder.Entity("ETForum.Models.Pitanje", b =>
                 {
                     b.HasOne("ETForum.Models.Korisnik", "autor")
                         .WithMany()
                         .HasForeignKey("korisnikId");
 
-                    b.HasOne("ETForum.Models.Predmeti", "predmet")
-                        .WithMany()
-                        .HasForeignKey("predmetId");
-
                     b.Navigation("autor");
-
-                    b.Navigation("predmet");
-                });
-
-            modelBuilder.Entity("ETForum.Models.PitanjeLajk", b =>
-                {
-                    b.HasOne("ETForum.Models.Korisnik", "korisnik")
-                        .WithMany()
-                        .HasForeignKey("korisnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ETForum.Models.Pitanje", "pitanje")
-                        .WithMany("PitanjeLajkovi")
-                        .HasForeignKey("pitanjeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("korisnik");
-
-                    b.Navigation("pitanje");
                 });
 
             modelBuilder.Entity("ETForum.Models.Poruka", b =>
@@ -862,16 +757,9 @@ namespace ETForum.Migrations
                     b.Navigation("Dostignuca");
                 });
 
-            modelBuilder.Entity("ETForum.Models.Odgovor", b =>
-                {
-                    b.Navigation("OdgovorLajkovi");
-                });
-
             modelBuilder.Entity("ETForum.Models.Pitanje", b =>
                 {
                     b.Navigation("Odgovori");
-
-                    b.Navigation("PitanjeLajkovi");
                 });
 #pragma warning restore 612, 618
         }
