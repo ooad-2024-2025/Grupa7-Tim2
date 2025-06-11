@@ -41,6 +41,15 @@
             }
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> IdiNaPitanje(int id)
+        {
+            var notifikacija = await _context.Notifikacije
+                .Include(n => n.Korisnik)
+                .FirstOrDefaultAsync(n => n.Id == id);
+            // Preusmjeravamo korisnika na detalje pitanja
+            return RedirectToAction("Details", "QnA", new {id = notifikacija.pitanjeId});
+        }
     }
 
 }

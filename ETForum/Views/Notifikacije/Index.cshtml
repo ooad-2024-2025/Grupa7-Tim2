@@ -1,18 +1,24 @@
-﻿@model IEnumerable<Notifikacija>
+﻿@model IEnumerable<ETForum.Models.Notifikacija>
 
 <h2>Notifikacije</h2>
 
 @foreach (var n in Model)
 {
-    <div class="@(n.Procitano ? "" : "fw-bold")">
-        <a href="@n.Link">@n.Tekst</a> <br />
-        <small>@n.Vrijeme</small>
+	<div class="@(n.Procitano ? "" : "fw-bold")">
+		<a href="@n.Link">@n.Tekst</a> <br />
+        
+		<!-- Forma koja prosljeđuje ID notifikacije -->
+		<form asp-action="IdiNaPitanje" asp-route-id="@ViewBag.NotifikacijaId" method="post">
+			<button type="submit" class="btn btn-sm btn-outline-primary mt-1">Idi Na Pitanje</button>
+		</form>
 
-        @if (!n.Procitano)
-        {
-            <form asp-action="OznačiKaoProcitano" asp-route-id="@n.Id" method="post">
-                <button type="submit" class="btn btn-sm btn-outline-primary mt-1">Označi kao pročitano</button>
-            </form>
-        }
-    </div>
+		<small>@n.Vrijeme</small>
+
+		@if (!n.Procitano)
+		{
+			<form asp-action="OznačiKaoProcitano" asp-route-id="@n.Id" method="post">
+				<button type="submit" class="btn btn-sm btn-outline-primary mt-1">Označi kao pročitano</button>
+			</form>
+		}
+	</div>
 }
