@@ -45,27 +45,31 @@
                             </li>
                     </ul>
 
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            @if (User.Identity.IsAuthenticated)
-                            {
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                @if (User.Identity.IsAuthenticated)
+                                {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojaDostignuća">Moj profil</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Notifikacije" asp-action="Index">Notifikacije</a>
                                 </li>
                                 <form asp-controller="Korisnik" asp-action="Logout" method="post" style="display:inline;" id="LogoutForm">
                                         @Html.AntiForgeryToken()
                                     <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
                                 </form>
-                            }
-                            @if (!(User.Identity.IsAuthenticated))
-                            {
+                                }
+                                @if (!(User.Identity.IsAuthenticated))
+                                {
                                 <form asp-controller="Korisnik" asp-action="Login" method="post" style="display:inline;" id="Login">
-                                    @Html.AntiForgeryToken()
+                                        @Html.AntiForgeryToken()
                                     <button type="submit" class="nav-link btn btn-link">Prijavi se</button>
                                 </form>
-                            }
-                        </li>
-                    </ul>
+                                }
+                            </li>
+                        </ul>
+
                 }
             </div>
         </div>

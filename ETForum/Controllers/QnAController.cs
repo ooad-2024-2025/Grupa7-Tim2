@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ETForum.Helper;
+using ETForum.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace ETForum.Controllers
 {
@@ -18,14 +20,16 @@ namespace ETForum.Controllers
         private readonly DostignucaHelper _dostignucaHelper;
         private readonly long _maxFileSize = 5 * 1024 * 1024; // 5MB
         private readonly string[] _allowedExtensions = { ".pdf", ".doc", ".docx", ".txt", ".jpg", ".jpeg", ".png", ".gif" };
+        private readonly EmailSender _emailSender;
 
-        public QnAController(ETForumDbContext context, UserManager<Korisnik> userManager, IWebHostEnvironment webHostEnvironment, DostignucaHelper dostignucaHelper)
+        public QnAController(ETForumDbContext context, UserManager<Korisnik> userManager, IWebHostEnvironment webHostEnvironment, DostignucaHelper dostignucaHelper, EmailSender emailSender)
         {
             _context = context;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
             _dostignucaHelper = dostignucaHelper;
-            
+            _emailSender = emailSender;
+
         }
 
        
@@ -245,6 +249,27 @@ namespace ETForum.Controllers
 
                 _context.Odgovori.Add(odgovor);
                 await _context.SaveChangesAsync();
+                //za notifikacije
+                var autorPitanja = await _context.Users.FirstOrDefaultAsync(u => u.Id == pitanje.korisnikId);
+                if (autorPitanja != null && autorPitanja.Id != user.Id) // da ne šalje notifikaciju sam sebi
+                {
+                    var notifikacija = new Notifikacija
+                    {
+                        KorisnikId = autorPitanja.Id,
+                        Tekst = $"Korisnik {user.nickname} je odgovorio na tvoje pitanje \"{pitanje.naslov}\"",
+                        Link = Url.Action("Details", "QnA", new { id = pitanje.id }, Request.Scheme),
+                        Vrijeme = DateTime.Now,
+                        Procitano = false
+                    };
+
+                    _context.Notifikacije.Add(notifikacija);
+                    await _context.SaveChangesAsync();
+
+                    await _emailSender.PosaljiEmailAsync(autorPitanja.Email,
+                        $"Novi odgovor na tvoje pitanje: {pitanje.naslov}",
+                        $"Pozdrav {autorPitanja.nickname},<br><br>Korisnik <b>{user.nickname}</b> je odgovorio na tvoje pitanje. <br><a href='{notifikacija.Link}'>Pogledaj odgovor</a>");
+                }
+
 
                 await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(user.Id);
 
