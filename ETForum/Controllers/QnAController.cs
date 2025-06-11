@@ -259,7 +259,8 @@ namespace ETForum.Controllers
                         Tekst = $"Korisnik {user.nickname} je odgovorio na tvoje pitanje \"{pitanje.naslov}\"",
                         Link = Url.Action("Details", "QnA", new { id = pitanje.id }, Request.Scheme),
                         Vrijeme = DateTime.Now,
-                        Procitano = false
+                        Procitano = false,
+                        pitanjeId=pitanje.id
                     };
 
                     _context.Notifikacije.Add(notifikacija);
