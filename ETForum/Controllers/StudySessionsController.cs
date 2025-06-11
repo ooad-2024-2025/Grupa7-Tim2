@@ -10,6 +10,7 @@ using ETForum.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using ETForum.Helper;
 
 namespace ETForum.Controllers
 {
@@ -18,11 +19,13 @@ namespace ETForum.Controllers
     {
         private readonly ETForumDbContext _context;
         private readonly UserManager<Korisnik> _userManager;
+        private readonly DostignucaHelper _dostignucaHelper;
 
-        public StudySessionsController(ETForumDbContext context, UserManager<Korisnik> userManager)
+        public StudySessionsController(ETForumDbContext context, UserManager<Korisnik> userManager, DostignucaHelper dostignucaHelper)
         {
             _context = context;
             _userManager = userManager;
+            _dostignucaHelper = dostignucaHelper;
         }
 
 
@@ -212,6 +215,7 @@ namespace ETForum.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EndSession(int id)
         {
+
             var session = await _context.StudySession.FirstOrDefaultAsync(s => s.id == id);
             if (session == null || session.kraj != null) return NotFound();
 
@@ -220,6 +224,8 @@ namespace ETForum.Controllers
 
             _context.Update(session);
             await _context.SaveChangesAsync();
+
+            await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(session.korisnikId);
 
             return RedirectToAction("Index");
         }

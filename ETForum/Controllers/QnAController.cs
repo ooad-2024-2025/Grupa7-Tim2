@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ETForum.Helper;
 
 namespace ETForum.Controllers
 {
@@ -14,14 +15,17 @@ namespace ETForum.Controllers
         private readonly ETForumDbContext _context;
         private readonly UserManager<Korisnik> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly DostignucaHelper _dostignucaHelper;
         private readonly long _maxFileSize = 5 * 1024 * 1024; // 5MB
         private readonly string[] _allowedExtensions = { ".pdf", ".doc", ".docx", ".txt", ".jpg", ".jpeg", ".png", ".gif" };
 
-        public QnAController(ETForumDbContext context, UserManager<Korisnik> userManager, IWebHostEnvironment webHostEnvironment)
+        public QnAController(ETForumDbContext context, UserManager<Korisnik> userManager, IWebHostEnvironment webHostEnvironment, DostignucaHelper dostignucaHelper)
         {
             _context = context;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
+            _dostignucaHelper = dostignucaHelper;
+            
         }
 
        
@@ -130,6 +134,8 @@ namespace ETForum.Controllers
 
                     _context.Add(pitanje);
                     await _context.SaveChangesAsync();
+
+                    await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(user.Id);
                     TempData["SuccessMessage"] = "Question posted successfully!";
                     return RedirectToAction(nameof(Index));
                 }
@@ -239,6 +245,10 @@ namespace ETForum.Controllers
 
                 _context.Odgovori.Add(odgovor);
                 await _context.SaveChangesAsync();
+
+                await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(user.Id);
+
+
                 TempData["SuccessMessage"] = "Answer posted successfully!";
             }
             catch (Exception ex)
@@ -299,6 +309,9 @@ namespace ETForum.Controllers
                 }
 
                 await _context.SaveChangesAsync();
+
+                await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(user.Id);
+
                 return RedirectToAction(nameof(Details), new { id = questionId });
             }
             catch (Exception ex)
@@ -357,6 +370,9 @@ namespace ETForum.Controllers
                 }
 
                 await _context.SaveChangesAsync();
+                await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(user.Id);
+
+
                 return RedirectToAction(nameof(Details), new { id = pitanjeId });
             }
             catch (Exception ex)

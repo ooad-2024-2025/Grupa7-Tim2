@@ -17,6 +17,7 @@ namespace ETForum.Models
         public Smjer? smjer { get; set; }
         public string? urlSlike { get; set; }
         public bool podesenProfil { get; set; }
+        public DateTime? lastLogin { get; set; }
 
         public virtual ICollection<Dostignuce>? Dostignuca { get; set; }
     }

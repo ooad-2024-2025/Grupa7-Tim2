@@ -92,6 +92,11 @@ namespace ETForum.Controllers
 
                     if (passwordValid)
                     {
+
+                        korisnik.lastLogin = DateTime.Now;
+                        _context.Update(korisnik);
+                        await _context.SaveChangesAsync();
+
                         await _signInManager.SignInAsync(korisnik, isPersistent: false);
                         TempData["SuccessMessage"] = "Uspješno ste se prijavili!";
                         if (!korisnik.podesenProfil)
