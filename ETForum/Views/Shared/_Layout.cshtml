@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ETForum.styles.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -50,7 +51,7 @@
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojaDostignuća">Moj profil</a>
+                                    <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojProfil">Moj profil</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Notifikacije" asp-action="Index">Notifikacije</a>
@@ -75,12 +76,11 @@
         </div>
     </nav>
 </header>
-<div class="container-fluid px-3">
+<div class="px-0"> 
 	<main role="main" class="pb-3">
 		@RenderBody()
 	</main>
 </div>
-
 
     <footer class="border-top footer text-muted">
         <div class="container">

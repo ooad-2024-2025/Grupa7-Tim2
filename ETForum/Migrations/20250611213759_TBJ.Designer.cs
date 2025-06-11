@@ -4,6 +4,7 @@ using ETForum.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETForum.Migrations
 {
     [DbContext(typeof(ETForumDbContext))]
-    partial class ETForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250611213759_TBJ")]
+    partial class TBJ
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,33 +222,29 @@ namespace ETForum.Migrations
 
             modelBuilder.Entity("ETForum.Models.Notifikacija", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("KorisnikId")
-                        .IsRequired()
+                    b.Property<string>("korisnikId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Link")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("porukaId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("Procitano")
+                    b.Property<bool>("procitana")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Tekst")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Vrijeme")
+                    b.Property<DateTime>("vrijemeKreiranja")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
-                    b.HasIndex("KorisnikId");
+                    b.HasIndex("korisnikId");
+
+                    b.HasIndex("porukaId");
 
                     b.ToTable("Notifikacija", (string)null);
                 });
@@ -703,13 +702,19 @@ namespace ETForum.Migrations
 
             modelBuilder.Entity("ETForum.Models.Notifikacija", b =>
                 {
-                    b.HasOne("ETForum.Models.Korisnik", "Korisnik")
+                    b.HasOne("ETForum.Models.Korisnik", "korisnik")
                         .WithMany()
-                        .HasForeignKey("KorisnikId")
+                        .HasForeignKey("korisnikId");
+
+                    b.HasOne("ETForum.Models.Poruka", "poruka")
+                        .WithMany()
+                        .HasForeignKey("porukaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Korisnik");
+                    b.Navigation("korisnik");
+
+                    b.Navigation("poruka");
                 });
 
             modelBuilder.Entity("ETForum.Models.OcjenaPredmeta", b =>
