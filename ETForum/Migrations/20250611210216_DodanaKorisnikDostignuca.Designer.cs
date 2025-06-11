@@ -4,6 +4,7 @@ using ETForum.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETForum.Migrations
 {
     [DbContext(typeof(ETForumDbContext))]
-    partial class ETForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250611210216_DodanaKorisnikDostignuca")]
+    partial class DodanaKorisnikDostignuca
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,18 +33,21 @@ namespace ETForum.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<string>("korisnikId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("naziv")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("opis")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("tip")
                         .HasColumnType("int");
 
                     b.HasKey("id");
+
+                    b.HasIndex("korisnikId");
 
                     b.ToTable("Dostignuce", (string)null);
                 });
@@ -164,30 +170,6 @@ namespace ETForum.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Korisnik", (string)null);
-                });
-
-            modelBuilder.Entity("ETForum.Models.KorisnikDostignuce", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("dostignuceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("korisnikId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("dostignuceId");
-
-                    b.HasIndex("korisnikId");
-
-                    b.ToTable("KorisnikDostignuca");
                 });
 
             modelBuilder.Entity("ETForum.Models.LiveChat", b =>
@@ -660,6 +642,15 @@ namespace ETForum.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ETForum.Models.Dostignuce", b =>
+                {
+                    b.HasOne("ETForum.Models.Korisnik", "korisnik")
+                        .WithMany("Dostignuca")
+                        .HasForeignKey("korisnikId");
+
+                    b.Navigation("korisnik");
+                });
+
             modelBuilder.Entity("ETForum.Models.Komentar", b =>
                 {
                     b.HasOne("ETForum.Models.Korisnik", "autor")
@@ -667,25 +658,6 @@ namespace ETForum.Migrations
                         .HasForeignKey("korisnikId");
 
                     b.Navigation("autor");
-                });
-
-            modelBuilder.Entity("ETForum.Models.KorisnikDostignuce", b =>
-                {
-                    b.HasOne("ETForum.Models.Dostignuce", "Dostignuce")
-                        .WithMany("KorisnikDostignuca")
-                        .HasForeignKey("dostignuceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ETForum.Models.Korisnik", "Korisnik")
-                        .WithMany("KorisnikDostignuca")
-                        .HasForeignKey("korisnikId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Dostignuce");
-
-                    b.Navigation("Korisnik");
                 });
 
             modelBuilder.Entity("ETForum.Models.LiveChat", b =>
@@ -891,14 +863,9 @@ namespace ETForum.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ETForum.Models.Dostignuce", b =>
-                {
-                    b.Navigation("KorisnikDostignuca");
-                });
-
             modelBuilder.Entity("ETForum.Models.Korisnik", b =>
                 {
-                    b.Navigation("KorisnikDostignuca");
+                    b.Navigation("Dostignuca");
                 });
 
             modelBuilder.Entity("ETForum.Models.Odgovor", b =>

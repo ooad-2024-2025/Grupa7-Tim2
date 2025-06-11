@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ETForum.Data;
+﻿using ETForum.Data;
 using ETForum.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETForum.Controllers
 {
@@ -20,49 +15,116 @@ namespace ETForum.Controllers
         {
             _context = context;
         }
-
-        // GET: Dostignuce
-        public IActionResult Index()
+        private bool DostignuceExists(int id)
         {
-            var sistemskaDostignuca = _context.Dostignuca
-                .Where(d => d.korisnikId == null)
-                .ToList();
-
-            return View(sistemskaDostignuca);
+            return _context.Dostignuca.Any(e => e.id == id);
         }
 
-        // GET: Dostignuce/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Dostignuce
+        public async Task<IActionResult> Index()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var dostignuca = await _context.Dostignuca.ToListAsync();
+            return View(dostignuca);
+        }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            // Dohvati dostignuće s id-jem
             var dostignuce = await _context.Dostignuca
-                .Include(d => d.korisnik)
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(d => d.id == id);
+
             if (dostignuce == null)
             {
-                return NotFound();
+                return NotFound();  // Ako nije pronađeno, vrati 404
             }
 
-            return View(dostignuce);
+            return View(dostignuce);  // Pošaljite model za uređivanje
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("id,naziv,opis,tip")] Dostignuce dostignuce)
+        {
+            if (id != dostignuce.id)
+            {
+                return NotFound();  // Provjeri ako id nije isti
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(dostignuce);  // Ažuriraj model u bazi podataka
+                    await _context.SaveChangesAsync();  // Spremi promjene
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!DostignuceExists(dostignuce.id))  // Provjera postojanja dostignuća
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;  // Ako se dogodila konkurentnost
+                    }
+                }
+
+                return RedirectToAction(nameof(Index));  // Preusmjerenje na indeksnu stranicu
+            }
+
+            return View(dostignuce);  // Ako nešto nije validno, ponovo prikaži formu
+        }
+
+
+        // GET: Moja dostignuća
+        public async Task<IActionResult> MojaDostignuca()
+        {
+            var userId = User.Identity?.Name;
+            if (userId == null) return RedirectToAction("Login", "Korisnik");
+
+            var korisnik = await _context.Korisnici
+                .Include(k => k.KorisnikDostignuca)
+                    .ThenInclude(kd => kd.Dostignuce)
+                .FirstOrDefaultAsync(k => k.UserName == userId);
+
+            return View(korisnik);
+        }
+
+        // GET: Leaderboard
+        public async Task<IActionResult> Leaderboard()
+        {
+            var korisnici = await _context.Korisnici
+                .Include(k => k.KorisnikDostignuca)
+                    .ThenInclude(kd => kd.Dostignuce)
+                .ToListAsync();
+
+            var rangLista = korisnici.Select(k => new
+            {
+                Korisnik = k,
+                Bodovi = k.KorisnikDostignuca.Count()
+            })
+            .OrderByDescending(x => x.Bodovi)
+            .Select((x, index) => new
+            {
+                Rang = index + 1,
+                Korisnik = x.Korisnik,
+                Bodovi = x.Bodovi
+            })
+            .ToList();
+
+            return View(rangLista);
         }
 
         // GET: Dostignuce/Create
         public IActionResult Create()
         {
-            ViewData["korisnikId"] = new SelectList(_context.Korisnici, "Id", "Id");
             return View();
         }
 
         // POST: Dostignuce/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,naziv,korisnikId,opis,tip")] Dostignuce dostignuce)
+        public async Task<IActionResult> Create([Bind("naziv,opis,tip")] Dostignuce dostignuce)
         {
             if (ModelState.IsValid)
             {
@@ -70,78 +132,16 @@ namespace ETForum.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["korisnikId"] = new SelectList(_context.Korisnici, "Id", "Id", dostignuce.korisnikId);
-            return View(dostignuce);
-        }
-
-        // GET: Dostignuce/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var dostignuce = await _context.Dostignuca.FindAsync(id);
-            if (dostignuce == null)
-            {
-                return NotFound();
-            }
-            ViewData["korisnikId"] = new SelectList(_context.Korisnici, "Id", "Id", dostignuce.korisnikId);
-            return View(dostignuce);
-        }
-
-        // POST: Dostignuce/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,naziv,korisnikId,opis,tip")] Dostignuce dostignuce)
-        {
-            if (id != dostignuce.id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(dostignuce);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DostignuceExists(dostignuce.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["korisnikId"] = new SelectList(_context.Korisnici, "Id", "Id", dostignuce.korisnikId);
             return View(dostignuce);
         }
 
         // GET: Dostignuce/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var dostignuce = await _context.Dostignuca
-                .Include(d => d.korisnik)
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (dostignuce == null)
-            {
-                return NotFound();
-            }
+            var dostignuce = await _context.Dostignuca.FirstOrDefaultAsync(d => d.id == id);
+            if (dostignuce == null) return NotFound();
 
             return View(dostignuce);
         }
@@ -155,37 +155,9 @@ namespace ETForum.Controllers
             if (dostignuce != null)
             {
                 _context.Dostignuca.Remove(dostignuce);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool DostignuceExists(int id)
-        {
-            return _context.Dostignuca.Any(e => e.id == id);
-        }
-
-        public async Task<IActionResult> Leaderboard()
-        {
-            var korisnici = await _context.Korisnici
-                .Select(k => new
-                {
-                    Korisnik = k,
-                    BrojLajkova = _context.Dostignuca.Count(d => d.korisnikId == k.Id && d.tip == TipDostignuca.Lajk),
-                    BrojKomentara = _context.Dostignuca.Count(d => d.korisnikId == k.Id && d.tip == TipDostignuca.Komentar),
-                    BrojPitanja = _context.Dostignuca.Count(d => d.korisnikId == k.Id && d.tip == TipDostignuca.Pitanje),
-                    BrojOdgovora = _context.Dostignuca.Count(d => d.korisnikId == k.Id && d.tip == TipDostignuca.Odgovor),
-                    BrojPrijatelja = _context.Dostignuca.Count(d => d.korisnikId == k.Id && d.tip == TipDostignuca.Prijatelj)
-                })
-                .OrderByDescending(x => x.BrojLajkova)
-                .ThenByDescending(x => x.BrojKomentara)
-                .ThenByDescending(x => x.BrojPitanja)
-                .ThenByDescending(x => x.BrojOdgovora)
-                .ThenByDescending(x => x.BrojPrijatelja)
-                .ToListAsync();
-
-            return View(korisnici);
         }
     }
 }

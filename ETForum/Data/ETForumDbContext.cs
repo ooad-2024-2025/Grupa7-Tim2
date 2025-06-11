@@ -20,6 +20,7 @@ namespace ETForum.Data
         public DbSet<Notifikacija> Notifikacije { get; set; }
         public DbSet<Prijateljstvo> Prijateljstva { get; set; }
         public DbSet<Dostignuce> Dostignuca { get; set; }
+        public DbSet<KorisnikDostignuce> KorisnikDostignuca { get; set; } 
         public DbSet<OcjenaPredmeta> OcjenaPredmeta { get; set; }
         public DbSet<Poruka> Poruka { get; set; }
         public DbSet<Predmeti> Predmeti { get; set; }

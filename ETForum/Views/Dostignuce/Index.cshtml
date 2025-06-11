@@ -5,18 +5,44 @@
 
 @foreach (var grupa in Model.GroupBy(d => d.tip))
 {
-	<h4 class="mt-4 text-primary">@grupa.Key.ToString()</h4>
+    <h4 class="mt-4 text-primary">@grupa.Key.ToString()</h4>
 
-	<div class="achievement-grid">
-		@foreach (var d in grupa)
-		{
-			<div class="achievement-badge">
-				<div class="badge-icon">🏆</div>
-				<div class="badge-title">@d.naziv</div>
-				<div class="badge-desc">@d.opis</div>
-			</div>
-		}
-	</div>
+    <div class="achievement-grid">
+        @foreach (var d in grupa)
+        {
+            <div class="achievement-badge">
+                <!-- Ikona za dostignuće -->
+                <div class="badge-icon">
+                    @if (d.tip == TipDostignuca.Pitanje)
+                    {
+                        <i class="fas fa-question-circle"></i>  <!-- Ikona za pitanje -->
+                    }
+                    else if (d.tip == TipDostignuca.Odgovor)
+                    {
+                        <i class="fas fa-reply"></i>  <!-- Ikona za odgovor -->
+                    }
+                    else if (d.tip == TipDostignuca.Komentar)
+                    {
+                        <i class="fas fa-comment"></i>  <!-- Ikona za komentar -->
+                    }
+                    else if (d.tip == TipDostignuca.Lajk)
+                    {
+                        <i class="fas fa-thumbs-up"></i>  <!-- Ikona za lajk -->
+                    }
+                    else if (d.tip == TipDostignuca.Prijatelj)
+                    {
+                        <i class="fas fa-user-friends"></i>  <!-- Ikona za prijatelja -->
+                    }
+                    else
+                    {
+                        <i class="fas fa-trophy"></i>  <!-- Default ikona za dostignuće -->
+                    }
+                </div>
+                <div class="badge-title">@d.naziv</div>
+                <div class="badge-desc">@d.opis</div>
+            </div>
+        }
+    </div>
 }
 
 <style>
@@ -36,12 +62,12 @@
         transition: transform 0.2s ease-in-out;
     }
 
-    .achievement-badge:hover {
-        transform: translateY(-4px);
-    }
+        .achievement-badge:hover {
+            transform: translateY(-4px);
+        }
 
     .badge-icon {
-        font-size: 2rem;
+        font-size: 2.5rem;
         margin-bottom: 10px;
     }
 

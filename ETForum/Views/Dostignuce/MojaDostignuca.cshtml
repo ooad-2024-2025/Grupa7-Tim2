@@ -1,0 +1,30 @@
+@model ETForum.Models.Korisnik
+
+@{
+    ViewData["Title"] = "Moja Dostignu?a";
+}
+
+<h2 class="mb-4">?? Moja dostignu?a</h2>
+
+@if (Model.KorisnikDostignuca == null || !Model.KorisnikDostignuca.Any())
+{
+    <div class="alert alert-info">
+        Još uvijek nemaš nijedno dostignu?e. Aktivnosti na platformi ti mogu donijeti bedževe!
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var kd in Model.KorisnikDostignuca)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">?? @kd.Dostignuce.naziv</h5>
+                        <p class="card-text text-muted">@kd.Dostignuce.opis</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

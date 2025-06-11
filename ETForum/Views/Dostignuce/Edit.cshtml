@@ -1,7 +1,7 @@
 ﻿@model ETForum.Models.Dostignuce
 
 @{
-    ViewData["Title"] = "Edit";
+	ViewData["Title"] = "Edit";
 }
 
 <h1>Edit</h1>
@@ -9,41 +9,51 @@
 <h4>Dostignuce</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id" />
-            <div class="form-group">
-                <label asp-for="naziv" class="control-label"></label>
-                <input asp-for="naziv" class="form-control" />
-                <span asp-validation-for="naziv" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="korisnikId" class="control-label"></label>
-                <select asp-for="korisnikId" class="form-control" asp-items="ViewBag.korisnikId"></select>
-                <span asp-validation-for="korisnikId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="opis" class="control-label"></label>
-                <input asp-for="opis" class="form-control" />
-                <span asp-validation-for="opis" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="tip" class="control-label"></label>
-                <select asp-for="tip" class="form-control" asp-items="Html.GetEnumSelectList<ETForum.Models.TipDostignuca>()"></select>
-                <span asp-validation-for="tip" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+	<div class="col-md-4">
+		<form asp-action="Edit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="id" />
+			<div class="form-group">
+				<label asp-for="naziv" class="control-label"></label>
+				<input asp-for="naziv" class="form-control" />
+				<span asp-validation-for="naziv" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="opis" class="control-label"></label>
+				<input asp-for="opis" class="form-control" />
+				<span asp-validation-for="opis" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="tip" class="control-label"></label>
+				<select asp-for="tip" class="form-control" asp-items="Html.GetEnumSelectList<ETForum.Models.TipDostignuca>()"></select>
+				<span asp-validation-for="tip" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Save" class="btn btn-primary" />
+			</div>
+		</form>
+	</div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Index">Back to List</a>
 </div>
 
+<h3>Prikaz korisnika povezani sa ovim dostignućem:</h3>
+@if (Model.KorisnikDostignuca != null && Model.KorisnikDostignuca.Any())
+{
+	<ul>
+		@foreach (var kd in Model.KorisnikDostignuca)
+		{
+			<li>@kd.Korisnik.UserName</li> <!-- Prikaz korisničkog imena -->
+		}
+	</ul>
+}
+else
+{
+	<p>Ovo dostignuće još nije povezano sa korisnicima.</p>
+}
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

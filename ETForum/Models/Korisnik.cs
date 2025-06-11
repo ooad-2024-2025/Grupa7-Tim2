@@ -18,7 +18,7 @@ namespace ETForum.Models
         public string? urlSlike { get; set; }
         public bool podesenProfil { get; set; }
         public DateTime? lastLogin { get; set; }
+        public ICollection<KorisnikDostignuce> KorisnikDostignuca { get; set; }
 
-        public virtual ICollection<Dostignuce>? Dostignuca { get; set; }
     }
 }
