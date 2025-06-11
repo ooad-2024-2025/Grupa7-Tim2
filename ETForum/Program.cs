@@ -3,6 +3,7 @@ using ETForum.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ETForum.Hubs;
+using ETForum.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,7 @@ builder.Services.AddSignalR(options =>
     options.EnableDetailedErrors = true;
 });
 
-
+builder.Services.AddScoped<DostignucaHelper>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
