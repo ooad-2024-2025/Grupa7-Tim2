@@ -353,7 +353,7 @@ namespace ETForum.Controllers
                         pitanje.brojLajkova++;
                     }
                     
-                    TempData["SuccessMessage"] = "Question liked!";
+                    
                 }
 
                 await _context.SaveChangesAsync();
