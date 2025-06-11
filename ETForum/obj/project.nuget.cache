@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KbKiXp1ulRc=",
+  "dgSpecHash": "WePKmYP3eYI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Korisnik\\OneDrive\\Desktop\\OOADprojekat\\ETForum\\ETForum.csproj",
+  "projectFilePath": "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\ETForum.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Korisnik\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Korisnik\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

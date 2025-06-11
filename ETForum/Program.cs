@@ -20,6 +20,14 @@ builder.Services.AddSignalR(options =>
 {
     options.EnableDetailedErrors = true;
 });
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Korisnik/Login"; 
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.Cookie.Name = "ETForum.Auth";
+    options.SlidingExpiration = true;
+});
+
 
 
 builder.Services.AddDistributedMemoryCache();

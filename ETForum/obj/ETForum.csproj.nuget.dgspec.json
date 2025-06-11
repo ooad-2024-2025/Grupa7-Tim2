@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Korisnik\\OneDrive\\Desktop\\OOADprojekat\\ETForum\\ETForum.csproj": {}
+    "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\ETForum.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Korisnik\\OneDrive\\Desktop\\OOADprojekat\\ETForum\\ETForum.csproj": {
+    "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\ETForum.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Korisnik\\OneDrive\\Desktop\\OOADprojekat\\ETForum\\ETForum.csproj",
+        "projectUniqueName": "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\ETForum.csproj",
         "projectName": "ETForum",
-        "projectPath": "C:\\Users\\Korisnik\\OneDrive\\Desktop\\OOADprojekat\\ETForum\\ETForum.csproj",
+        "projectPath": "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\ETForum.csproj",
         "packagesPath": "C:\\Users\\Korisnik\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Korisnik\\OneDrive\\Desktop\\OOADprojekat\\ETForum\\obj\\",
+        "outputPath": "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -44,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -96,7 +96,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
