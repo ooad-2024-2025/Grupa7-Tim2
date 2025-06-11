@@ -38,7 +38,7 @@
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
                         </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Dostignuce" asp-action="Leaderboard">Dostignuća</a>
+                                <a class="nav-link text-dark" asp-controller="Dostignuce" asp-action="Index">Dostignuća</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="OcjenaPredmeta" asp-action="Smjer">OcjenaPredmeta</a>
@@ -71,11 +71,12 @@
         </div>
     </nav>
 </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+<div class="container-fluid px-3">
+	<main role="main" class="pb-3">
+		@RenderBody()
+	</main>
+</div>
+
 
     <footer class="border-top footer text-muted">
         <div class="container">

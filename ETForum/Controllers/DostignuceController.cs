@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETForum.Data;
 using ETForum.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETForum.Controllers
 {
+    [Authorize]
     public class DostignuceController : Controller
     {
         private readonly ETForumDbContext _context;
@@ -18,13 +20,15 @@ namespace ETForum.Controllers
         {
             _context = context;
         }
-        /*
 
         // GET: Dostignuce
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var eTForumDbContext = _context.Dostignuca.Include(d => d.korisnik);
-            return View(await eTForumDbContext.ToListAsync());
+            var sistemskaDostignuca = _context.Dostignuca
+                .Where(d => d.korisnikId == null)
+                .ToList();
+
+            return View(sistemskaDostignuca);
         }
 
         // GET: Dostignuce/Details/5
@@ -161,7 +165,6 @@ namespace ETForum.Controllers
         {
             return _context.Dostignuca.Any(e => e.id == id);
         }
-        */
 
         public async Task<IActionResult> Leaderboard()
         {
@@ -173,14 +176,12 @@ namespace ETForum.Controllers
                     BrojKomentara = _context.Dostignuca.Count(d => d.korisnikId == k.Id && d.tip == TipDostignuca.Komentar),
                     BrojPitanja = _context.Dostignuca.Count(d => d.korisnikId == k.Id && d.tip == TipDostignuca.Pitanje),
                     BrojOdgovora = _context.Dostignuca.Count(d => d.korisnikId == k.Id && d.tip == TipDostignuca.Odgovor),
-                    BrojNajboljihOdgovora = _context.Dostignuca.Count(d => d.korisnikId == k.Id && d.tip == TipDostignuca.NajboljiOdgovor),
                     BrojPrijatelja = _context.Dostignuca.Count(d => d.korisnikId == k.Id && d.tip == TipDostignuca.Prijatelj)
                 })
                 .OrderByDescending(x => x.BrojLajkova)
                 .ThenByDescending(x => x.BrojKomentara)
                 .ThenByDescending(x => x.BrojPitanja)
                 .ThenByDescending(x => x.BrojOdgovora)
-                .ThenByDescending(x => x.BrojNajboljihOdgovora)
                 .ThenByDescending(x => x.BrojPrijatelja)
                 .ToListAsync();
 

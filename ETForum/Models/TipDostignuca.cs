@@ -7,8 +7,7 @@
             Komentar,
             Pitanje,
             Odgovor,
-            NajboljiOdgovor,
-            Prijatelj
-            // Dodaj još po potrebi
+            Prijatelj,
+            Ostalo
         }
     }
