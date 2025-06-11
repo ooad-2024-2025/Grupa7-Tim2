@@ -26,14 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
-    <PackageReference Include="MailKit" Version="4.12.1" />
-=======
     <Content Remove="Views\Dostignuce\MojaDostignuca.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
->>>>>>> 70e5f14e0af650d1031c75619f6b91fb089c8bf1
+    <PackageReference Include="MailKit" Version="4.12.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
@@ -43,7 +40,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
-    <PackageReference Include="MimeKit" Version="4.12.0" />
   </ItemGroup>
 
   <ItemGroup>
