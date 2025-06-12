@@ -6,9 +6,9 @@
 {
 	<div class="@(n.Procitano ? "" : "fw-bold")">
 		<a href="@n.Link">@n.Tekst</a> <br />
-        
+
 		<!-- Forma koja prosljeđuje ID notifikacije -->
-		<form asp-action="IdiNaPitanje" asp-route-id="@n.pitanjeId" method="post">
+		<form asp-action="IdiNaPitanje" asp-route-id="@n.Id" method="post">
 			<button type="submit" class="btn btn-sm btn-outline-primary mt-1">Idi Na Pitanje</button>
 		</form>
 
@@ -16,7 +16,7 @@
 
 		@if (!n.Procitano)
 		{
-			<form asp-action="OznačiKaoProcitano" asp-route-id="@n.pitanjeId" method="post">
+			<form asp-action="OznačiKaoProcitano" asp-route-id="@n.Id" method="post">
 				<button type="submit" class="btn btn-sm btn-outline-primary mt-1">Označi kao pročitano</button>
 			</form>
 		}

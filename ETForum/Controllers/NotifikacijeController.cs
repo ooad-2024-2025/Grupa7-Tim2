@@ -47,13 +47,16 @@
             var notifikacija = await _context.Notifikacije
                 .Include(n => n.Korisnik)
                 .FirstOrDefaultAsync(n => n.Id == id);
-            // Preusmjeravamo korisnika na detalje pitanja
+
             if (notifikacija == null)
             {
-                return NotFound(); // Or handle the error appropriately  
+                return NotFound(); // Ili odgovarajuća obrada greške
             }
-            return RedirectToAction("Details", "QnA", routeValues: notifikacija.pitanjeId);
+
+            // Preusmjeravamo korisnika na detalje pitanja
+            return RedirectToAction("Details", "QnA", new { id = notifikacija.pitanjeId });
         }
+
     }
 
 }
