@@ -71,24 +71,25 @@
         display: flex;
         flex-direction: column;
     }
-    .profile-info table {
-        width: 100%;
-        border-collapse: collapse;
-    }
 
-    .profile-info th, .profile-info td {
-        padding: 12px;
-        border-bottom: 1px solid #ddd;
-    }
+        .profile-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    .profile-info th {
-        text-align: left;
-        color: #777;
-    }
+        .profile-info th, .profile-info td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
 
-    .profile-info td {
-        color: #333;
-    }
+        .profile-info th {
+            text-align: left;
+            color: #777;
+        }
+
+        .profile-info td {
+            color: #333;
+        }
 
     .edit-btn {
         margin-top: 20px;
@@ -165,20 +166,20 @@
 
     <!-- Profile Card -->
     <div class="profile-card">
-	    <div class="profile-image-container text-center " style = " padding-left : 50 px;">
-		    <img src="@Model.urlSlike" class="profile-image" alt="Profilna slika" />
-	    </div>
-	    <div class="profile-info" style="padding-left: 50px;">
-		    <h2>@Model.ime @Model.prezime</h2>
-		    <table>
-			    <tr><th>Ime:</th><td>@Model.ime</td></tr>
-			    <tr><th>Prezime:</th><td>@Model.prezime</td></tr>
-			    <tr><th>Nickname:</th><td>@Model.nickname</td></tr>
-			    <tr><th>Email:</th><td>@Model.Email</td></tr>
-			    <tr><th>Smjer:</th><td>@Model.smjer</td></tr>
-		    </table>
-		    <a asp-action="UrediProfil" class="edit-btn">✏️ Uredi profil</a>
-	    </div>
+        <div class="profile-image-container text-center " style=" padding-left : 50 px;">
+            <img src="@Model.urlSlike" class="profile-image" alt="Profilna slika" />
+        </div>
+        <div class="profile-info" style="padding-left: 50px;">
+            <h2>@Model.ime @Model.prezime</h2>
+            <table>
+                <tr><th>Ime:</th><td>@Model.ime</td></tr>
+                <tr><th>Prezime:</th><td>@Model.prezime</td></tr>
+                <tr><th>Nickname:</th><td>@Model.nickname</td></tr>
+                <tr><th>Email:</th><td>@Model.Email</td></tr>
+                <tr><th>Smjer:</th><td>@Model.smjer</td></tr>
+            </table>
+            <a asp-action="UrediProfil" class="edit-btn">✏️ Uredi profil</a>
+        </div>
     </div>
 
     <style>
@@ -190,20 +191,20 @@
             justify-content: center;
         }
 
-    .profile-image {
-        width: 180px;
-        height: 180px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 3px solid var(--primary-color);
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease-in-out;
-    }
+        .profile-image {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
 
-    .profile-image:hover {
-        transform: scale(1.05);
-    }
-</style>
+            .profile-image:hover {
+                transform: scale(1.05);
+            }
+    </style>
 
 
     <!-- Achievements Section -->
@@ -238,6 +239,29 @@
                     <div class="achievement-name">@d.Dostignuce.naziv</div>
                     <div class="achievement-desc">@d.Dostignuce.opis</div>
                 </div>
+            }
+
+        </div>
+        <!-- Friends List Section -->
+        <div class="achievements-section mt-4">
+            <h3>👥 Prijatelji</h3>
+            @if (ViewBag.Prijatelji != null && ((List<ETForum.Models.Korisnik>)ViewBag.Prijatelji).Any())
+            {
+                <div class="achievements-list">
+                    @foreach (var prijatelj in (List<ETForum.Models.Korisnik>)ViewBag.Prijatelji)
+                    {
+                        <div class="achievement-badge">
+                            <div class="achievement-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="achievement-name">@prijatelj.nickname</div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">Nemaš prijatelja trenutno.</p>
             }
         </div>
     </div>

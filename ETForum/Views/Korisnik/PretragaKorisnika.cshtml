@@ -1,0 +1,161 @@
+﻿@model List<ETForum.Models.Korisnik>
+
+@{
+    ViewData["Title"] = "Pretraga korisnika";
+}
+@if (TempData["Poruka"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Poruka"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["PorukaCrvena"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["PorukaCrvena"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<div class="container mt-4">
+    <h2>Pretraga korisnika</h2>
+    
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form method="get" asp-action="PretragaKorisnika">
+                <div class="input-group">
+                    <input type="text" name="unos" class="form-control" placeholder="Pretražite korisnike..." value="@ViewBag.SearchTerm">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i> Pretraži
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+
+        <!-- Korisnici Grid -->
+        <div class="row">
+            @foreach (var korisnik in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <!-- Profilna slika -->
+                            @if (!string.IsNullOrEmpty(korisnik.urlSlike))
+                            {
+                                <img src="@korisnik.urlSlike" alt="Profilna slika" class="rounded-circle mb-3" style="width: 80px; height: 80px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-user fa-2x text-white"></i>
+                                </div>
+                            }
+                            
+                            <!-- Ime i prezime -->
+                            <h5 class="card-title">
+                                @if (!string.IsNullOrEmpty(korisnik.ime) && !string.IsNullOrEmpty(korisnik.prezime))
+                                {
+                                    @korisnik.ime @korisnik.prezime
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Ime nije postavljeno</span>
+                                }
+                            </h5>
+                            
+                            <!-- Username -->
+                            <p class="card-text">
+                                <strong>@@@korisnik.UserName</strong>
+                            </p>
+                            
+                            <!-- Smjer -->
+                            @if (korisnik.smjer != null)
+{
+    <p class="card-text">
+        <small class="text-muted">
+            @switch (korisnik.smjer)
+            {
+                case ETForum.Models.Smjer.RI:
+                    <span class="badge badge-info">Računarstvo i informatika</span>
+                    break;
+                case ETForum.Models.Smjer.TK:
+                    <span class="badge badge-success">Telekomunikacije</span>
+                    break;
+                case ETForum.Models.Smjer.EE:
+                    <span class="badge badge-warning">Elektroenergetika</span>
+                    break;
+                case ETForum.Models.Smjer.AiE:
+                    <span class="badge badge-primary">Automatika i elektronika</span>
+                    break;
+                default:
+                    <span class="badge badge-secondary">@korisnik.smjer.ToString()</span>
+                    break;
+            }
+        </small>
+    </p>
+}
+
+                            
+                            <!-- Email -->
+                            @if (!string.IsNullOrEmpty(korisnik.Email))
+                            {
+                                <p class="card-text">
+                                    <small class="text-muted">@korisnik.Email</small>
+                                </p>
+                            }
+                        </div>
+                        
+                        <div class="card-footer">
+                            <div class="btn-group w-100" role="group">
+                                <a asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="@korisnik.Id" asp-route-unos="@ViewBag.SearchTerm" class="btn btn-outline-primary btn-sm">Profil</a>
+                                <form asp-controller="Prijateljstvo" asp-action="DodajPrijatelja" method="post" class="d-inline">
+                                    <input type="hidden" name="Id" value="@korisnik.Id" />
+                                    <input type="hidden" name="unos1" value="@ViewBag.SearchTerm" />
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Dodaj prijatelja</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(ViewBag.SearchTerm as string))
+    {
+        <!-- Nema rezultata -->
+        <div class="text-center mt-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4>Nema rezultata</h4>
+            <p class="text-muted">Nisu pronađeni korisnici koji odgovaraju vašoj pretrazi "<strong>@ViewBag.SearchTerm</strong>"</p>
+        </div>
+    }
+    else
+    {
+        <!-- Početno stanje -->
+        <div class="text-center mt-5">
+            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+            <h4>Pretražite korisnike</h4>
+            <p class="text-muted">Unesite ime, prezime ili korisničko ime u search bar iznad</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-focus na search input
+        $(document).ready(function() {
+            $('input[name="unos"]').focus();
+        });
+    </script>
+}

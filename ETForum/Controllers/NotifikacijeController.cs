@@ -50,10 +50,9 @@
 
             if (notifikacija == null)
             {
-                return NotFound(); // Ili odgovarajuća obrada greške
+                return NotFound(); 
             }
 
-            // Preusmjeravamo korisnika na detalje pitanja
             return RedirectToAction("Details", "QnA", new { id = notifikacija.pitanjeId });
         }
 
