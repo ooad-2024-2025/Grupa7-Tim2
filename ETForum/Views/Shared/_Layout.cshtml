@@ -13,6 +13,63 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ETForum.styles.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .navbar {
+            margin-bottom: 20px; /* razmak ispod navigacije */
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar-nav .nav-link {
+            padding: 8px 12px;
+            font-weight: 600;
+        }
+
+        /* Unapređenje stila za tijelo stranice */
+        main {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            padding: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .footer .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+    </style>
 </head>
 <body>
 <header>
@@ -83,7 +140,7 @@
 	</main>
 </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer border-top text-muted">
         <div class="container">
             &copy; 2025 - ETForum
         </div>
