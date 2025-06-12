@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ETForum.Data;
 using ETForum.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETForum.Controllers
 {
@@ -170,6 +171,7 @@ namespace ETForum.Controllers
         */
 
         // 1. Izbor smjera
+        
         public IActionResult Smjer()
         {
             var smjer = Enum.GetValues(typeof(Smjer)).Cast<Smjer>();
@@ -205,6 +207,7 @@ namespace ETForum.Controllers
         }
 
         // 4. GET: Forma za ocjenjivanje (prikaz)
+        [Authorize]
         public IActionResult Ocijeni(int predmetId)
         {
             var predmet = _context.Predmeti.FirstOrDefault(p => p.id == predmetId);
@@ -219,6 +222,7 @@ namespace ETForum.Controllers
         // 5. POST: Slanje ocjene i komentara
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public IActionResult Ocijeni(int predmetId, int ocjena, string komentar)
         {
             // Možeš koristiti ID logovanog korisnika, ili ostaviti null za anonimno
