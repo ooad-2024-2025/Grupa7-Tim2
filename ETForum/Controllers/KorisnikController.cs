@@ -85,7 +85,9 @@ namespace ETForum.Controllers
         {
             if (ModelState.IsValid)
             {
-                var korisnik = await _context.Korisnici.FirstOrDefaultAsync(u => (u.nickname == loginDTO.nickname || u.Email == loginDTO.email));
+                var korisnik = await _userManager.FindByNameAsync(loginDTO.nickname)
+               ?? await _userManager.FindByEmailAsync(loginDTO.email);
+
                 if (korisnik != null)
                 {
                     var passwordValid = await _userManager.CheckPasswordAsync(korisnik, loginDTO.lozinka);
@@ -115,11 +117,11 @@ namespace ETForum.Controllers
 
         [Authorize]
         [HttpGet]
-        public IActionResult PodesiProfil()
+        public async Task<IActionResult> PodesiProfil()
         {
             var userId = _userManager.GetUserId(User);
 
-            var korisnik = _context.Korisnici.FirstOrDefault(k => k.Id == userId);
+            var korisnik = await _userManager.FindByIdAsync(userId);
 
             if (korisnik != null && korisnik.podesenProfil)
                 return RedirectToAction("Naslovna", "Home");
@@ -234,6 +236,17 @@ namespace ETForum.Controllers
 
                 korisnik.urlSlike = "/images/" + fileName;
             }
+
+        [HttpGet]
+        public async Task<IActionResult> PretragaKorisnika(string unos)
+        {
+            ViewBag.SearchTerm = unos;
+
+            var korisnici = await _context.Korisnici
+                            .Where(k => k.UserName.Contains(unos))
+                            .ToListAsync();
+            return View(korisnici);
+        }
 
             await _userManager.UpdateAsync(korisnik);
 

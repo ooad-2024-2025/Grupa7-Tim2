@@ -52,14 +52,19 @@
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
 
+                        @{
+                            var smjerOptions = new List<SelectListItem>
+                                                {
+                                                new SelectListItem { Text = "Računarstvo i informatika", Value = "RI" },
+                                                new SelectListItem { Text = "Telekomunikacije", Value = "TK" },
+                                                new SelectListItem { Text = "Elektroenergetika", Value = "EE" },
+                                                new SelectListItem { Text = "Automatika i elektronika", Value = "AiE" }
+                                                };
+                        }
+
                         <div class="mb-3">
                             <label for="Smjer">Smjer</label>
-                            <select class="form-control" id="Smjer" name="Smjer" required>
-                                <option value="RI">Računarstvo i informatika</option>
-                                <option value="TK">Telekomunikacije</option>
-                                <option value="EE">Elektroenergetika</option>
-                                <option value="AiE">Automatika i elektronika</option>
-                            </select>
+                            @Html.DropDownListFor(m => m.smjer, smjerOptions, new { @class = "form-control", required = "required" })
                         </div>
 
                         <div class="d-grid">
