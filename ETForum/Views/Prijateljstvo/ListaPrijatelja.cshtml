@@ -21,11 +21,19 @@ else
                 <div class="card h-100 shadow-sm">
                     <div class="card-body d-flex flex-column justify-content-between">
                         <div>
-                            <p class="card-text text-muted">@prijatelj.UserName</p>
+                            <h5 class="card-title">@prijatelj.UserName</h5>
+                            <span class="badge bg-success" id="unread-@prijatelj.Id" style="display: none;">
+                                Nove poruke
+                            </span>
                         </div>
-                        <a asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="@prijatelj.Id" class="btn btn-primary mt-3">
-                            Pogledaj profil
-                        </a>
+                        <div class="d-grid gap-2 mt-3">
+                            <a asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="@prijatelj.Id" class="btn btn-outline-primary">
+                                <i class="fas fa-user"></i> Pogledaj profil
+                            </a>
+                            <a asp-controller="PrivatniChat" asp-action="Chat" asp-route-prijateljId="@prijatelj.Id" class="btn btn-primary">
+                                <i class="fas fa-comment"></i> Chatuj
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -33,4 +41,17 @@ else
     </div>
 }
 
-
+<script>
+    // Provjeri nepročitane poruke svakih 30 sekundi
+    setInterval(function() {
+        fetch('/PrivatniChat/BrojNeprocitanih')
+            .then(response => response.json())
+            .then(data => {
+                // Ovdje možeš dodati logiku za prikazivanje broja nepročitanih poruka
+                // Za sada samo console.log
+                if (data > 0) {
+                    console.log('Imate ' + data + ' nepročitanih poruka');
+                }
+            });
+    }, 30000);
+</script>

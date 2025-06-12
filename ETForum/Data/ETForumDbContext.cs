@@ -26,7 +26,7 @@ namespace ETForum.Data
         public DbSet<Predmeti> Predmeti { get; set; }
         public DbSet<StudySession> StudySession { get; set; }
         public DbSet<LiveChat> LiveChat { get; set; }
-
+        public DbSet<PrivatniChat> PrivatniChatovi { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
