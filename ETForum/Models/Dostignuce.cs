@@ -1,15 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ETForum.Models
 {
     public class Dostignuce
     {
-        public int id {  get; set; }
-        public string? naziv {  get; set; }
-        public string? korisnikId { get; set; }
-        [ForeignKey(nameof(korisnikId))]
-        public Korisnik? korisnik {  get; set; }
-        public string? opis  { get; set; }
+        [Key]
+        public int id { get; set; }
+        [Required]
+        public string naziv { get; set; }
+        public string opis { get; set; }
         public TipDostignuca tip { get; set; }
+        public ICollection<KorisnikDostignuce> KorisnikDostignuca { get; set; }
     }
+
 }

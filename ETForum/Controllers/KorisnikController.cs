@@ -94,6 +94,11 @@ namespace ETForum.Controllers
 
                     if (passwordValid)
                     {
+
+                        korisnik.lastLogin = DateTime.Now;
+                        _context.Update(korisnik);
+                        await _context.SaveChangesAsync();
+
                         await _signInManager.SignInAsync(korisnik, isPersistent: false);
                         TempData["SuccessMessage"] = "Uspješno ste se prijavili!";
                         if (!korisnik.podesenProfil)
@@ -170,21 +175,67 @@ namespace ETForum.Controllers
             return RedirectToAction("Login");
         }
 
+
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> MojProfil(string? id)
+        public async Task<IActionResult> MojProfil()
         {
-            if (string.IsNullOrEmpty(id))
-                id = _userManager.GetUserId(User);
+            var userId = _userManager.GetUserId(User);
 
             var korisnik = await _context.Korisnici
-                .FirstOrDefaultAsync(k => k.Id == id);
+                .Include(k => k.KorisnikDostignuca).
+                ThenInclude(kd => kd.Dostignuce)
+                .FirstOrDefaultAsync(k => k.Id == userId);
 
             if (korisnik == null)
                 return NotFound();
 
             return View(korisnik);
         }
+
+        //GET
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> UrediProfil()
+        {
+            var userId = _userManager.GetUserId(User);
+            var korisnik = await _context.Korisnici.FirstOrDefaultAsync(k => k.Id == userId);
+
+            if (korisnik == null) return NotFound();
+
+            return View(korisnik);
+        }
+
+        //POST
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UrediProfil(Korisnik izmjene, IFormFile? novaSlika)
+        {
+            var userId = _userManager.GetUserId(User);
+            var korisnik = await _context.Korisnici.FirstOrDefaultAsync(k => k.Id == userId);
+
+            if (korisnik == null) return NotFound();
+
+            korisnik.ime = izmjene.ime;
+            korisnik.prezime = izmjene.prezime;
+            korisnik.nickname = izmjene.nickname;
+            korisnik.UserName = izmjene.nickname;
+            korisnik.Email = izmjene.Email;
+            korisnik.smjer = izmjene.smjer;
+
+            if (novaSlika != null && novaSlika.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(novaSlika.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await novaSlika.CopyToAsync(stream);
+                }
+
+                korisnik.urlSlike = "/images/" + fileName;
+            }
 
         [HttpGet]
         public async Task<IActionResult> PretragaKorisnika(string unos)
@@ -197,6 +248,11 @@ namespace ETForum.Controllers
             return View(korisnici);
         }
 
+            await _userManager.UpdateAsync(korisnik);
+
+            TempData["SuccessMessage"] = "Profil uspješno ažuriran!";
+            return RedirectToAction("MojProfil");
+        }
 
     }
 }

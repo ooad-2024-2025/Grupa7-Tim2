@@ -3,6 +3,8 @@ using ETForum.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ETForum.Hubs;
+using ETForum.Helper;
+using ETForum.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +31,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 
-
+builder.Services.AddScoped<DostignucaHelper>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -43,10 +45,16 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Korisnik/Login";
 });
 
+//za notifikacije
+builder.Services.AddTransient<EmailSender>();
+
 builder.Services.AddControllersWithViews();
+
+
 
 var app = builder.Build();
 
+//chat mi reko da ovo promjenim
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -54,12 +62,15 @@ using (var scope = app.Services.CreateScope())
 
     foreach (var uloga in uloge)
     {
-        if (!await roleManager.RoleExistsAsync(uloga))
+        if (!roleManager.RoleExistsAsync(uloga).Result) //  KORISTI .Result UMJESTO await
         {
-            await roleManager.CreateAsync(new IdentityRole(uloga));
+            roleManager.CreateAsync(new IdentityRole(uloga)).Wait(); //  KORISTI .Wait()
         }
     }
 }
+
+
+
 
 
 // Configure the HTTP request pipeline.

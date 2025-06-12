@@ -1,53 +1,89 @@
 ﻿@model IEnumerable<ETForum.Models.Dostignuce>
+@using ETForum.Models
 
-@{
-    ViewData["Title"] = "Index";
+<h2 class="mb-4">🏅 Moguća dostignuća</h2>
+
+@foreach (var grupa in Model.GroupBy(d => d.tip))
+{
+    <h4 class="mt-4 text-primary">@grupa.Key.ToString()</h4>
+
+    <div class="achievement-grid">
+        @foreach (var d in grupa)
+        {
+            <div class="achievement-badge">
+                <!-- Ikona za dostignuće -->
+                <div class="badge-icon">
+                    @if (d.tip == TipDostignuca.Pitanje)
+                    {
+                        <i class="fas fa-question-circle"></i>  <!-- Ikona za pitanje -->
+                    }
+                    else if (d.tip == TipDostignuca.Odgovor)
+                    {
+                        <i class="fas fa-reply"></i>  <!-- Ikona za odgovor -->
+                    }
+                    else if (d.tip == TipDostignuca.Komentar)
+                    {
+                        <i class="fas fa-comment"></i>  <!-- Ikona za komentar -->
+                    }
+                    else if (d.tip == TipDostignuca.Lajk)
+                    {
+                        <i class="fas fa-thumbs-up"></i>  <!-- Ikona za lajk -->
+                    }
+                    else if (d.tip == TipDostignuca.Prijatelj)
+                    {
+                        <i class="fas fa-user-friends"></i>  <!-- Ikona za prijatelja -->
+                    }
+                    else
+                    {
+                        <i class="fas fa-trophy"></i>  <!-- Default ikona za dostignuće -->
+                    }
+                </div>
+                <div class="badge-title">@d.naziv</div>
+                <div class="badge-desc">@d.opis</div>
+            </div>
+        }
+    </div>
 }
 
-<h1>Index</h1>
+<style>
+    .achievement-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.naziv)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.korisnik)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.opis)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.tip)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.naziv)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.korisnik.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.opis)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.tip)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    .achievement-badge {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .achievement-badge:hover {
+            transform: translateY(-4px);
+        }
+
+    .badge-icon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .badge-title {
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+
+    .badge-desc {
+        font-size: 0.95rem;
+        color: #6c757d;
+    }
+
+    h4 {
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+    }
+</style>

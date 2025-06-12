@@ -16,111 +16,62 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Naslovna">ETForum</a>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Naslovna">ETForum</a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
                         aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="mainNavbar">
-                    <!-- Search button section -->
-                    @if (controller == "Home" && action == "Naslovna" && User.Identity.IsAuthenticated)
-                    {
-                        <div class="position-absolute start-50 translate-middle-x">
-                            <form asp-controller="Korisnik" asp-action="PretragaKorisnika" method="get" role="search">
-                                <button class="btn btn-gradient btn-lg rounded-pill px-4" type="submit"
-                                        style="background: linear-gradient(45deg, #1abc9c, #16a085); color: white; box-shadow: 0 4px 10px rgba(22, 160, 133, 0.6); transition: transform 0.2s ease;">
-                                    <i class="fas fa-search me-2"></i> Pronađi prijatelje
-                                </button>
-                            </form>
-                        </div>
-                    }
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                @if (!(controller == "Korisnik" && action == "Login")) 
+                {
+                    <ul class="navbar-nav ms-5 me-auto d-flex gap-4">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="QnA">QnA</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
+                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Dostignuce" asp-action="Leaderboard">Dostignuća</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="OcjenaPredmeta" asp-action="Smjer">OcjenaPredmeta</a>
+                            </li>
+                    </ul>
 
-                    <!-- Main navigation menu -->
-                    @if (!(controller == "Korisnik" && action == "Login") && !(controller == "Home" && action == "Naslovna"))
-                    {
-                        <ul class="navbar-nav ms-5 me-auto d-flex gap-3 align-items-center">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-semibold text-uppercase custom-nav-link" asp-controller="Home" asp-action="QnA">QnA</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-semibold text-uppercase custom-nav-link" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-semibold text-uppercase custom-nav-link" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-semibold text-uppercase custom-nav-link" asp-controller="Dostignuce" asp-action="Leaderboard">Dostignuća</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark fw-semibold text-uppercase custom-nav-link" asp-controller="OcjenaPredmeta" asp-action="Smjer">Ocjena Predmeta</a>
-                            </li>
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark fw-semibold text-uppercase custom-nav-link" asp-controller="Korisnik" asp-action="MojProfil">Moj Profil</a>
+                                    <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojaDostignuća">Moj profil</a>
                                 </li>
+                                <form asp-controller="Korisnik" asp-action="Logout" method="post" style="display:inline;" id="LogoutForm">
+                                        @Html.AntiForgeryToken()
+                                    <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
+                                </form>
                             }
-                        </ul>
-                    }
-
-                    <!-- Right side section - Friends and Logout -->
-                    @if (controller == "Home" && action == "Naslovna" && User.Identity.IsAuthenticated)
-                    {
-                        <div class="ms-auto d-flex align-items-center gap-3">
-                            <!-- Friends section -->
-                            <a class="nav-link position-relative" asp-controller="Prijateljstvo" asp-action="ListaPrijatelja" title="Moji prijatelji">
-                                <i class="bi bi-people-fill fs-4 text-primary"></i>
-                                <span class="visually-hidden">Moji prijatelji</span>
-                            </a>
-                            <a class="nav-link position-relative" asp-controller="Prijateljstvo" asp-action="PrimljeniZahtjevi" title="Zahtjevi za prijateljstvo">
-                                <i class="bi bi-person-plus-fill fs-4 text-success"></i>
-                                <span class="visually-hidden">Zahtjevi za prijateljstvo</span>
-                            </a>
-                            <!-- Logout -->
-                            <form asp-controller="Korisnik" asp-action="Logout" method="post" class="d-inline" id="LogoutForm">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="nav-link btn btn-link text-danger fw-semibold">
-                                    <i class="bi bi-box-arrow-right me-1"></i>Odjavi se
-                                </button>
-                            </form>
-                        </div>
-                    }
-
-                    <!-- Logout/Login section for other pages -->
-                    @if (!(controller == "Korisnik" && action == "Login") && !(controller == "Home" && action == "Naslovna"))
-                    {
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                @if (User.Identity.IsAuthenticated)
-                                {
-                                    <form asp-controller="Korisnik" asp-action="Logout" method="post" class="d-inline" id="LogoutForm">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="nav-link btn btn-link text-danger fw-semibold">
-                                            <i class="bi bi-box-arrow-right me-1"></i>Odjavi se
-                                        </button>
-                                    </form>
-                                }
-                                @if (!(User.Identity.IsAuthenticated))
-                                {
-                                    <form asp-controller="Korisnik" asp-action="Login" method="post" style="display:inline;" id="Login">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="nav-link btn btn-link text-primary fw-semibold">
-                                            <i class="bi bi-box-arrow-in-right me-1"></i>Prijavi se
-                                        </button>
-                                    </form>
-                                }
-                            </li>
-                        </ul>
-                    }
-                </div>
+                            @if (!(User.Identity.IsAuthenticated))
+                            {
+                                <form asp-controller="Korisnik" asp-action="Login" method="post" style="display:inline;" id="Login">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="nav-link btn btn-link">Prijavi se</button>
+                                </form>
+                            }
+                        </li>
+                    </ul>
+                }
             </div>
-        </nav>
-    </header>
-
+        </div>
+    </nav>
+</header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

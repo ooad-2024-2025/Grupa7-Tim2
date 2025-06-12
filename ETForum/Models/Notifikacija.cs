@@ -4,15 +4,17 @@ namespace ETForum.Models
 {
     public class Notifikacija
     {
-        public int id { get; set; }
-        public int porukaId { get; set; }
-        [ForeignKey(nameof(porukaId))]
-        public Poruka? poruka { get; set; }
-        public DateTime vrijemeKreiranja { get; set; }
-        public string? korisnikId { get; set; }
-        [ForeignKey(nameof(korisnikId))]
-        public Korisnik? korisnik { get; set; }
-        public bool procitana { get; set; }
+        public int Id { get; set; }
+        public string KorisnikId { get; set; }
+        public Korisnik Korisnik { get; set; }
+        public int pitanjeId { get; set; }
+        [ForeignKey(nameof(pitanjeId))]
+        public Pitanje Pitanje { get; set; }
 
+        public string Tekst { get; set; }
+        public string Link { get; set; }
+        public bool Procitano { get; set; }
+        public DateTime Vrijeme { get; set; }
     }
+
 }

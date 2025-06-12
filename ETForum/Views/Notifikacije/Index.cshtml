@@ -1,0 +1,27 @@
+﻿@model IEnumerable<ETForum.Models.Notifikacija>
+
+<h2 class="mb-4">Notifikacije</h2>
+
+@foreach (var n in Model)
+{
+    <div class="card mb-3 @(n.Procitano ? "border-light" : "border-primary")">
+        <div class="card-body">
+            <p class="card-text @(n.Procitano ? "text-muted" : "fw-bold")">@n.Tekst</p>
+
+            <div class="d-flex gap-2">
+                <form asp-action="IdiNaPitanje" asp-route-id="@n.Id" method="post">
+                    <button type="submit" class="btn btn-primary btn-sm">Idi na pitanje</button>
+                </form>
+
+                @if (!n.Procitano)
+                {
+                    <form asp-action="OznačiKaoProcitano" asp-route-id="@n.Id" method="post">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">Označi kao pročitano</button>
+                    </form>
+                }
+            </div>
+
+            <small class="text-muted">@n.Vrijeme.ToString("dd.MM.yyyy HH:mm")</small>
+        </div>
+    </div>
+}
