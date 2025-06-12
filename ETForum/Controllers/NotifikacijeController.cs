@@ -48,7 +48,11 @@
                 .Include(n => n.Korisnik)
                 .FirstOrDefaultAsync(n => n.Id == id);
             // Preusmjeravamo korisnika na detalje pitanja
-            return RedirectToAction("Details", "QnA", new {id = notifikacija.pitanjeId});
+            if (notifikacija == null)
+            {
+                return NotFound(); // Or handle the error appropriately  
+            }
+            return RedirectToAction("Details", "QnA", routeValues: notifikacija.pitanjeId);
         }
     }
 
