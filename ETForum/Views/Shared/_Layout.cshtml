@@ -141,7 +141,7 @@
                                     <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
                                 </form>
                             }
-                            @if (!(User.Identity.IsAuthenticated))
+                            @if (!(User.Identity.IsAuthenticated) && !(controller == "QnA" && action == "Details"))
                             {
                                 <form asp-controller="Korisnik" asp-action="Login" method="post" style="display:inline;" id="Login">
                                     @Html.AntiForgeryToken()
