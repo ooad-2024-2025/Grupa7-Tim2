@@ -189,6 +189,20 @@ namespace ETForum.Controllers
 
             if (korisnik == null)
                 return NotFound();
+            var prijateljstva = await _context.Prijateljstva
+            .Include(p => p.korisnik1)
+            .Include(p => p.korisnik2)
+            .Where(p =>
+                (p.korisnik1Id == userId || p.korisnik2Id == userId) &&
+                p.status == Status.PRIHVACENO)
+            .ToListAsync();
+
+            var prijatelji = prijateljstva.Select(p =>
+                p.korisnik1Id == userId ? p.korisnik2 : p.korisnik1
+            ).ToList();
+
+            ViewBag.Prijatelji = prijatelji;
+
 
             return View(korisnik);
         }
@@ -206,7 +220,6 @@ namespace ETForum.Controllers
             return View(korisnik);
         }
 
-        //POST
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -237,6 +250,12 @@ namespace ETForum.Controllers
                 korisnik.urlSlike = "/images/" + fileName;
             }
 
+            await _userManager.UpdateAsync(korisnik);
+
+            TempData["SuccessMessage"] = "Profil uspješno ažuriran!";
+            return RedirectToAction("MojProfil");
+        }
+
         [HttpGet]
         public async Task<IActionResult> PretragaKorisnika(string unos)
         {
@@ -247,12 +266,7 @@ namespace ETForum.Controllers
                             .ToListAsync();
             return View(korisnici);
         }
-
-            await _userManager.UpdateAsync(korisnik);
-
-            TempData["SuccessMessage"] = "Profil uspješno ažuriran!";
-            return RedirectToAction("MojProfil");
-        }
+        
 
     }
 }

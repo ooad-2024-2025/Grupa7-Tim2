@@ -119,7 +119,7 @@
                             <div class="btn-group w-100" role="group">
                                 <a asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="@korisnik.Id" asp-route-unos="@ViewBag.SearchTerm" class="btn btn-outline-primary btn-sm">Profil</a>
                                 <form asp-controller="Prijateljstvo" asp-action="DodajPrijatelja" method="post" class="d-inline">
-                                    <input type="hidden" name="korisnikId" value="@korisnik.Id" />
+                                    <input type="hidden" name="Id" value="@korisnik.Id" />
                                     <input type="hidden" name="unos1" value="@ViewBag.SearchTerm" />
                                     <button type="submit" class="btn btn-outline-primary btn-sm">Dodaj prijatelja</button>
                                 </form>

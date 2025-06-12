@@ -12,49 +12,129 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ETForum.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .navbar {
+            margin-bottom: 20px; /* razmak ispod navigacije */
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar-nav .nav-link {
+            padding: 8px 12px;
+            font-weight: 600;
+        }
+
+        /* Unapređenje stila za tijelo stranice */
+        main {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            padding: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .footer .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+    </style>
 </head>
 <body>
-    <header>
+<header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Naslovna">ETForum</a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                    aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
             <div class="collapse navbar-collapse" id="mainNavbar">
-                @if (!(controller == "Korisnik" && action == "Login")) 
-                {
-                    <ul class="navbar-nav ms-5 me-auto d-flex gap-4">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="QnA">QnA</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
-                        </li>
+                    @if (controller == "Home" && action == "Naslovna" && User.Identity.IsAuthenticated)
+                    {
+                        <div class="position-absolute start-50 translate-middle-x d-flex align-items-center gap-3">
+                            <a class="nav-link text-dark fs-4" asp-controller="Prijateljstvo" asp-action="PrimljeniZahtjevi" title="Zahtjevi za prijateljstvo">
+                                <i class="fas fa-user-friends"></i>
+                            </a>
+                            <form asp-controller="Korisnik" asp-action="PretragaKorisnika" method="get" role="search">
+                                <button class="btn btn-gradient btn-lg rounded-pill px-4" type="submit"
+                                        style="background: linear-gradient(45deg, #1abc9c, #16a085); color: white; box-shadow: 0 4px 10px rgba(22, 160, 133, 0.6); transition: transform 0.2s ease;">
+                                    <i class="fas fa-search me-2"></i> Pronađi prijatelje
+                                </button>
+                            </form>
+                        </div>
+                    }
+
+                    @if (!(controller == "Korisnik" && action == "Login") && !(controller == "Home" && action == "Naslovna"))
+                    {
+                        <ul class="navbar-nav ms-5 me-auto d-flex gap-4">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Dostignuce" asp-action="Leaderboard">Dostignuća</a>
+                                <a class="nav-link text-dark" asp-controller="QnA" asp-action="Index">QnA</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Dostignuce" asp-action="Index">Dostignuća</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="OcjenaPredmeta" asp-action="Smjer">OcjenaPredmeta</a>
                             </li>
-                    </ul>
-
+                        </ul>
+                    }
+                    @if (!(controller == "Korisnik" && action == "Login")) {
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            @if (User.Identity.IsAuthenticated)
+                                @if(User.Identity.IsAuthenticated && !(controller=="Home" && action == "Naslovna"))
+                                {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojProfil">Moj profil</a>
+                                </li>
+                                }
+                                @if (User.Identity.IsAuthenticated)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojaDostignuća">Moj profil</a>
+                                    <a class="nav-link text-dark" asp-controller="Notifikacije" asp-action="Index">Notifikacije</a>
                                 </li>
                                 <form asp-controller="Korisnik" asp-action="Logout" method="post" style="display:inline;" id="LogoutForm">
-                                        @Html.AntiForgeryToken()
+                                    @Html.AntiForgeryToken()
                                     <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
                                 </form>
                             }
@@ -67,70 +147,26 @@
                             }
                         </li>
                     </ul>
-                }
+                    }
             </div>
         </div>
     </nav>
 </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+<div class="px-0">
+<main role="main" class="pb-3">
+@RenderBody()
+</main>
+</div>
+
+    <footer class="footer border-top text-muted">
         <div class="container">
             &copy; 2025 - ETForum
         </div>
     </footer>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
-    <style>
-        .btn-gradient:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 14px rgba(22, 160, 133, 0.8);
-            color: white;
-        }
-
-        .nav-link i {
-            transition: transform 0.2s ease;
-        }
-
-        .nav-link:hover i {
-            transform: scale(1.1);
-        }
-
-        /* Custom navigation link styling */
-        .custom-nav-link {
-            position: relative;
-            text-decoration: none !important;
-            transition: color 0.3s ease;
-        }
-
-            .custom-nav-link::after {
-                content: '';
-                position: absolute;
-                width: 0;
-                height: 2px;
-                bottom: -2px;
-                left: 50%;
-                background: linear-gradient(45deg, #1abc9c, #16a085);
-                transition: all 0.3s ease;
-                transform: translateX(-50%);
-            }
-
-            .custom-nav-link:hover::after {
-                width: 100%;
-            }
-
-            .custom-nav-link:hover {
-                color: #1abc9c !important;
-                text-decoration: none !important;
-            }
-    </style>
 </body>
 </html>
