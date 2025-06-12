@@ -85,6 +85,20 @@
                                             </form>
                                         </div>
                                 }
+                                @{
+                                    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                                }
+
+                                @if (User.IsInRole("Administrator") || currentUserId == Model.korisnikId)
+                                {
+                                    <form asp-action="DeleteQuestion" method="post" asp-route-id="@Model.id" onsubmit="return confirm('Da li ste sigurni da želite obrisati ovo pitanje?');">
+                                        <button type="submit" class="btn btn-sm btn-danger mt-3">
+                                            <i class="fas fa-trash-alt"></i> Obriši pitanje
+                                        </button>
+                                    </form>
+                                }
+
+
                             </div>
                         </div>
                     </div>
@@ -147,6 +161,18 @@
                                                             @answer.brojLajkova
                                                                 </div>
                                                                 <div class="stat-label small">Lajkova</div>
+                                                        @if (User.Identity.IsAuthenticated && (User.Identity.Name == answer.korisnik?.UserName || User.IsInRole("Administrator")))
+                                                        {
+                                                            <form asp-action="DeleteAnswer" asp-controller="QnA" method="post" style="display:inline;">
+                                                                <input type="hidden" name="id" value="@answer.id" />
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Da li ste sigurni da želite obrisati odgovor?');">
+                                                                    <i class="fas fa-trash-alt"></i> Obriši
+                                                                </button>
+                                                            </form>
+
+                                                        }
+
+
 
                                                         @if (User.Identity.IsAuthenticated)
                                                         {

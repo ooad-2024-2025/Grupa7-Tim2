@@ -1,0 +1,263 @@
+﻿@{
+    ViewData["Title"] = "Računarstvo i informatika";
+}
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: #f8fafc;
+            color: #2d3748;
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #718096;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin-bottom: 3.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 2rem;
+            padding-left: 1rem;
+            border-left: 4px solid #1f6fc2;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .content-block {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .block-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .objective-list, .outcome-list {
+            list-style: none;
+        }
+
+            .objective-list li, .outcome-list li {
+                margin-bottom: 1.25rem;
+                padding: 1rem;
+                background: #f7fafc;
+                border-radius: 6px;
+                border-left: 3px solid #cbd5e0;
+                transition: border-color 0.2s ease;
+            }
+
+                .objective-list li:hover, .outcome-list li:hover {
+                    border-left-color: #1f6fc2;
+                }
+
+            .objective-list li {
+                border-left-color: #1f6fc2;
+            }
+
+                .objective-list li:hover {
+                    border-left-color: #1a5a9e;
+                }
+
+            .outcome-list li {
+                border-left-color: #2b8ced;
+            }
+
+                .outcome-list li:hover {
+                    border-left-color: #1f6fc2;
+                }
+
+        .single-column {
+            grid-column: 1 / -1;
+        }
+
+        .full-width-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        @@media screen and (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .content-block {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+        }
+
+        .academic-note {
+            background: #edf2f7;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #4a5568;
+            font-style: italic;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Računarstvo i informatika</h1>
+            <p class="subtitle">Obrazovni ciljevi i ishodi učenja studijskog programa prvog ciklusa</p>
+        </header>
+
+        <section class="section">
+            <div class="content-grid">
+                <div class="single-column">
+                    <div class="full-width-content">
+                        <h2 class="section-title">Opći profil diplomca</h2>
+                        <p class="description">
+                            Diplomirani inženjer računarstva i informatike posjeduje fundamentalna znanja iz matematike, fizike, elektrotehnike, elektronike, programiranja, algoritama, računarskih arhitektura i operativnih sistema. Široko je obrazovan iz računarskih nauka i softverskog inženjeringa, sa sposobnošću analize, projektovanja, implementacije i održavanja hardverskih i softverskih rješenja.
+                        </p>
+                        <p class="description">
+                            Spreman je za nastavak obrazovanja i cjeloživotno učenje, posjeduje efikasne komunikacione vještine, sposobnost za timski rad i društvenu odgovornost. Razumije povezanost računarstva sa drugim disciplinama i svjestan je utjecaja računarskih sistema na okolinu.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="content-grid">
+                <div class="content-block">
+                    <h3 class="block-title">Obrazovni ciljevi</h3>
+                    <ul class="objective-list">
+                        <li>Posjedovanje <span class="highlight">fundamentalnih znanja</span> iz matematike, fizike, elektrotehnike, elektronike i programiranja</li>
+                        <li>Poznavanje <span class="highlight">algoritma, računarskih arhitektura</span> i operativnih sistema</li>
+                        <li>Široko obrazovanje iz <span class="highlight">računarskih nauka</span> i softverskog inženjeringa</li>
+                        <li>Sposobnost <span class="highlight">analize, projektovanja i implementacije</span> hardverskih i softverskih rješenja</li>
+                        <li>Kompetencije za <span class="highlight">održavanje sistema</span> i tehnoloških rješenja</li>
+                        <li>Spremnost za <span class="highlight">nastavak obrazovanja</span> i cjeloživotno učenje</li>
+                        <li>Efikasne <span class="highlight">komunikacione vještine</span> i sposobnost za timski rad</li>
+                        <li>Razvoj <span class="highlight">društvene odgovornosti</span> u profesionalnom radu</li>
+                    </ul>
+                </div>
+
+                <div class="content-block">
+                    <h3 class="block-title">Ishodi učenja</h3>
+                    <ul class="outcome-list">
+                        <li>Dobro poznavanje <span class="highlight">osnovnih znanja</span> iz matematike, fizike i elektrotehnike</li>
+                        <li>Sposobnost <span class="highlight">analize i definiranja problema</span> u računarstvu i softverskom inženjeringu</li>
+                        <li>Dizajniranje i <span class="highlight">implementacija računarskih procesa</span> i programskih rješenja</li>
+                        <li>Razumijevanje <span class="highlight">povezanosti računarstva</span> sa drugim disciplinama</li>
+                        <li>Znanja iz <span class="highlight">diskretnih struktura, programiranja</span> i algoritama</li>
+                        <li>Poznavanje <span class="highlight">softverskog inženjeringa</span> i računarskih arhitektura</li>
+                        <li>Razumijevanje <span class="highlight">mreža, operativnih sistema</span> i računarske grafike</li>
+                        <li>Znanja o <span class="highlight">inteligentnim i informacionim sistemima</span></li>
+                        <li>Primjena <span class="highlight">inženjerskih principa</span> i matematičko-računarskih metoda</li>
+                        <li>Samostalno <span class="highlight">identifikovanje i rješavanje</span> novih problema</li>
+                        <li>Osmišljavanje i <span class="highlight">provođenje testova</span> i eksperimenata</li>
+                        <li>Implementacija komponenti uvažavajući <span class="highlight">društvene i ekološke aspekte</span></li>
+                        <li>Svjesnost o <span class="highlight">utjecaju računarskih sistema</span> na okolinu</li>
+                        <li>Razvijene <span class="highlight">komunikacione vještine</span> i organizacija projekata</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="academic-note">
+            Student po okončanju prvog ciklusa studija računarstva i informatike stječe sveobuhvatno razumijevanje oblasti i praktične vještine potrebne za uspješnu profesionalnu karijeru u IT sektoru.
+        </div>
+
+        <footer class="footer">
+            <p>Studijski program računarstva i informatike - Prvi ciklus studija</p>
+        </footer>
+    </div>
+</body>
+</html>

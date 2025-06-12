@@ -4,60 +4,151 @@
 }
 
 <style>
+    @@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f7fafc;
+        --text-color: #2d3748;
+        --border-radius: 8px;
+        --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        --transition: all 0.3s ease;
+    }
+
+    body {
+        font-family: 'Source Sans Pro', sans-serif;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        line-height: 1.7;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 2rem;
+    }
+
+    .intro {
+        text-align: center;
+        color: #718096;
+        margin-bottom: 3rem;
+    }
+
     .smjer-lista {
         list-style: none;
         padding: 0;
-        margin-top: 30px;
-        max-width: 400px;
-        margin-left: auto;
-        margin-right: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
     }
 
     .smjer-item {
-        margin-bottom: 18px;
-        border-radius: 18px;
-        background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
-        box-shadow: 0 2px 8px rgba(33,147,176,0.12);
-        transition: box-shadow 0.3s, transform 0.3s;
+        background-color: white;
+        box-shadow: var(--shadow);
+        border-radius: var(--border-radius);
+        transition: var(--transition);
     }
 
         .smjer-item:hover {
-            box-shadow: 0 4px 16px rgba(33,147,176,0.28);
-            transform: translateY(-2px) scale(1.03);
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
     .smjer-link {
         display: block;
-        color: #fff;
-        padding: 18px 24px;
-        font-size: 1.2em;
+        padding: 1.5rem;
+        text-align: center;
+        color: var(--primary-color);
         font-weight: 600;
-        border-radius: 18px;
         text-decoration: none;
-        transition: background 0.2s, color 0.2s;
+        transition: var(--transition);
     }
 
         .smjer-link:hover {
-            color: #f9d423;
-            background: rgba(33, 147, 176, 0.15);
-            text-decoration: none;
+            color: #e53e3e;
         }
 
-    h2 {
+    .call-to-action {
+        background-color: white;
+        box-shadow: var(--shadow);
+        border-radius: var(--border-radius);
+        padding: 2rem;
         text-align: center;
-        color: #2193b0;
-        margin-top: 32px;
-        letter-spacing: 1px;
-        font-weight: 700;
+        margin-top: 4rem;
     }
+
+        .call-to-action h3 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .call-to-action p {
+            color: #4a5568;
+            margin-bottom: 2rem;
+        }
+
+    .btn {
+        display: inline-block;
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+        .btn:hover {
+            background-color: #2b6cb0;
+            transform: translateY(-2px);
+        }
+
 </style>
 
-<h2>Izaberi smjer</h2>
-<ul class="smjer-lista">
-    @foreach (var smjer in Model)
+<div class="container">
+    <div class="intro">
+        <p>Dobrodošli na stranicu za odabir smjera. Ovdje možete pregledati sve dostupne smjerove.</p>
+    </div>
+
+    <h2>Izaberi smjer</h2>
+    <ul class="smjer-lista">
+        @foreach (var smjer in Model)
+        {
+            <li class="smjer-item">
+                <a class="smjer-link" href="@Url.Action("PredmetiZaSmjer", new { smjer = smjer })">@smjer</a>
+            </li>
+        }
+    </ul>
+
+    @if (!User.Identity.IsAuthenticated)
     {
-        <li class="smjer-item">
-            <a class="smjer-link" href="@Url.Action("PredmetiZaSmjer", new { smjer = smjer })">@smjer</a>
-        </li>
+        <div class="call-to-action">
+            <h3>Odaberite smjer koji vas zanima:</h3>
+            <p>U nastavku vam nudimo da saznate ponešto novo o različitim smjerovima kako biste našli onaj koji vam najviše odgovara.</p>
+            <div class="row">
+                <div class="col-sm-6 col-md-3 mb-3">
+                    <a href="@Url.Action("RI", "OcjenaPredmeta", new { smjer = "RazvojInformatika" })" class="btn">Računarstvo i Informatika</a>
+                </div>
+                <div class="col-sm-6 col-md-3 mb-3">
+                    <a href="@Url.Action("TK", "OcjenaPredmeta", new { smjer = "Telekomunikacije" })" class="btn">Telekomunikacije</a>
+                </div>
+                <div class="col-sm-6 col-md-3 mb-3">
+                    <a href="@Url.Action("AiE", "OcjenaPredmeta", new { smjer = "AutomatikaElektronika" })" class="btn">Automatika i Elektronika</a>
+                </div>
+                <div class="col-sm-6 col-md-3 mb-3">
+                    <a href="@Url.Action("EE", "OcjenaPredmeta", new { smjer = "Elektroenergetika" })" class="btn">Elektroenergetika</a>
+                </div>
+            </div>
+        </div>
     }
-</ul>
+</div>

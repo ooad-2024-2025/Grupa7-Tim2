@@ -238,6 +238,26 @@ namespace ETForum.Controllers
 
             return RedirectToAction("DetaljiPredmeta", new { predmetId });
         }
+        public IActionResult RI(string smjer)
+        {
+            ViewData["Smjer"] = smjer;
+            return View();
+        }
+        public IActionResult TK(string smjer)
+        {
+            ViewData["Smjer"] = smjer;
+            return View();
+        }
+        public IActionResult EE(string smjer)
+        {
+            ViewData["Smjer"] = smjer;
+            return View();
+        }
+        public IActionResult Smjerovi(string smjer)
+        {
+            ViewData["Smjer"] = smjer;
+            return View();
+        }
 
     }
 }

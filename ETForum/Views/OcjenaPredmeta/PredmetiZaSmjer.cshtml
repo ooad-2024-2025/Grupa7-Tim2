@@ -4,90 +4,105 @@
 }
 
 <style>
+    @@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+    :root {
+        --primary-color: #4a90e2;
+        --secondary-color: #f7fafc;
+        --text-color: #2d3748;
+        --border-radius: 8px;
+        --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        --transition: all 0.3s ease;
+    }
+
+    body {
+        font-family: 'Source Sans Pro', sans-serif;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        line-height: 1.7;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 2rem;
+    }
+
     .predmeti-lista {
         list-style: none;
         padding: 0;
-        margin-top: 28px;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
     }
 
     .predmet-item {
-        margin-bottom: 16px;
-        border-radius: 16px;
-        background: linear-gradient(90deg, #e0eafc 0%, #6dd5ed 100%);
-        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.13);
-        transition: box-shadow 0.2s, transform 0.2s;
+        background-color: white;
+        box-shadow: var(--shadow);
+        border-radius: var(--border-radius);
+        transition: var(--transition);
     }
 
         .predmet-item:hover {
-            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.24);
-            transform: translateY(-2px) scale(1.03);
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
     .predmet-link {
         display: block;
-        color: #2193b0;
-        padding: 16px 22px;
-        font-size: 1.16em;
+        padding: 1.5rem;
+        text-align: center;
+        color: var(--primary-color);
         font-weight: 600;
-        border-radius: 16px;
         text-decoration: none;
-        transition: background 0.2s, color 0.2s;
+        transition: var(--transition);
     }
 
         .predmet-link:hover {
-            color: #fff;
-            background: rgba(247, 151, 30, 0.22);
-            text-decoration: none;
+            color: #e53e3e;
         }
-
-    h2 {
-        text-align: center;
-        color: #2193b0;
-        margin-top: 30px;
-        letter-spacing: 1px;
-        font-weight: 700;
-    }
 
     .nazad-dugme {
         display: block;
-        margin: 24px auto 0 auto;
-        padding: 6px 18px;
-        background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
-        color: #fff !important;
-        border: none;
-        border-radius: 16px;
-        font-size: 1em;
+        margin: 3rem auto 0;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: var(--border-radius);
         font-weight: 600;
-        box-shadow: 0 2px 8px rgba(33,147,176,0.10);
-        text-align: center;
         text-decoration: none;
-        transition: background 0.18s, box-shadow 0.18s, color 0.2s;
-        min-width: 80px;
-        width: fit-content;
+        transition: var(--transition);
+        text-align: center;
     }
 
         .nazad-dugme:hover {
-            background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
-            color: #2193b0 !important;
-            box-shadow: 0 4px 14px rgba(33,147,176,0.17);
-            text-decoration: none;
+            background-color: #2b6cb0;
+            transform: translateY(-2px);
         }
+
 </style>
 
-<h2>Predmeti na smjeru @ViewBag.Smjer</h2>
-<ul class="predmeti-lista">
-    @foreach (var predmet in Model)
-    {
-        <li class="predmet-item">
-            <a class="predmet-link" href="@Url.Action("DetaljiPredmeta", new { predmetId = predmet.id })">
-                @predmet.naziv
-            </a>
-        </li>
-    }
-</ul>
+<div class="container">
+    <h2>Predmeti na smjeru @ViewBag.Smjer</h2>
+    <ul class="predmeti-lista">
+        @foreach (var predmet in Model)
+        {
+            <li class="predmet-item">
+                <a class="predmet-link" href="@Url.Action("DetaljiPredmeta", new { predmetId = predmet.id })">
+                    @predmet.naziv
+                </a>
+            </li>
+        }
+    </ul>
 
-<a href="@Url.Action("Smjer")" class="nazad-dugme">Nazad na izbor smjera</a>
-
+    <a href="@Url.Action("Smjer")" class="nazad-dugme">Nazad na izbor smjera</a>
+</div>

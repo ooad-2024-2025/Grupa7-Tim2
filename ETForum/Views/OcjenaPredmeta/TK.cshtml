@@ -1,0 +1,263 @@
+﻿@{
+    ViewData["Title"] = "Telekomunikacije";
+}
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap">
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: #f8fafc;
+            color: #2d3748;
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #718096;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin-bottom: 3.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 2rem;
+            padding-left: 1rem;
+            border-left: 4px solid #e53e3e;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .content-block {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .block-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .competency-list, .outcome-list {
+            list-style: none;
+        }
+
+            .competency-list li, .outcome-list li {
+                margin-bottom: 1.25rem;
+                padding: 1rem;
+                background: #f7fafc;
+                border-radius: 6px;
+                border-left: 3px solid #cbd5e0;
+                transition: border-color 0.2s ease;
+            }
+
+                .competency-list li:hover, .outcome-list li:hover {
+                    border-left-color: #e53e3e;
+                }
+
+            .competency-list li {
+                border-left-color: #e53e3e;
+            }
+
+                .competency-list li:hover {
+                    border-left-color: #c53030;
+                }
+
+            .outcome-list li {
+                border-left-color: #f56565;
+            }
+
+                .outcome-list li:hover {
+                    border-left-color: #e53e3e;
+                }
+
+        .single-column {
+            grid-column: 1 / -1;
+        }
+
+        .full-width-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        @@media screen and (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .content-block {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+        }
+
+        .academic-note {
+            background: #edf2f7;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #4a5568;
+            font-style: italic;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Telekomunikacije</h1>
+            <p class="subtitle">Kompetencije i ishodi učenja studijskog programa prvog ciklusa</p>
+        </header>
+
+        <section class="section">
+            <div class="content-grid">
+                <div class="single-column">
+                    <div class="full-width-content">
+                        <h2 class="section-title">Opći profil diplomca</h2>
+                        <p class="description">
+                            Diplomirani inženjer telekomunikacija ima široko obrazovanje u elektrotehnici i specijalizirana znanja potrebna za identifikaciju, analizu i rješavanje problema u oblasti telekomunikacionih sistema. Osposobljen je za projektovanje, planiranje, vođenje i održavanje komunikacionih mreža, sistema za obradu signala te povezanih elektroničkih sistema.
+                        </p>
+                        <p class="description">
+                            Poseduje fundamentalna znanja iz matematike, fizike, elektrotehnike, elektronike i teorije informacija. Osposobljen je kontinuirano usvajati nova znanja i pratiti razvoj tehnologije, svjestan potrebe za cjeloživotnim učenjem.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="content-grid">
+                <div class="content-block">
+                    <h3 class="block-title">Ključne kompetencije</h3>
+                    <ul class="competency-list">
+                        <li>Projektovanje, planiranje i održavanje <span class="highlight">komunikacionih mreža i sistema</span></li>
+                        <li>Implementacija <span class="highlight">softverskih aplikacija</span> za telekomunikacione sisteme</li>
+                        <li>Projektovanje <span class="highlight">elektroničkih sistema</span> za telekomunikacije</li>
+                        <li>Poznavanje <span class="highlight">teorije signala i informacija</span></li>
+                        <li>Primjena <span class="highlight">računarskih metoda i programiranja</span></li>
+                        <li>Razumijevanje i primjena <span class="highlight">bežičnih komunikacionih tehnologija</span></li>
+                        <li>Poznavanje <span class="highlight">mrežnih protokola i teorije prometa</span></li>
+                        <li>Implementacija <span class="highlight">telemetrijskih sistema</span> i aplikacija za obradu signala</li>
+                        <li>Spremnost za <span class="highlight">timski rad i komunikaciju</span></li>
+                        <li>Sposobnost <span class="highlight">cjeloživotnog učenja i usavršavanja</span></li>
+                    </ul>
+                </div>
+
+                <div class="content-block">
+                    <h3 class="block-title">Ishodi učenja</h3>
+                    <ul class="outcome-list">
+                        <li>Primjena fundamentalnih znanja iz <span class="highlight">matematike, fizike i elektrotehnike</span></li>
+                        <li>Analiza, modeliranje i rješavanje <span class="highlight">problema u telekomunikacijama</span></li>
+                        <li>Projektovanje <span class="highlight">telekomunikacionih sistema i mreža</span></li>
+                        <li>Razumijevanje i korištenje <span class="highlight">računarskih metoda i programiranja</span></li>
+                        <li>Implementacija i analiza <span class="highlight">bežičnih komunikacionih tehnologija</span></li>
+                        <li>Sposobnost korištenja <span class="highlight">specijalističke literature i resursa</span></li>
+                        <li>Organizovanje i provođenje <span class="highlight">eksperimenata i testova</span> u oblasti telekomunikacija</li>
+                        <li>Poznavanje <span class="highlight">standarda i utjecaja telekomunikacija na okolinu</span></li>
+                        <li>Sposobnost kontinuiranog <span class="highlight">praćenja razvoja tehnologija</span></li>
+                        <li>Spremnost za rad u <span class="highlight">multidisciplinarnim timovima</span> i komunikaciju sa javnošću</li>
+                        <li>Praktične vještine potrebne za <span class="highlight">industriju i akademiju</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="academic-note">
+            Student po završetku prvog ciklusa studija telekomunikacija stekne široka znanja i praktične vještine potrebne za produktivnu karijeru u industrijskom i akademskom sektoru, kao i sposobnost daljeg usavršavanja i razvoja u svojoj oblasti.
+        </div>
+
+        <footer class="footer">
+            <p>Studijski program telekomunikacija - Prvi ciklus studija</p>
+        </footer>
+    </div>
+</body>
+</html>

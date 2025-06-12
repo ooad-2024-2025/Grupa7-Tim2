@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 @{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
     var action = ViewContext.RouteData.Values["action"]?.ToString();
@@ -13,19 +14,77 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ETForum.styles.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .navbar {
+            margin-bottom: 20px; /* razmak ispod navigacije */
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+            .navbar-nav .nav-link {
+                padding: 8px 12px;
+                font-weight: 600;
+            }
+
+        /* Unapređenje stila za tijelo stranice */
+        main {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .footer {
+            background-color: #f1f1f1;
+            padding: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .footer .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+    </style>
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Naslovna">ETForum</a>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Naslovna">ETForum</a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                    aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="collapse navbar-collapse" id="mainNavbar">
+                <div class="collapse navbar-collapse" id="mainNavbar">
                     @if (controller == "Home" && action == "Naslovna" && User.Identity.IsAuthenticated)
                     {
                         <div class="position-absolute start-50 translate-middle-x d-flex align-items-center gap-3">
@@ -61,16 +120,17 @@
                             </li>
                         </ul>
                     }
-                    @if (!(controller == "Korisnik" && action == "Login")) {
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                                @if(User.Identity.IsAuthenticated && !(controller=="Home" && action == "Naslovna"))
+                    @if (!(controller == "Korisnik" && action == "Login"))
+                    {
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                @if (User.Identity.IsAuthenticated && !(controller == "Home" && action == "Naslovna"))
                                 {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojProfil">Moj profil</a>
                                 </li>
-                                }
-                                @if (User.Identity.IsAuthenticated)
+                            }
+                            @if (User.Identity.IsAuthenticated)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Notifikacije" asp-action="Index">Notifikacije</a>
@@ -87,19 +147,19 @@
                                     <button type="submit" class="nav-link btn btn-link">Prijavi se</button>
                                 </form>
                             }
-                        </li>
-                    </ul>
+                            </li>
+                        </ul>
                     }
+                </div>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
 
-<div class="px-0">
-<main role="main" class="pb-3">
-@RenderBody()
-</main>
-</div>
+    <div class="px-0">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
 
     <footer class="footer border-top text-muted">
         <div class="container">

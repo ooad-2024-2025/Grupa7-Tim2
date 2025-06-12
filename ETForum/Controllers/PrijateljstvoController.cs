@@ -1,4 +1,5 @@
 ﻿using ETForum.Data;
+using ETForum.Helper;
 using ETForum.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,13 @@ namespace ETForum.Controllers
     {
         private readonly UserManager<Korisnik> _userManager;
         private readonly ETForumDbContext _context;
+        private readonly DostignucaHelper _dostignucaHelper;
 
-        public PrijateljstvoController(UserManager<Korisnik> userManager, ETForumDbContext context)
+        public PrijateljstvoController(UserManager<Korisnik> userManager, ETForumDbContext context, DostignucaHelper dostignucaHelper)
         {
             _userManager = userManager;
             _context = context;
+            _dostignucaHelper = dostignucaHelper;
         }
 
         [HttpPost]
@@ -73,12 +76,41 @@ namespace ETForum.Controllers
             if (zahtjev == null)
                 return NotFound();
 
+            // Postavljanje statusa zahtjeva na prihvaćeno
             zahtjev.status = Status.PRIHVACENO;
             await _context.SaveChangesAsync();
+
+            // Provjeri je li korisnik postigao prvo prijateljstvo za oba korisnika
+            var mojId = _userManager.GetUserId(User);
+
+            // Prvo ćemo provjeriti broj prijatelja korisnika koji prihvata zahtjev (mojId)
+            var brojPrijateljaMojId = await _context.Prijateljstva
+                .Where(p => (p.korisnik1Id == mojId || p.korisnik2Id == mojId) && p.status == Status.PRIHVACENO)
+                .CountAsync();
+
+            // Također ćemo provjeriti broj prijatelja korisnika koji je poslao zahtjev (korisnik2Id)
+            var brojPrijateljaKorisnik2Id = await _context.Prijateljstva
+                .Where(p => (p.korisnik1Id == zahtjev.korisnik2Id || p.korisnik2Id == zahtjev.korisnik2Id) && p.status == Status.PRIHVACENO)
+                .CountAsync();
+
+            // Ako je to prvo prijateljstvo za bilo kojeg korisnika, dodajemo dostignuće
+            if (brojPrijateljaMojId == 1)
+            {
+                // Ako je mojId stekao svog prvog prijatelja, dodaj dostignuće
+                await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(mojId);
+            }
+
+            if (brojPrijateljaKorisnik2Id == 1)
+            {
+                // Ako je korisnik2Id stekao svog prvog prijatelja, dodaj dostignuće
+                await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(zahtjev.korisnik2Id);
+            }
 
             TempData["PorukaZelena"] = "Zahtjev je prihvaćen.";
             return RedirectToAction("PrimljeniZahtjevi");
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

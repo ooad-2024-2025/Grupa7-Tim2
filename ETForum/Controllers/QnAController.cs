@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ETForum.Data;
-using ETForum.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using ETForum.Data;
 using ETForum.Helper;
+using ETForum.Models;
 using ETForum.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ETForum.Controllers
 {
@@ -455,6 +456,60 @@ namespace ETForum.Controllers
                 return new FileUploadResult { Success = false, ErrorMessage = "An error occurred while uploading the file." };
             }
         }
+
+        [HttpPost]
+        [Authorize] // Mora biti ulogovan
+        public async Task<IActionResult> DeleteAnswer(int id)
+        {
+            var answer = await _context.Odgovori
+                .Include(a => a.pitanje) // Učitajte pitanje da biste dobili vlasniku pitanja
+                .FirstOrDefaultAsync(a => a.id == id);
+
+            if (answer == null)
+            {
+                return NotFound();
+            }
+
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = User.IsInRole("Administrator");
+            var isQuestionOwner = answer.pitanje.korisnikId == currentUserId;
+            var isAnswerOwner = answer.korisnikId == currentUserId;
+
+            // Proverite da li korisnik ima dozvolu da obriše odgovor
+            if (!isAdmin && !isQuestionOwner && !isAnswerOwner)
+            {
+                return Forbid(); // ili return Unauthorized();
+            }
+
+            _context.Odgovori.Remove(answer);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", "Questions", new { id = answer.pitanjeId });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator, Student")]
+        public async Task<IActionResult> DeleteQuestion(int id)
+{
+    var pitanje = await _context.Pitanja
+        .Include(p => p.Odgovori)
+        .FirstOrDefaultAsync(p => p.id == id);
+
+    if (pitanje == null)
+        return NotFound();
+
+    // Brisanje svih odgovora vezanih za pitanje
+    _context.Odgovori.RemoveRange(pitanje.Odgovori);
+
+    _context.Pitanja.Remove(pitanje);
+    await _context.SaveChangesAsync();
+
+    TempData["SuccessMessage"] = "Pitanje je uspješno obrisano.";
+    return RedirectToAction("Details", "QnA", id);
+}
+
+
+
 
         // Helper class for file upload results
         private class FileUploadResult

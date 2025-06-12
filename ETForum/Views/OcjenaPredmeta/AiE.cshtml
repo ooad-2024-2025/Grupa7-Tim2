@@ -1,0 +1,265 @@
+﻿@{
+    ViewData["Title"] = "Automatika";
+}
+
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: #f8fafc;
+            color: #2d3748;
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #718096;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin-bottom: 3.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 2rem;
+            padding-left: 1rem;
+            border-left: 4px solid #e53e3e;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .content-block {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .block-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .competency-list, .outcome-list {
+            list-style: none;
+        }
+
+            .competency-list li, .outcome-list li {
+                margin-bottom: 1.25rem;
+                padding: 1rem;
+                background: #f7fafc;
+                border-radius: 6px;
+                border-left: 3px solid #cbd5e0;
+                transition: border-color 0.2s ease;
+            }
+
+                .competency-list li:hover, .outcome-list li:hover {
+                    border-left-color: #e53e3e;
+                }
+
+            .competency-list li {
+                border-left-color: #e53e3e;
+            }
+
+                .competency-list li:hover {
+                    border-left-color: #c53030;
+                }
+
+            .outcome-list li {
+                border-left-color: #f56565;
+            }
+
+                .outcome-list li:hover {
+                    border-left-color: #e53e3e;
+                }
+
+        .single-column {
+            grid-column: 1 / -1;
+        }
+
+        .full-width-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        @@media screen and (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .content-block {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+        }
+
+        .academic-note {
+            background: #edf2f7;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #4a5568;
+            font-style: italic;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Automatika i elektronika</h1>
+            <p class="subtitle">Kompetencije i ishodi učenja studijskog programa prvog ciklusa</p>
+        </header>
+
+        <section class="section">
+            <div class="content-grid">
+                <div class="single-column">
+                    <div class="full-width-content">
+                        <h2 class="section-title">Opći profil diplomca</h2>
+                        <p class="description">
+                            Diplomirani inženjer automatike može imati uspješnu i produktivnu inženjersku karijeru u oblasti upravljanja automatskim procesima, robotike i industrijske automatizacije. Osposobljen je za projektiranje, implementaciju i održavanje automatskih sistema, kao i za timski rad sa stručnjacima različitih profila.
+                        </p>
+                        <p class="description">
+                            Posjeduje znanja iz teorije automatskog upravljanja, senzorskih sistema, aktuatora, mikrokontrolera i programabilnih logičkih kontrolera. Sposoban je za rješavanje složenih problema u oblasti automatizacije industrijskih procesa, robotike i inteligentnih sistema upravljanja.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="content-grid">
+                <div class="content-block">
+                    <h3 class="block-title">Ključne kompetencije</h3>
+                    <ul class="competency-list">
+                        <li>Uspješna i produktivna <span class="highlight">inženjerska karijera</span> u oblasti automatike i upravljanja</li>
+                        <li>Osposobljenost za <span class="highlight">projektiranje automatskih sistema</span> i procesa upravljanja</li>
+                        <li>Poznavanje <span class="highlight">teorije automatskog upravljanja</span> i regulacionih sistema</li>
+                        <li>Vještine rada sa <span class="highlight">senzorima, aktuatorima</span> i upravljačkim uređajima</li>
+                        <li>Programiranje <span class="highlight">mikrokontrolera i PLC uređaja</span> za industrijske primjene</li>
+                        <li>Implementacija <span class="highlight">robotskih sistema</span> i automatizovane proizvodnje</li>
+                        <li>Razumijevanje <span class="highlight">industrijskih komunikacijskih protokola</span></li>
+                        <li>Sposobnost <span class="highlight">optimizacije procesa</span> i povećanja efikasnosti sistema</li>
+                        <li>Poznavanje <span class="highlight">sigurnosnih standarda</span> u automatizaciji</li>
+                        <li>Vještine <span class="highlight">održavanja i dijagnostike</span> automatskih sistema</li>
+                    </ul>
+                </div>
+
+                <div class="content-block">
+                    <h3 class="block-title">Ishodi učenja</h3>
+                    <ul class="outcome-list">
+                        <li>Primjena znanja iz <span class="highlight">matematike i fizike</span> u teoriji automatskog upravljanja</li>
+                        <li>Analiza i <span class="highlight">modeliranje dinamičkih sistema</span> u vremenskom i frekvencijskom domenu</li>
+                        <li>Projektiranje <span class="highlight">regulatora i kontrolnih sistema</span> za različite primjene</li>
+                        <li>Implementacija <span class="highlight">digitalnih sistema upravljanja</span> korišćenjem mikrokontrolera</li>
+                        <li>Programiranje <span class="highlight">PLC uređaja</span> za industrijske automatske procese</li>
+                        <li>Integracija <span class="highlight">senzorskih sistema</span> i aktuatora u automatske procese</li>
+                        <li>Projektiranje <span class="highlight">SCADA sistema</span> za nadzor i upravljanje</li>
+                        <li>Implementacija <span class="highlight">robotskih rješenja</span> u proizvodnim procesima</li>
+                        <li>Optimizacija <span class="highlight">industrijskih procesa</span> korišćenjem automatizacije</li>
+                        <li>Analiza <span class="highlight">stabilnosti i performansi</span> sistema upravljanja</li>
+                        <li>Implementacija <span class="highlight">sigurnosnih sistema</span> u automatizaciji</li>
+                        <li>Održavanje i <span class="highlight">dijagnostika kvarova</span> automatskih sistema</li>
+                        <li>Razumijevanje <span class="highlight">industrijskih standarda</span> i protokola komunikacije</li>
+                        <li>Razvoj <span class="highlight">inteligentnih sistema upravljanja</span> korišćenjem AI tehnologija</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="academic-note">
+            Student po okončanju prvog ciklusa studija automatike stječe sveobuhvatno razumijevanje oblasti automatskog upravljanja i praktične vještine potrebne za uspješnu profesionalnu karijeru u industriji i tehnološkim sektorima.
+        </div>
+
+        <footer class="footer">
+            <p>Studijski program automatike - Prvi ciklus studija</p>
+        </footer>
+    </div>
+</body>
+</html>
