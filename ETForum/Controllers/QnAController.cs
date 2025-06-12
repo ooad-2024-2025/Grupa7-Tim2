@@ -484,7 +484,7 @@ namespace ETForum.Controllers
             _context.Odgovori.Remove(answer);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Details", "Questions", new { id = answer.pitanjeId });
+            return RedirectToAction("Details", "QnA", new { id = answer.pitanjeId });
         }
 
         [HttpPost]
@@ -505,8 +505,9 @@ namespace ETForum.Controllers
     await _context.SaveChangesAsync();
 
     TempData["SuccessMessage"] = "Pitanje je uspješno obrisano.";
-    return RedirectToAction("Details", "QnA", id);
-}
+    return RedirectToAction("Index", "QnA");
+
+        }
 
 
 

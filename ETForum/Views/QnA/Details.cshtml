@@ -88,11 +88,10 @@
                                 @{
                                     var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                                 }
-
                                 @if (User.IsInRole("Administrator") || currentUserId == Model.korisnikId)
                                 {
-                                    <form asp-action="DeleteQuestion" method="post" asp-route-id="@Model.id" onsubmit="return confirm('Da li ste sigurni da želite obrisati ovo pitanje?');">
-                                        <button type="submit" class="btn btn-sm btn-danger mt-3">
+                                    <form asp-action="DeleteQuestion" method="post" asp-route-id="@Model.id" class="delete-question-form">
+                                        <button type="button" class="btn btn-sm btn-danger mt-3 delete-question-btn">
                                             <i class="fas fa-trash-alt"></i> Obriši pitanje
                                         </button>
                                     </form>
@@ -163,13 +162,12 @@
                                                                 <div class="stat-label small">Lajkova</div>
                                                         @if (User.Identity.IsAuthenticated && (User.Identity.Name == answer.korisnik?.UserName || User.IsInRole("Administrator")))
                                                         {
-                                                            <form asp-action="DeleteAnswer" asp-controller="QnA" method="post" style="display:inline;">
+                                                            <form asp-action="DeleteAnswer" asp-controller="QnA" method="post" style="display:inline;" class="delete-answer-form">
                                                                 <input type="hidden" name="id" value="@answer.id" />
-                                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Da li ste sigurni da želite obrisati odgovor?');">
+                                                                <button type="button" class="btn btn-sm btn-outline-danger delete-answer-btn" data-answer-id="@answer.id">
                                                                     <i class="fas fa-trash-alt"></i> Obriši
                                                                 </button>
                                                             </form>
-
                                                         }
 
 
@@ -329,3 +327,55 @@
         font-size: 0.875rem;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Postojeći kod za brisanje odgovora
+        const deleteButtons = document.querySelectorAll('.delete-answer-btn');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Da li ste sigurni?',
+                    text: 'Ovaj odgovor će biti trajno obrisan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Da, obriši!',
+                    cancelButtonText: 'Otkaži'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        button.closest('form').submit();
+                    }
+                });
+            });
+        });
+
+        // NOVI KOD za brisanje pitanja
+        const deleteQuestionButtons = document.querySelectorAll('.delete-question-btn');
+
+        deleteQuestionButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Da li ste sigurni?',
+                    text: 'Ovo pitanje i svi povezani odgovori će biti trajno obrisani!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Da, obriši pitanje!',
+                    cancelButtonText: 'Otkaži'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        button.closest('form').submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
