@@ -15,7 +15,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 </head>
 <body>
-    <header>
+<header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Naslovna">ETForum</a>
@@ -30,7 +30,7 @@
                 {
                     <ul class="navbar-nav ms-5 me-auto d-flex gap-4">
                         <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="QnA" asp-action="Index">QnA</a>
+                            <a class="nav-link text-dark" asp-controller="QnA" asp-action="Index">QnA</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
@@ -38,18 +38,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
                         </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Dostignuce" asp-action="Index">Dostignuća</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="OcjenaPredmeta" asp-action="Smjer">OcjenaPredmeta</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Dostignuce" asp-action="Index">Dostignuća</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="OcjenaPredmeta" asp-action="Smjer">OcjenaPredmeta</a>
+                        </li>
                     </ul>
 
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                @if (User.Identity.IsAuthenticated)
-                                {
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            @if (User.Identity.IsAuthenticated)
+                            {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojProfil">Moj profil</a>
                                 </li>
@@ -57,25 +57,26 @@
                                     <a class="nav-link text-dark" asp-controller="Notifikacije" asp-action="Index">Notifikacije</a>
                                 </li>
                                 <form asp-controller="Korisnik" asp-action="Logout" method="post" style="display:inline;" id="LogoutForm">
-                                        @Html.AntiForgeryToken()
+                                    @Html.AntiForgeryToken()
                                     <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
                                 </form>
-                                }
-                                @if (!(User.Identity.IsAuthenticated))
-                                {
+                            }
+                            @if (!(User.Identity.IsAuthenticated))
+                            {
                                 <form asp-controller="Korisnik" asp-action="Login" method="post" style="display:inline;" id="Login">
-                                        @Html.AntiForgeryToken()
+                                    @Html.AntiForgeryToken()
                                     <button type="submit" class="nav-link btn btn-link">Prijavi se</button>
                                 </form>
-                                }
-                            </li>
-                        </ul>
+                            }
+                        </li>
+                    </ul>
 
                 }
             </div>
         </div>
     </nav>
 </header>
+
 <div class="px-0"> 
 	<main role="main" class="pb-3">
 		@RenderBody()
