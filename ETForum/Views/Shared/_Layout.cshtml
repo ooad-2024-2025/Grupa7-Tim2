@@ -95,7 +95,7 @@
                             <form asp-controller="Korisnik" asp-action="PretragaKorisnika" method="get" role="search">
                                 <button class="btn btn-gradient btn-lg rounded-pill px-4" type="submit"
                                         style="background: linear-gradient(45deg, #1abc9c, #16a085); color: white; box-shadow: 0 4px 10px rgba(22, 160, 133, 0.6); transition: transform 0.2s ease;">
-                                    <i class="fas fa-search me-2"></i> Pronađi prijatelje
+                                    <i class="fas fa-search me-2"></i> Pronađi korisnike
                                 </button>
                             </form>
                         </div>
@@ -127,9 +127,20 @@
                             <li class="nav-item">
                                 @if (User.Identity.IsAuthenticated && !(controller == "Home" && action == "Naslovna"))
                                 {
-                                    <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojProfil">Moj profil</a>
+                                    <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="">Moj profil</a>
+                                }
+                            </li>
 
+                            @if (User.Identity.IsAuthenticated && !(controller == "Home" && action == "Naslovna"))
+                            {
+                                <li class="nav-item">
+                                    <button type="button" class="btn btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#prijateljiModal">
+                                        Prijatelji
+                                    </button>
+                                </li>
                             }
+
+                            <li class="nav-item">
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <li class="nav-item">
@@ -171,4 +182,36 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+<!-- Prijatelji Modal -->
+<div class="modal fade" id="prijateljiModal" tabindex="-1" aria-labelledby="prijateljiModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="prijateljiModalLabel">Tvoji prijatelji</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
+            </div>
+            <div class="modal-body">
+                @if (ViewBag.SviPrijatelji != null && ((List<ETForum.Models.Korisnik>)ViewBag.SviPrijatelji).Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var prijatelj in (List<ETForum.Models.Korisnik>)ViewBag.SviPrijatelji)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>@prijatelj.nickname</span>
+                                <a asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="@prijatelj.Id" class="btn btn-outline-primary btn-sm">
+                                    Profil
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span class="text-muted">Nemaš prijatelja trenutno.</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
 </html>

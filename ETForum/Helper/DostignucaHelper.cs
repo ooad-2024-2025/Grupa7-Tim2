@@ -28,6 +28,7 @@ namespace ETForum.Helper
             await ProvjeriLajkove(korisnik);
             await ProvjeriStudySession(korisnik);
             await ProvjeriPovratak(korisnik);
+            await ProvjeriPrijateljstvo(korisnik);
 
             await _context.SaveChangesAsync();
         }
@@ -110,6 +111,19 @@ namespace ETForum.Helper
             };
 
             _context.KorisnikDostignuca.Add(novo);
+        }
+
+        private async Task ProvjeriPrijateljstvo(Korisnik korisnik)
+        {
+            // Prebroj sva prihvaćena prijateljstva gdje je korisnik učestvovao
+            var brojPrijatelja = await _context.Prijateljstva
+                .CountAsync(p =>
+                    (p.korisnik1Id == korisnik.Id || p.korisnik2Id == korisnik.Id)
+                    && p.status == Status.PRIHVACENO);
+
+            // Dodaj dostignuće kad korisnik stekne bar jednog prijatelja
+            await DodajDostignuceAkoNedostaje(korisnik, "Prvo prijateljstvo", () => brojPrijatelja >= 1);
+
         }
 
     }

@@ -11,6 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ETForumDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.AddService<PrijateljiFilter>();
+});
+
+builder.Services.AddScoped<PrijateljiFilter>();
 
 builder.Services.AddIdentity<Korisnik, IdentityRole>(options =>
 {

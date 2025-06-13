@@ -83,28 +83,12 @@ namespace ETForum.Controllers
             // Provjeri je li korisnik postigao prvo prijateljstvo za oba korisnika
             var mojId = _userManager.GetUserId(User);
 
-            // Prvo ćemo provjeriti broj prijatelja korisnika koji prihvata zahtjev (mojId)
-            var brojPrijateljaMojId = await _context.Prijateljstva
-                .Where(p => (p.korisnik1Id == mojId || p.korisnik2Id == mojId) && p.status == Status.PRIHVACENO)
-                .CountAsync();
+            await _context.SaveChangesAsync();
+            _context.ChangeTracker.Clear();
 
-            // Također ćemo provjeriti broj prijatelja korisnika koji je poslao zahtjev (korisnik2Id)
-            var brojPrijateljaKorisnik2Id = await _context.Prijateljstva
-                .Where(p => (p.korisnik1Id == zahtjev.korisnik2Id || p.korisnik2Id == zahtjev.korisnik2Id) && p.status == Status.PRIHVACENO)
-                .CountAsync();
+            await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(mojId);
+            await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(zahtjev.korisnik1Id);
 
-            // Ako je to prvo prijateljstvo za bilo kojeg korisnika, dodajemo dostignuće
-            if (brojPrijateljaMojId == 1)
-            {
-                // Ako je mojId stekao svog prvog prijatelja, dodaj dostignuće
-                await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(mojId);
-            }
-
-            if (brojPrijateljaKorisnik2Id == 1)
-            {
-                // Ako je korisnik2Id stekao svog prvog prijatelja, dodaj dostignuće
-                await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(zahtjev.korisnik2Id);
-            }
 
             TempData["PorukaZelena"] = "Zahtjev je prihvaćen.";
             return RedirectToAction("PrimljeniZahtjevi");

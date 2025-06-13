@@ -259,14 +259,14 @@
                                 <i class="fas fa-user"></i>
                             </div>
                             <div class="achievement-name">@prijatelj.nickname</div>
+                            <div>
+                                <a asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="@prijatelj.Id" class="btn btn-primary btn-sm mt-2">
+                                    Pogledaj profil
+                                </a>
+                            </div>
                         </div>
                     }
                 </div>
-            }
-            else
-            {
-                <p class="text-muted">Nemaš prijatelja trenutno.</p>
-            }
-        </div>
+}
     </div>
 </div>
