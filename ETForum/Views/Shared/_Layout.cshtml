@@ -127,9 +127,8 @@
                             <li class="nav-item">
                                 @if (User.Identity.IsAuthenticated && !(controller == "Home" && action == "Naslovna"))
                                 {
-                                <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojProfil">Moj profil</a>
-                                </li>
+
                             }
                             @if (User.Identity.IsAuthenticated)
                             {

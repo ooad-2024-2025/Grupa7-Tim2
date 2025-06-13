@@ -1,4 +1,5 @@
-﻿@model ETForum.Models.Korisnik
+﻿@using System.Security.Claims
+@model ETForum.Models.Korisnik
 @{
     ViewData["Title"] = "Moj profil";
 }
@@ -178,7 +179,10 @@
                 <tr><th>Email:</th><td>@Model.Email</td></tr>
                 <tr><th>Smjer:</th><td>@Model.smjer</td></tr>
             </table>
-            <a asp-action="UrediProfil" class="edit-btn">✏️ Uredi profil</a>
+            @if (Model.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                <a asp-action="UrediProfil" class="btn btn-primary">Uredi moj profil</a>
+            }
         </div>
     </div>
 

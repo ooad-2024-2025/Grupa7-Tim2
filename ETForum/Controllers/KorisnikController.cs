@@ -175,37 +175,41 @@ namespace ETForum.Controllers
             return RedirectToAction("Login");
         }
 
-
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> MojProfil()
+        public async Task<IActionResult> MojProfil(string id)
         {
-            var userId = _userManager.GetUserId(User);
+            // Ako nije proslijeđen id, koristi ID trenutno prijavljenog korisnika
+            if (string.IsNullOrEmpty(id))
+                id = _userManager.GetUserId(User);
 
             var korisnik = await _context.Korisnici
-                .Include(k => k.KorisnikDostignuca).
-                ThenInclude(kd => kd.Dostignuce)
-                .FirstOrDefaultAsync(k => k.Id == userId);
+                .Include(k => k.KorisnikDostignuca)
+                .ThenInclude(kd => kd.Dostignuce)
+                .FirstOrDefaultAsync(k => k.Id == id);
 
             if (korisnik == null)
                 return NotFound();
+
+            // Uvek pronađi prijatelje korisnika čiji se profil gleda
             var prijateljstva = await _context.Prijateljstva
-            .Include(p => p.korisnik1)
-            .Include(p => p.korisnik2)
-            .Where(p =>
-                (p.korisnik1Id == userId || p.korisnik2Id == userId) &&
-                p.status == Status.PRIHVACENO)
-            .ToListAsync();
+                .Include(p => p.korisnik1)
+                .Include(p => p.korisnik2)
+                .Where(p =>
+                    (p.korisnik1Id == id || p.korisnik2Id == id) &&
+                    p.status == Status.PRIHVACENO)
+                .ToListAsync();
 
             var prijatelji = prijateljstva.Select(p =>
-                p.korisnik1Id == userId ? p.korisnik2 : p.korisnik1
+                p.korisnik1Id == id ? p.korisnik2 : p.korisnik1
             ).ToList();
 
             ViewBag.Prijatelji = prijatelji;
 
-
             return View(korisnik);
         }
+
+
 
         //GET
         [Authorize]
