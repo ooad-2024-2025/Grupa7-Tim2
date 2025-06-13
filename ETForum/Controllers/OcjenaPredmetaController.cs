@@ -257,6 +257,12 @@ namespace ETForum.Controllers
             ViewData["Smjer"] = smjer;
             return View();
         }
+
+        public IActionResult AiE(string smjer)
+        {
+            ViewData["Smjer"] = smjer;
+            return View();
+        }
         public IActionResult Smjerovi(string smjer)
         {
             ViewData["Smjer"] = smjer;
