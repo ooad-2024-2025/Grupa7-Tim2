@@ -116,24 +116,39 @@ namespace ETForum.Controllers
         }
 
         // GET: Dostignuce/Create
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Dostignuce/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("naziv,opis,tip")] Dostignuce dostignuce)
         {
+            System.Diagnostics.Debug.WriteLine("ModelState VALID? " + ModelState.IsValid);
+            foreach (var key in ModelState.Keys)
+            {
+                var state = ModelState[key];
+                foreach (var err in state.Errors)
+                    System.Diagnostics.Debug.WriteLine($"{key}: {err.ErrorMessage}");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(dostignuce);
                 await _context.SaveChangesAsync();
+                _context.ChangeTracker.Clear(); // force EF to clear local tracking
+
+                var count = await _context.Dostignuca.CountAsync();
+                System.Diagnostics.Debug.WriteLine($"Ukupno dostignuca u bazi: {count}");
+
                 return RedirectToAction(nameof(Index));
             }
             return View(dostignuce);
         }
+
+
 
         // GET: Dostignuce/Delete/5
         public async Task<IActionResult> Delete(int? id)

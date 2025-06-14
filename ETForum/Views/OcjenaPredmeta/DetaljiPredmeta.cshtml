@@ -5,136 +5,88 @@
     var prosjek = (double)ViewBag.Prosjek;
 }
 
-<style>
-    .predmet-detalji-kartica {
-        max-width: 520px;
-        background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
-        border-radius: 22px;
-        margin: 38px auto 26px auto;
-        box-shadow: 0 2px 18px rgba(33,147,176,0.09);
-        padding: 32px 30px 16px 30px;
-    }
+<div class="container mt-4 mb-5">
+    <div class="card predmet-detalji-card shadow-sm p-4 mb-4">
+        <h2 class="mb-3 text-primary">@Model.naziv</h2>
+        <div class="mb-2 text-muted">@Model.opis</div>
+        <div><b>Profesor:</b> <span class="fw-normal">@Model.profesorImePrezime</span></div>
+        <div><b>Asistent:</b> <span class="fw-normal">@Model.asistentImePrezime</span></div>
+        <div class="prosjek mt-3">
+            <span class="badge bg-success fs-5">Prosječna ocjena: @prosjek.ToString("0.00")</span>
+        </div>
+        <a href="@Url.Action("Ocijeni", new { predmetId = Model.id })" class="btn btn-primary mt-4">
+            <i class="fas fa-star"></i> Ocijeni ovaj predmet
+        </a>
+    </div>
 
-        .predmet-detalji-kartica h2 {
-            color: #2193b0;
-            font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            text-align: center;
-        }
-
-    .predmet-detalji-info {
-        font-size: 1.11em;
-        margin-bottom: 8px;
-        color: #1c395b;
-    }
-
-    .prosjek {
-        font-size: 1.13em;
-        color: #185a9d;
-        font-weight: 600;
-        margin-bottom: 18px;
-    }
-
-    .ocijeni-dugme {
-        display: inline-block;
-        padding: 8px 28px;
-        margin: 14px 0 0 0;
-        background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
-        color: #fff !important;
-        border: none;
-        border-radius: 18px;
-        font-size: 1.08em;
-        font-weight: 700;
-        box-shadow: 0 2px 8px rgba(67,206,162,0.10);
-        text-decoration: none;
-        transition: background 0.16s, box-shadow 0.18s, color 0.2s;
-    }
-
-        .ocijeni-dugme:hover {
-            background: linear-gradient(90deg, #185a9d 0%, #43cea2 100%);
-            color: #6dd5ed !important;
-            box-shadow: 0 4px 16px rgba(67,206,162,0.18);
-            text-decoration: none;
-        }
-
-    .komentar-kartica {
-        border-radius: 15px;
-        background: linear-gradient(90deg, #6dd5ed 0%,#2193b0 110%);
-        box-shadow: 0 0.5px 3px rgba(255, 215, 0, 0.09);
-        padding: 16px 22px 10px 22px;
-        margin-bottom: 13px;
-        font-size: 1.02em;
-        color: #2193b0;
-    }
-
-        .komentar-kartica b {
-            color: #185a9d;
-        }
-
-        .komentar-kartica i {
-            color: #888;
-            font-size: 0.97em;
-        }
-
-    .nazad-dugme {
-        display: block;
-        margin: 30px auto 0 auto;
-        padding: 6px 18px;
-        background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
-        color: #fff !important;
-        border: none;
-        border-radius: 16px;
-        font-size: 1em;
-        font-weight: 600;
-        box-shadow: 0 2px 8px rgba(33,147,176,0.10);
-        text-align: center;
-        text-decoration: none;
-        transition: background 0.18s, box-shadow 0.18s, color 0.2s;
-        min-width: 80px;
-        width: fit-content;
-    }
-
-        .nazad-dugme:hover {
-            background: linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%);
-            color: #2193b0 !important;
-            box-shadow: 0 4px 14px rgba(33,147,176,0.17);
-            text-decoration: none;
-        }
-
-    h3 {
-        color: #2193b0;
-        margin-top: 36px;
-        margin-bottom: 18px;
-        text-align: center;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-    }
-</style>
-
-<div class="predmet-detalji-kartica">
-    <h2>@Model.naziv</h2>
-    <div class="predmet-detalji-info">@Model.opis</div>
-    <div class="predmet-detalji-info"><b>Profesor:</b> @Model.profesorImePrezime</div>
-    <div class="predmet-detalji-info"><b>Asistent:</b> @Model.asistentImePrezime</div>
-    <div class="prosjek">Prosječna ocjena: <b>@prosjek.ToString("0.00")</b></div>
-    <a href="@Url.Action("Ocijeni", new { predmetId = Model.id })" class="ocijeni-dugme">Ocijeni ovaj predmet</a>
-</div>
-
-<h3>Komentari i ocjene:</h3>
-@if (ocjene != null && ocjene.Any())
-{
-    foreach (var o in ocjene)
+    <h3 class="mb-3 mt-5 text-secondary"><i class="fas fa-comments"></i> Komentari i ocjene</h3>
+    @if (ocjene != null && ocjene.Any())
     {
-        <div class="komentar-kartica">
-            <b>Ocjena:</b> @o.ocjena <br />
-            <b>Komentar:</b> @o.komentar <br />
-            <i>@o.DatumUnosa.ToString("dd.MM.yyyy HH:mm")</i>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @foreach (var o in ocjene)
+            {
+                <div class="col">
+                    <div class="card komentar-kartica shadow-sm mb-3">
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <span class="badge bg-info text-dark">Ocjena: @o.ocjena</span>
+                            </div>
+                            <div class="mb-2">
+                                <b>Komentar:</b> @o.komentar
+                            </div>
+                            <div class="text-muted small mt-2">
+                                <i class="far fa-clock"></i> @o.DatumUnosa.ToString("dd.MM.yyyy. HH:mm")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     }
-}
-else
-{
-    <p style="text-align:center; color:#888;">Nema komentara ni ocjena.</p>
-}
-<a href="@Url.Action("PredmetiZaSmjer", new { smjer = Model.Smjer })" class="nazad-dugme">Nazad na predmete</a>
+    else
+    {
+        <p class="text-center text-muted fst-italic">Nema komentara ni ocjena.</p>
+    }
+
+    <a href="@Url.Action("PredmetiZaSmjer", new { smjer = Model.Smjer })"
+       class="btn btn-outline-secondary mt-4">
+        &larr; Nazad na predmete
+    </a>
+</div>
+
+<style>
+    .predmet-detalji-card {
+        border-radius: 14px;
+        border: none;
+        background: #f8f9fa;
+        box-shadow: 0 4px 24px rgba(52,152,219,0.07);
+    }
+
+    .komentar-kartica {
+        border-radius: 12px;
+        background: #ffffff;
+        border: 1px solid #e4e7ea;
+        padding: 15px;
+        min-height: 100px;
+        transition: box-shadow 0.18s;
+    }
+
+        .komentar-kartica:hover {
+            box-shadow: 0 6px 20px 0 rgba(52,152,219,0.11);
+        }
+
+    .prosjek .badge {
+        padding: 0.7em 1.5em;
+        font-size: 1.2em;
+        border-radius: 10px;
+    }
+
+    .btn-primary, .btn-outline-secondary {
+        border-radius: 10px;
+        font-weight: 500;
+    }
+
+        .btn-primary i {
+            margin-right: 7px;
+        }
+</style>

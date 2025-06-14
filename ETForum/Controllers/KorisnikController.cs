@@ -196,6 +196,13 @@ namespace ETForum.Controllers
         [HttpGet]
         public async Task<IActionResult> MojProfil(string id)
         {
+            ViewBag.BrojPitanja = await _context.Pitanja.CountAsync(p => p.korisnikId == id);
+            ViewBag.BrojOdgovora = await _context.Odgovori.CountAsync(o => o.korisnikId == id);
+            ViewBag.BrojKomentara = await _context.Komentari.CountAsync(k => k.korisnikId == id);
+            ViewBag.BrojPrijatelja = await _context.Prijateljstva.CountAsync(p => (p.korisnik1Id == id || p.korisnik2Id == id) && p.status == Status.PRIHVACENO);
+            ViewBag.MojaPitanja = await _context.Pitanja.Where(p => p.korisnikId == id).ToListAsync();
+
+
             // Ako nije proslijeđen id, koristi ID trenutno prijavljenog korisnika
             if (string.IsNullOrEmpty(id))
                 id = _userManager.GetUserId(User);
@@ -405,5 +412,51 @@ namespace ETForum.Controllers
 
             return Ok();
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PromijeniSliku(IFormFile slika)
+        {
+            if (slika == null || slika.Length == 0)
+            {
+                TempData["PorukaCrvena"] = "Morate odabrati sliku.";
+                return RedirectToAction("MojProfil");
+            }
+
+            // Samo slike dopuštene!
+            var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+            var ext = Path.GetExtension(slika.FileName).ToLower();
+            if (!allowed.Contains(ext))
+            {
+                TempData["PorukaCrvena"] = "Dozvoljeni su samo jpg, png, gif fajlovi!";
+                return RedirectToAction("MojProfil");
+            }
+
+            // Jedinstveno ime
+            var fileName = $"{Guid.NewGuid()}{ext}";
+            var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profile");
+            if (!Directory.Exists(uploads))
+                Directory.CreateDirectory(uploads);
+
+            var path = Path.Combine(uploads, fileName);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await slika.CopyToAsync(stream);
+            }
+
+            // Sačuvaj url u bazu
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["PorukaCrvena"] = "Nije pronađen korisnik!";
+                return RedirectToAction("MojProfil");
+            }
+            user.urlSlike = "/uploads/profile/" + fileName;
+            await _userManager.UpdateAsync(user);
+
+            TempData["PorukaZelena"] = "Profilna slika uspješno promijenjena!";
+            return RedirectToAction("MojProfil");
+        }
+
     }
 }
