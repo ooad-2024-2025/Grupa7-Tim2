@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Kreiraj korisnika";
+    var roles = ViewBag.RoleList as List<string>;
+    var uloge = ViewBag.Uloge as Array;
+    var smjerovi = ViewBag.Smjerovi as Array;
+}
+
+<div class="container mt-4" style="max-width:600px;">
+    <h2 class="mb-4">Kreiraj novog korisnika</h2>
+
+    <form asp-action="Kreiraj" method="post" class="card p-4 shadow-sm">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Ime</label>
+                <input type="text" name="ime" class="form-control" required />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Prezime</label>
+                <input type="text" name="prezime" class="form-control" required />
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nadimak</label>
+            <input type="text" name="nickname" class="form-control" />
+        </div>
+        <div class="row">
+            <div class="col-md-8 mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" required />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" required />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Smjer</label>
+                <select name="smjer" class="form-select">
+                    <option value="">Odaberi...</option>
+                    @foreach (var s in smjerovi)
+                    {
+                        <option value="@s">@s</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Rola (Identity)</label>
+                <select name="role" class="form-select" required>
+                    <option value="">Odaberi...</option>
+                    @foreach (var r in roles)
+                    {
+                        <option value="@r">@r</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Status (aktivan)</label>
+            <select name="status" class="form-select">
+                <option value="true">Aktivan</option>
+                <option value="false">Neaktivan</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">URL slike (opcionalno)</label>
+            <input type="text" name="urlSlike" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success w-100">Kreiraj korisnika</button>
+    </form>
+
+    @if (TempData["PorukaZelena"] != null)
+    {
+        <div class="alert alert-success mt-3">@TempData["PorukaZelena"]</div>
+    }
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3">
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+</div>

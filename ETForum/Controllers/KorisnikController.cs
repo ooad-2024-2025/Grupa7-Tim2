@@ -15,11 +15,13 @@ namespace ETForum.Controllers
         private readonly UserManager<Korisnik> _userManager;
         private readonly ETForumDbContext _context;
         private readonly SignInManager<Korisnik> _signInManager;
-        public KorisnikController(ETForumDbContext context, UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public KorisnikController(ETForumDbContext context, UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
         [HttpGet]
         public IActionResult Registracija()
@@ -276,7 +278,75 @@ namespace ETForum.Controllers
                             .ToListAsync();
             return View(korisnici);
         }
-        
 
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Kreiraj()
+        {
+            ViewBag.RoleList = new List<string> { "Student", "Asistent", "Profesor", "Administrator" };
+            ViewBag.Smjerovi = Enum.GetValues(typeof(Smjer));   // OBAVEZNO
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Kreiraj(
+            string ime,
+            string prezime,
+            string nickname,
+            string email,
+            string password,
+            string role,
+            Smjer? smjer,
+            string? urlSlike
+        )
+        {
+            ViewBag.RoleList = new List<string> { "Student", "Asistent", "Profesor", "Administrator" };
+            ViewBag.Smjerovi = Enum.GetValues(typeof(Smjer));
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(role))
+            {
+                ModelState.AddModelError("", "Email, šifra i rola su obavezni!");
+                return View();
+            }
+
+            var postoji = await _userManager.FindByEmailAsync(email);
+            if (postoji != null)
+            {
+                ModelState.AddModelError("", "Korisnik sa ovim emailom već postoji!");
+                return View();
+            }
+
+            var novi = new Korisnik
+            {
+                UserName = email,
+                Email = email,
+                ime = ime,
+                prezime = prezime,
+                nickname = nickname,
+                smjer = smjer,
+                datumRegistracije = DateTime.Now,
+                urlSlike = urlSlike,
+                podesenProfil = false,
+                lastLogin = null
+            };
+
+            var result = await _userManager.CreateAsync(novi, password);
+            if (result.Succeeded)
+            {
+                if (!await _roleManager.RoleExistsAsync(role))
+                    await _roleManager.CreateAsync(new IdentityRole(role));
+
+                await _userManager.AddToRoleAsync(novi, role);
+                TempData["PorukaZelena"] = "Korisnik uspješno kreiran!";
+                return RedirectToAction("Naslovna", "Home");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+
+                return View();
+            }
+        }
     }
 }
