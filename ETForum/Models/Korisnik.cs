@@ -19,6 +19,9 @@ namespace ETForum.Models
         public bool podesenProfil { get; set; }
         public DateTime? lastLogin { get; set; }
         public ICollection<KorisnikDostignuce> KorisnikDostignuca { get; set; }
+        public DateTime? BanDo { get; set; } 
+        public string? BanRazlog { get; set; }
+
 
     }
 }

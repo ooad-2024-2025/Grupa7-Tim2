@@ -52,11 +52,16 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="">Moj profil</a>
                             </li>
-                            <li class="nav-item">
+                            @if (
+    User.Identity.IsAuthenticated &&
+    !(controller == "Home" && action == "Naslovna") &&
+    !User.IsInRole("Administrator")){
+                                <li class="nav-item">
                                 <button type="button" class="btn btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#prijateljiModal">
                                     Prijatelji
                                 </button>
                             </li>
+}
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Notifikacije" asp-action="Index">Notifikacije</a>
                             </li>

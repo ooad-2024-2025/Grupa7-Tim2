@@ -10,6 +10,15 @@ using System.Threading.Tasks;
 
 namespace ETForum.Controllers
 {
+
+    public class BanUserRequest
+    {
+        public string korisnikId { get; set; }
+        public int brojDana { get; set; }
+        public string razlog { get; set; }
+    }
+
+
     public class KorisnikController : Controller
     {
         private readonly UserManager<Korisnik> _userManager;
@@ -347,6 +356,54 @@ namespace ETForum.Controllers
 
                 return View();
             }
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> SviKorisnici()
+        {
+            var korisnici = await _userManager.Users.ToListAsync();
+            return View(korisnici);
+        }
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Obrisi(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                TempData["PorukaCrvena"] = "Korisnik ne postoji!";
+                return RedirectToAction("SviKorisnici");
+            }
+
+            if (user.UserName == User.Identity.Name)
+            {
+                TempData["PorukaCrvena"] = "Ne možete obrisati sami sebe!";
+                return RedirectToAction("SviKorisnici");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+                TempData["PorukaZelena"] = "Korisnik uspješno obrisan!";
+            else
+                TempData["PorukaCrvena"] = "Greška prilikom brisanja korisnika!";
+
+            return RedirectToAction("SviKorisnici");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> BanUser([FromForm] BanUserRequest model)
+        {
+            // Model: korisnikId, brojDana, razlog
+            var user = await _userManager.FindByIdAsync(model.korisnikId);
+            if (user == null)
+                return NotFound();
+
+            user.BanDo = DateTime.Now.AddDays(model.brojDana);
+            user.BanRazlog = model.razlog;
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
         }
     }
 }
