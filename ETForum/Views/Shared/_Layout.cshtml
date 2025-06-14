@@ -1,95 +1,86 @@
-﻿﻿
-<!DOCTYPE html>
-@{
+﻿@{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
     var action = ViewContext.RouteData.Values["action"]?.ToString();
 }
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ETForum</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ETForum.styles.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .container-fluid {
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-
-        .navbar {
-            margin-bottom: 20px; /* razmak ispod navigacije */
-        }
-
-        .page-title {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            font-weight: 700;
-            padding: 20px 0;
-            text-align: center;
-        }
-
-        .navbar-nav {
-            display: flex;
-            gap: 20px;
-        }
-
-            .navbar-nav .nav-link {
-                padding: 8px 12px;
-                font-weight: 600;
-            }
-
-        /* Unapređenje stila za tijelo stranice */
-        main {
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
-        }
-
-        .footer {
-            background-color: #f1f1f1;
-            padding: 10px;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-            .footer .container {
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Naslovna">ETForum</a>
-
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
                         aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
                 <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        @if (!(controller == "Korisnik" && action == "Login") && !(controller == "Home" && action == "Naslovna"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="QnA" asp-action="Index">QnA</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Dostignuce" asp-action="Index">Dostignuća</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="OcjenaPredmeta" asp-action="Smjer">OcjenaPredmeta</a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        @if (User.Identity.IsAuthenticated && !(controller == "Home" && action == "Naslovna"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="">Moj profil</a>
+                            </li>
+                            <li class="nav-item">
+                                <button type="button" class="btn btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#prijateljiModal">
+                                    Prijatelji
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Notifikacije" asp-action="Index">Notifikacije</a>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Korisnik" asp-action="Logout" method="post" class="d-inline" id="LogoutForm">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
+                                </form>
+                            </li>
+                        }
+                        else if (!User.Identity.IsAuthenticated && !(controller == "QnA" && action == "Details"))
+                        {
+                            <li class="nav-item">
+                                <form asp-controller="Korisnik" asp-action="Login" method="post" class="d-inline" id="Login">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="nav-link btn btn-link">Prijavi se</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
                     @if (controller == "Home" && action == "Naslovna" && User.Identity.IsAuthenticated)
                     {
                         <div class="position-absolute start-50 translate-middle-x d-flex align-items-center gap-3">
-                            <a class="nav-link text-dark fs-4" asp-controller="Prijateljstvo" asp-action="PrimljeniZahtjevi" title="Zahtjevi za prijateljstvo">
+                            <a class="nav-link fs-4" asp-controller="Prijateljstvo" asp-action="PrimljeniZahtjevi" title="Zahtjevi za prijateljstvo">
                                 <i class="fas fa-user-friends"></i>
                             </a>
                             <form asp-controller="Korisnik" asp-action="PretragaKorisnika" method="get" role="search">
@@ -100,118 +91,61 @@
                             </form>
                         </div>
                     }
-
-                    @if (!(controller == "Korisnik" && action == "Login") && !(controller == "Home" && action == "Naslovna"))
-                    {
-                        <ul class="navbar-nav ms-5 me-auto d-flex gap-4">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="QnA" asp-action="Index">QnA</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Dostignuce" asp-action="Index">Dostignuća</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="OcjenaPredmeta" asp-action="Smjer">OcjenaPredmeta</a>
-                            </li>
-                        </ul>
-                    }
-                    @if (!(controller == "Korisnik" && action == "Login"))
-                    {
-                        <ul class="navbar-nav ms-auto">
-                            <li class="nav-item">
-                                @if (User.Identity.IsAuthenticated && !(controller == "Home" && action == "Naslovna"))
-                                {
-                                    <a class="nav-link text-dark" asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="">Moj profil</a>
-                                }
-                            </li>
-
-                            @if (User.Identity.IsAuthenticated && !(controller == "Home" && action == "Naslovna"))
-                            {
-                                <li class="nav-item">
-                                    <button type="button" class="btn btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#prijateljiModal">
-                                        Prijatelji
-                                    </button>
-                                </li>
-                            }
-
-                            <li class="nav-item">
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Notifikacije" asp-action="Index">Notifikacije</a>
-                                </li>
-                                <form asp-controller="Korisnik" asp-action="Logout" method="post" style="display:inline;" id="LogoutForm">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
-                                </form>
-                            }
-                            @if (!(User.Identity.IsAuthenticated) && !(controller == "QnA" && action == "Details"))
-                            {
-                                <form asp-controller="Korisnik" asp-action="Login" method="post" style="display:inline;" id="Login">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="nav-link btn btn-link">Prijavi se</button>
-                                </form>
-                            }
-                            </li>
-                        </ul>
-                    }
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="px-0">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <!-- Prijatelji Modal -->
+    <div class="modal fade" id="prijateljiModal" tabindex="-1" aria-labelledby="prijateljiModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="prijateljiModalLabel">Tvoji prijatelji</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
+                </div>
+                <div class="modal-body">
+                    @if (ViewBag.SviPrijatelji != null && ((List<ETForum.Models.Korisnik>)ViewBag.SviPrijatelji).Any())
+                    {
+                        <ul class="list-group">
+                            @foreach (var prijatelj in (List<ETForum.Models.Korisnik>)ViewBag.SviPrijatelji)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>@prijatelj.nickname</span>
+                                    <div>
+                                        <a asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="@prijatelj.Id" class="btn btn-outline-primary btn-sm me-2">
+                                            Profil
+                                        </a>
+                                        <a asp-controller="PrivatniChat" asp-action="Chat" asp-route-prijateljId="@prijatelj.Id" class="btn btn-success btn-sm">
+                                            Chat
+                                        </a>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Nemaš prijatelja trenutno.</span>
+                    }
+                </div>
+            </div>
+        </div>
     </div>
 
-    <footer class="footer border-top text-muted">
+    <footer class="footer border-top text-muted mt-auto">
         <div class="container">
             &copy; 2025 - ETForum
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-<!-- Prijatelji Modal -->
-<div class="modal fade" id="prijateljiModal" tabindex="-1" aria-labelledby="prijateljiModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="prijateljiModalLabel">Tvoji prijatelji</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
-            </div>
-            <div class="modal-body">
-                @if (ViewBag.SviPrijatelji != null && ((List<ETForum.Models.Korisnik>)ViewBag.SviPrijatelji).Any())
-                {
-                    <ul class="list-group">
-                        @foreach (var prijatelj in (List<ETForum.Models.Korisnik>)ViewBag.SviPrijatelji)
-                        {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>@prijatelj.nickname</span>
-                                <a asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="@prijatelj.Id" class="btn btn-outline-primary btn-sm">
-                                    Profil
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                }
-                else
-                {
-                    <span class="text-muted">Nemaš prijatelja trenutno.</span>
-                }
-            </div>
-        </div>
-    </div>
-</div>
-
 </html>

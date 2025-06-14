@@ -246,27 +246,5 @@
             }
 
         </div>
-        <!-- Friends List Section -->
-        <div class="achievements-section mt-4">
-            <h3>👥 Prijatelji</h3>
-            @if (ViewBag.Prijatelji != null && ((List<ETForum.Models.Korisnik>)ViewBag.Prijatelji).Any())
-            {
-                <div class="achievements-list">
-                    @foreach (var prijatelj in (List<ETForum.Models.Korisnik>)ViewBag.Prijatelji)
-                    {
-                        <div class="achievement-badge">
-                            <div class="achievement-icon">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="achievement-name">@prijatelj.nickname</div>
-                            <div>
-                                <a asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="@prijatelj.Id" class="btn btn-primary btn-sm mt-2">
-                                    Pogledaj profil
-                                </a>
-                            </div>
-                        </div>
-                    }
-                </div>
-}
     </div>
 </div>

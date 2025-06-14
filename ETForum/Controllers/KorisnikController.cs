@@ -77,12 +77,18 @@ namespace ETForum.Controllers
         [HttpGet]
         public IActionResult Login () 
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Naslovna", "Home"); // ili "Index", zavisno od tebe
+
             return View();
         }
 
         [HttpPost] 
         public async Task<IActionResult> Login (LoginDTO loginDTO)
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Naslovna", "Home"); 
+
             if (ModelState.IsValid)
             {
                 var korisnik = await _userManager.FindByNameAsync(loginDTO.nickname)
