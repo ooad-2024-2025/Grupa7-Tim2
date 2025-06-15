@@ -42,37 +42,45 @@
                                 <a class="nav-link" asp-controller="Dostignuce" asp-action="Index">Dostignuća</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="OcjenaPredmeta" asp-action="Smjer">OcjenaPredmeta</a>
+                                <a class="nav-link" asp-controller="OcjenaPredmeta" asp-action="Smjer">Ocjene Predmeta</a>
                             </li>
                         }
                     </ul>
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        @if (User.Identity.IsAuthenticated && !(controller == "Home" && action == "Naslovna"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="">Moj profil</a>
-                            </li>
-                            @if (
-    User.Identity.IsAuthenticated &&
-    !(controller == "Home" && action == "Naslovna") &&
-    !User.IsInRole("Administrator")){
-                                <li class="nav-item">
-                                <button type="button" class="btn btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#prijateljiModal">
-                                    Prijatelji
-                                </button>
-                            </li>
+                        @if (User.Identity.IsAuthenticated)
+{
+    @if (!(controller == "Home" && action == "Naslovna"))
+    {
+        <li class="nav-item ms-2">
+            <a class="nav-link" asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="">Moj profil</a>
+        </li>
+    }
+
+    @if (
+        User.Identity.IsAuthenticated &&
+        !(controller == "Home" && action == "Naslovna") &&
+        !User.IsInRole("Administrator"))
+    {
+        <li class="nav-item ms-2">
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#prijateljiModal">
+                Prijatelji
+            </button>
+        </li>
+    }
+
+    <li class="nav-item ms-2">
+        <a class="nav-link" asp-controller="Notifikacije" asp-action="Index">Notifikacije</a>
+    </li>
+
+    <li class="nav-item ms-2">
+        <form asp-controller="Korisnik" asp-action="Logout" method="post" class="d-inline" id="LogoutForm">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
+        </form>
+    </li>
 }
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Notifikacije" asp-action="Index">Notifikacije</a>
-                            </li>
-                            <li class="nav-item">
-                                <form asp-controller="Korisnik" asp-action="Logout" method="post" class="d-inline" id="LogoutForm">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
-                                </form>
-                            </li>
-                        }
-                        else if (!User.Identity.IsAuthenticated && !(controller == "QnA" && action == "Details"))
+
+                        else if (!User.Identity.IsAuthenticated && !(controller == "QnA" && action == "Details") && !(controller == "Korisnik" && action == "Login"))
                         {
                             <li class="nav-item">
                                 <form asp-controller="Korisnik" asp-action="Login" method="post" class="d-inline" id="Login">

@@ -185,6 +185,7 @@ namespace ETForum.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -196,16 +197,15 @@ namespace ETForum.Controllers
         [HttpGet]
         public async Task<IActionResult> MojProfil(string id)
         {
+            if (string.IsNullOrEmpty(id))
+                id = _userManager.GetUserId(User);
+
             ViewBag.BrojPitanja = await _context.Pitanja.CountAsync(p => p.korisnikId == id);
             ViewBag.BrojOdgovora = await _context.Odgovori.CountAsync(o => o.korisnikId == id);
             ViewBag.BrojKomentara = await _context.Komentari.CountAsync(k => k.korisnikId == id);
             ViewBag.BrojPrijatelja = await _context.Prijateljstva.CountAsync(p => (p.korisnik1Id == id || p.korisnik2Id == id) && p.status == Status.PRIHVACENO);
             ViewBag.MojaPitanja = await _context.Pitanja.Where(p => p.korisnikId == id).ToListAsync();
 
-
-            // Ako nije proslijeđen id, koristi ID trenutno prijavljenog korisnika
-            if (string.IsNullOrEmpty(id))
-                id = _userManager.GetUserId(User);
 
             var korisnik = await _context.Korisnici
                 .Include(k => k.KorisnikDostignuca)
@@ -215,7 +215,6 @@ namespace ETForum.Controllers
             if (korisnik == null)
                 return NotFound();
 
-            // Uvek pronađi prijatelje korisnika čiji se profil gleda
             var prijateljstva = await _context.Prijateljstva
                 .Include(p => p.korisnik1)
                 .Include(p => p.korisnik2)
@@ -414,6 +413,7 @@ namespace ETForum.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> PromijeniSliku(IFormFile slika)
         {
             if (slika == null || slika.Length == 0)

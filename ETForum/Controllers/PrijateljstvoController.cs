@@ -1,9 +1,11 @@
 ﻿using ETForum.Data;
 using ETForum.Helper;
 using ETForum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace ETForum.Controllers
 {
@@ -21,6 +23,7 @@ namespace ETForum.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> DodajPrijatelja(string Id, string unos1)
         {
             var mojId = _userManager.GetUserId(User);
@@ -70,6 +73,7 @@ namespace ETForum.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> PrihvatiZahtjev(int id)
         {
             var zahtjev = await _context.Prijateljstva.FindAsync(id);
@@ -98,6 +102,7 @@ namespace ETForum.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> OdbijZahtjev(int id)
         {
             var zahtjev = await _context.Prijateljstva.FindAsync(id);
@@ -112,6 +117,7 @@ namespace ETForum.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ListaPrijatelja()
         {
             var mojId = _userManager.GetUserId(User);
