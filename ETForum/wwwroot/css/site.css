@@ -157,6 +157,23 @@ a {
     border-radius: 6px;
 }
 
+.avatar {
+    font-size: 1.2rem;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #007bff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.inbox-item:hover .avatar {
+    background: #0056b3;
+}
+
+
 @media (max-width: 700px) {
     body {
         margin-bottom: 100px;

@@ -9,9 +9,17 @@
             <p class="card-text @(n.Procitano ? "text-muted" : "fw-bold")">@n.Tekst</p>
 
             <div class="d-flex gap-2">
-                <form asp-action="IdiNaPitanje" asp-route-id="@n.Id" method="post">
-                    <button type="submit" class="btn btn-primary btn-sm">Idi na pitanje</button>
-                </form>
+                @if (!string.IsNullOrEmpty(n.Link))
+                {
+                    <a href="@n.Link" class="btn btn-primary btn-sm">Otvori</a>
+                }
+                else
+                {
+                    <form asp-action="IdiNaPitanje" asp-route-id="@n.Id" method="post">
+                        <button type="submit" class="btn btn-primary btn-sm">Idi na pitanje</button>
+                    </form>
+                }
+
 
                 @if (!n.Procitano)
                 {

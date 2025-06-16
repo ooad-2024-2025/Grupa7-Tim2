@@ -7,7 +7,7 @@ namespace ETForum.Models
         public int Id { get; set; }
         public string KorisnikId { get; set; }
         public Korisnik Korisnik { get; set; }
-        public int pitanjeId { get; set; }
+        public int? pitanjeId { get; set; }
         [ForeignKey(nameof(pitanjeId))]
         public Pitanje Pitanje { get; set; }
 
