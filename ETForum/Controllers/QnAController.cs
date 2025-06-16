@@ -472,11 +472,12 @@ namespace ETForum.Controllers
 
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var isAdmin = User.IsInRole("Administrator");
+            var isProfesor = User.IsInRole("Profesor");
             var isQuestionOwner = answer.pitanje.korisnikId == currentUserId;
             var isAnswerOwner = answer.korisnikId == currentUserId;
 
             // Proverite da li korisnik ima dozvolu da obriše odgovor
-            if (!isAdmin && !isQuestionOwner && !isAnswerOwner)
+            if (!isAdmin && !isQuestionOwner && !isAnswerOwner && !isProfesor)
             {
                 return Forbid(); // ili return Unauthorized();
             }
@@ -488,7 +489,7 @@ namespace ETForum.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator, Student")]
+        [Authorize(Roles = "Administrator, Student, Profesor")]
         public async Task<IActionResult> DeleteQuestion(int id)
 {
     var pitanje = await _context.Pitanja

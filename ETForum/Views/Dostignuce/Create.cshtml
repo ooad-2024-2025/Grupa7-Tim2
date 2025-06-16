@@ -1,42 +1,53 @@
 ﻿@model ETForum.Models.Dostignuce
 
 @{
-	ViewData["Title"] = "Create";
+    ViewData["Title"] = "Novo dostignuće";
 }
 
-<h1>Create</h1>
-
-<h4>Dostignuce</h4>
+<h2 class="mb-4 text-primary"><i class="fas fa-trophy"></i> Dodaj novo dostignuće</h2>
 <hr />
-<div class="row">
-	<div class="col-md-4">
-		<form asp-action="Create">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
-				<label asp-for="naziv" class="control-label"></label>
-				<input asp-for="naziv" class="form-control" />
-				<span asp-validation-for="naziv" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="opis" class="control-label"></label>
-				<input asp-for="opis" class="form-control" />
-				<span asp-validation-for="opis" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="tip" class="control-label"></label>
-				<select asp-for="tip" class="form-control" asp-items="Html.GetEnumSelectList<ETForum.Models.TipDostignuca>()"></select>
-			</div>
-			<div class="form-group">
-				<input type="submit" value="Create" class="btn btn-primary" />
-			</div>
-		</form>
-	</div>
-</div>
 
-<div>
-	<a asp-action="Index">Back to List</a>
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm p-4 mb-4">
+            @* !!! OVO OBAVEZNO DA IMA U FORMI !!! *@
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="naziv" class="form-label"></label>
+                    <input asp-for="naziv" class="form-control text-capitalize" style="text-transform: capitalize;" />
+                    <span asp-validation-for="naziv" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="opis" class="form-label"></label>
+                    <input asp-for="opis" class="form-control text-capitalize" style="text-transform: capitalize;" />
+                    <span asp-validation-for="opis" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="tip" class="form-label"></label>
+                    <select asp-for="tip" class="form-select text-capitalize" style="text-transform: capitalize;" asp-items="Html.GetEnumSelectList<ETForum.Models.TipDostignuca>()"></select>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-check-circle"></i> Sačuvaj
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-2">
+            <a asp-action="Index" class="btn btn-link">&larr; Nazad na listu</a>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

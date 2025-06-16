@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Mvc.Filters;
 
     [Authorize]
     public class NotifikacijeController : Controller
@@ -18,7 +19,6 @@
             _context = context;
             _userManager = userManager;
         }
-
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -54,6 +54,17 @@
             }
 
             return RedirectToAction("Details", "QnA", new { id = notifikacija.pitanjeId });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> BrojNeprocitanih()
+        {
+            var userId = _userManager.GetUserId(User);
+            var broj = await _context.Notifikacije
+                .Where(n => n.KorisnikId == userId && !n.Procitano)
+                .CountAsync();
+            return Json(new { broj });
         }
 
     }

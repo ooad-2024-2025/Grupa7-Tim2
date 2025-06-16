@@ -10,16 +10,27 @@ using System.Threading.Tasks;
 
 namespace ETForum.Controllers
 {
+
+    public class BanUserRequest
+    {
+        public string korisnikId { get; set; }
+        public int brojDana { get; set; }
+        public string razlog { get; set; }
+    }
+
+
     public class KorisnikController : Controller
     {
         private readonly UserManager<Korisnik> _userManager;
         private readonly ETForumDbContext _context;
         private readonly SignInManager<Korisnik> _signInManager;
-        public KorisnikController(ETForumDbContext context, UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public KorisnikController(ETForumDbContext context, UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
         [HttpGet]
         public IActionResult Registracija()
@@ -77,12 +88,18 @@ namespace ETForum.Controllers
         [HttpGet]
         public IActionResult Login () 
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Naslovna", "Home"); // ili "Index", zavisno od tebe
+
             return View();
         }
 
         [HttpPost] 
         public async Task<IActionResult> Login (LoginDTO loginDTO)
         {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Naslovna", "Home"); 
+
             if (ModelState.IsValid)
             {
                 var korisnik = await _userManager.FindByNameAsync(loginDTO.nickname)
@@ -168,6 +185,7 @@ namespace ETForum.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -179,9 +197,15 @@ namespace ETForum.Controllers
         [HttpGet]
         public async Task<IActionResult> MojProfil(string id)
         {
-            // Ako nije proslijeđen id, koristi ID trenutno prijavljenog korisnika
             if (string.IsNullOrEmpty(id))
                 id = _userManager.GetUserId(User);
+
+            ViewBag.BrojPitanja = await _context.Pitanja.CountAsync(p => p.korisnikId == id);
+            ViewBag.BrojOdgovora = await _context.Odgovori.CountAsync(o => o.korisnikId == id);
+            ViewBag.BrojKomentara = await _context.Komentari.CountAsync(k => k.korisnikId == id);
+            ViewBag.BrojPrijatelja = await _context.Prijateljstva.CountAsync(p => (p.korisnik1Id == id || p.korisnik2Id == id) && p.status == Status.PRIHVACENO);
+            ViewBag.MojaPitanja = await _context.Pitanja.Where(p => p.korisnikId == id).ToListAsync();
+
 
             var korisnik = await _context.Korisnici
                 .Include(k => k.KorisnikDostignuca)
@@ -191,7 +215,6 @@ namespace ETForum.Controllers
             if (korisnik == null)
                 return NotFound();
 
-            // Uvek pronađi prijatelje korisnika čiji se profil gleda
             var prijateljstva = await _context.Prijateljstva
                 .Include(p => p.korisnik1)
                 .Include(p => p.korisnik2)
@@ -270,7 +293,170 @@ namespace ETForum.Controllers
                             .ToListAsync();
             return View(korisnici);
         }
-        
+
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Kreiraj()
+        {
+            ViewBag.RoleList = new List<string> { "Student", "Asistent", "Profesor", "Administrator" };
+            ViewBag.Smjerovi = Enum.GetValues(typeof(Smjer));   // OBAVEZNO
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Kreiraj(
+            string ime,
+            string prezime,
+            string nickname,
+            string email,
+            string password,
+            string role,
+            Smjer? smjer,
+            string? urlSlike
+        )
+        {
+            ViewBag.RoleList = new List<string> { "Student", "Asistent", "Profesor", "Administrator" };
+            ViewBag.Smjerovi = Enum.GetValues(typeof(Smjer));
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(role))
+            {
+                ModelState.AddModelError("", "Email, šifra i rola su obavezni!");
+                return View();
+            }
+
+            var postoji = await _userManager.FindByEmailAsync(email);
+            if (postoji != null)
+            {
+                ModelState.AddModelError("", "Korisnik sa ovim emailom već postoji!");
+                return View();
+            }
+
+            var novi = new Korisnik
+            {
+                UserName = email,
+                Email = email,
+                ime = ime,
+                prezime = prezime,
+                nickname = nickname,
+                smjer = smjer,
+                datumRegistracije = DateTime.Now,
+                urlSlike = urlSlike,
+                podesenProfil = false,
+                lastLogin = null
+            };
+
+            var result = await _userManager.CreateAsync(novi, password);
+            if (result.Succeeded)
+            {
+                if (!await _roleManager.RoleExistsAsync(role))
+                    await _roleManager.CreateAsync(new IdentityRole(role));
+
+                await _userManager.AddToRoleAsync(novi, role);
+                TempData["PorukaZelena"] = "Korisnik uspješno kreiran!";
+                return RedirectToAction("Naslovna", "Home");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+
+                return View();
+            }
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> SviKorisnici()
+        {
+            var korisnici = await _userManager.Users.ToListAsync();
+            return View(korisnici);
+        }
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Obrisi(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                TempData["PorukaCrvena"] = "Korisnik ne postoji!";
+                return RedirectToAction("SviKorisnici");
+            }
+
+            if (user.UserName == User.Identity.Name)
+            {
+                TempData["PorukaCrvena"] = "Ne možete obrisati sami sebe!";
+                return RedirectToAction("SviKorisnici");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+                TempData["PorukaZelena"] = "Korisnik uspješno obrisan!";
+            else
+                TempData["PorukaCrvena"] = "Greška prilikom brisanja korisnika!";
+
+            return RedirectToAction("SviKorisnici");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> BanUser([FromForm] BanUserRequest model)
+        {
+            // Model: korisnikId, brojDana, razlog
+            var user = await _userManager.FindByIdAsync(model.korisnikId);
+            if (user == null)
+                return NotFound();
+
+            user.BanDo = DateTime.Now.AddDays(model.brojDana);
+            user.BanRazlog = model.razlog;
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> PromijeniSliku(IFormFile slika)
+        {
+            if (slika == null || slika.Length == 0)
+            {
+                TempData["PorukaCrvena"] = "Morate odabrati sliku.";
+                return RedirectToAction("MojProfil");
+            }
+
+            // Samo slike dopuštene!
+            var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+            var ext = Path.GetExtension(slika.FileName).ToLower();
+            if (!allowed.Contains(ext))
+            {
+                TempData["PorukaCrvena"] = "Dozvoljeni su samo jpg, png, gif fajlovi!";
+                return RedirectToAction("MojProfil");
+            }
+
+            // Jedinstveno ime
+            var fileName = $"{Guid.NewGuid()}{ext}";
+            var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profile");
+            if (!Directory.Exists(uploads))
+                Directory.CreateDirectory(uploads);
+
+            var path = Path.Combine(uploads, fileName);
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await slika.CopyToAsync(stream);
+            }
+
+            // Sačuvaj url u bazu
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData["PorukaCrvena"] = "Nije pronađen korisnik!";
+                return RedirectToAction("MojProfil");
+            }
+            user.urlSlike = "/uploads/profile/" + fileName;
+            await _userManager.UpdateAsync(user);
+
+            TempData["PorukaZelena"] = "Profilna slika uspješno promijenjena!";
+            return RedirectToAction("MojProfil");
+        }
 
     }
 }

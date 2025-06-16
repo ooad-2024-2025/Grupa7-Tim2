@@ -7,14 +7,17 @@ using ETForum.Helper;
 using ETForum.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddScoped<InboxPrijateljiFilter>();
 builder.Services.AddDbContext<ETForumDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.AddService<PrijateljiFilter>();
+    options.Filters.AddService<NeprocitaneNotifikacijeFilter>();
+    options.Filters.AddService<InboxPrijateljiFilter>();
 });
+builder.Services.AddScoped<NeprocitaneNotifikacijeFilter>();
 
 builder.Services.AddScoped<PrijateljiFilter>();
 
@@ -28,12 +31,27 @@ builder.Services.AddSignalR(options =>
 {
     options.EnableDetailedErrors = true;
 });
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Korisnik/Login"; 
     options.AccessDeniedPath = "/Account/AccessDenied";
     options.Cookie.Name = "ETForum.Auth";
     options.SlidingExpiration = true;
+    options.Events.OnSigningIn = context =>
+    {
+        var identity = (System.Security.Claims.ClaimsIdentity)context.Principal.Identity;
+        var userId = identity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+           
+            identity.AddClaim(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, userId));
+        }
+
+        return Task.CompletedTask;
+    };
+
 });
 
 
@@ -44,6 +62,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+
 });
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -54,7 +73,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 //za notifikacije
 builder.Services.AddTransient<EmailSender>();
 
-builder.Services.AddControllersWithViews();
+
+
 
 
 
@@ -93,6 +113,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 app.MapHub<ChatHub>("/livechat");
+app.MapHub<NotificationHub>("/notificationHub");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

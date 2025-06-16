@@ -25,7 +25,7 @@ namespace ETForum.Controllers
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Administrator, Korisnik")]
         public IActionResult StudyRoom()
         {
             return RedirectToAction("Index", "StudySessions");

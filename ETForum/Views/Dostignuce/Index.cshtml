@@ -1,8 +1,9 @@
 ﻿@model IEnumerable<ETForum.Models.Dostignuce>
 @using ETForum.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<Korisnik> UserManager
 
 <h2 class="mb-4">🏅 Moguća dostignuća</h2>
-
 @foreach (var grupa in Model.GroupBy(d => d.tip))
 {
     <h4 class="mt-4 text-primary">@grupa.Key.ToString()</h4>

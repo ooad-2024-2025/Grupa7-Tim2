@@ -1,0 +1,73 @@
+﻿@model List<ETForum.Models.Korisnik>
+@{
+    ViewData["Title"] = "Svi korisnici";
+}
+<div class="container mt-5">
+    <h2 class="mb-4">Svi korisnici</h2>
+    @if (TempData["PorukaZelena"] != null)
+    {
+        <div class="alert alert-success">@TempData["PorukaZelena"]</div>
+    }
+    @if (TempData["PorukaCrvena"] != null)
+    {
+        <div class="alert alert-danger">@TempData["PorukaCrvena"]</div>
+    }
+    <table class="table table-hover shadow-sm">
+        <thead class="table-light">
+            <tr>
+                <th>Email</th>
+                <th>Ime</th>
+                <th>Prezime</th>
+                <th>Nadimak</th>
+                <th>Status</th>
+                <th>Akcije</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.ime</td>
+                    <td>@user.prezime</td>
+                    <td>@user.nickname</td>
+                    <td>@(user.status ? "Aktivan" : "Neaktivan")</td>
+                    <td>
+                        <a asp-action="MojProfil" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary">Pregled</a>
+                        <form asp-action="Obrisi" asp-route-id="@user.Id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-danger ms-2 delete-user-btn">Obriši</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Briši korisnika sa SweetAlert
+        const deleteUserButtons = document.querySelectorAll('.delete-user-btn');
+
+        deleteUserButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Jeste li sigurni?',
+                    text: 'Ovaj korisnik će biti trajno obrisan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Da, obriši!',
+                    cancelButtonText: 'Otkaži'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        button.closest('form').submit();
+                    }
+                });
+            });
+        });
+    });
+</script>

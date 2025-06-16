@@ -13,10 +13,7 @@ namespace ETForum.Models
         public Korisnik Korisnik { get; set; }
         [Required]
         public int dostignuceId { get; set; }
-
         [ForeignKey(nameof(dostignuceId))]
         public Dostignuce Dostignuce { get; set; }
     }
-
-
 }

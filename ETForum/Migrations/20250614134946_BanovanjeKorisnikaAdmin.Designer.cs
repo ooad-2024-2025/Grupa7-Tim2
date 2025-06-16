@@ -4,6 +4,7 @@ using ETForum.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETForum.Migrations
 {
     [DbContext(typeof(ETForumDbContext))]
-    partial class ETForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250614134946_BanovanjeKorisnikaAdmin")]
+    partial class BanovanjeKorisnikaAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,7 +252,7 @@ namespace ETForum.Migrations
                     b.Property<DateTime>("Vrijeme")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("pitanjeId")
+                    b.Property<int>("pitanjeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -754,7 +757,9 @@ namespace ETForum.Migrations
 
                     b.HasOne("ETForum.Models.Pitanje", "Pitanje")
                         .WithMany()
-                        .HasForeignKey("pitanjeId");
+                        .HasForeignKey("pitanjeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Korisnik");
 

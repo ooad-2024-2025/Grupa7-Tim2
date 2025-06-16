@@ -1,9 +1,13 @@
 ﻿using ETForum.Data;
 using ETForum.Helper;
+using ETForum.Hubs;
 using ETForum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace ETForum.Controllers
 {
@@ -12,15 +16,18 @@ namespace ETForum.Controllers
         private readonly UserManager<Korisnik> _userManager;
         private readonly ETForumDbContext _context;
         private readonly DostignucaHelper _dostignucaHelper;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public PrijateljstvoController(UserManager<Korisnik> userManager, ETForumDbContext context, DostignucaHelper dostignucaHelper)
+        public PrijateljstvoController(UserManager<Korisnik> userManager, ETForumDbContext context, DostignucaHelper dostignucaHelper, IHubContext<NotificationHub> hubContext)
         {
             _userManager = userManager;
             _context = context;
             _dostignucaHelper = dostignucaHelper;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> DodajPrijatelja(string Id, string unos1)
         {
             var mojId = _userManager.GetUserId(User);
@@ -51,6 +58,19 @@ namespace ETForum.Controllers
             _context.Prijateljstva.Add(zahtjev);
             await _context.SaveChangesAsync();
 
+            var notifikacija = new Notifikacija
+            {
+                KorisnikId = Id,
+                Tekst = "Dobili ste novi zahtjev za prijateljstvo.",
+                Link = Url.Action("PrimljeniZahtjevi", "Prijateljstvo"),
+                Procitano = false,
+                Vrijeme = DateTime.Now
+            };
+            _context.Notifikacije.Add(notifikacija);
+            await _context.SaveChangesAsync();
+
+            await _hubContext.Clients.User(Id).SendAsync("ReceiveNotification", "Dobili ste novi zahtjev za prijateljstvo.");
+
             TempData["Poruka"] = "Zahtjev za prijateljstvo je poslan.";
             return RedirectToAction("PretragaKorisnika", "Korisnik", new { unos = unos1 });
         }
@@ -70,6 +90,7 @@ namespace ETForum.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> PrihvatiZahtjev(int id)
         {
             var zahtjev = await _context.Prijateljstva.FindAsync(id);
@@ -98,6 +119,7 @@ namespace ETForum.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> OdbijZahtjev(int id)
         {
             var zahtjev = await _context.Prijateljstva.FindAsync(id);
@@ -112,6 +134,7 @@ namespace ETForum.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ListaPrijatelja()
         {
             var mojId = _userManager.GetUserId(User);

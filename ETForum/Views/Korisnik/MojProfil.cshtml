@@ -158,35 +158,148 @@
     }
 
 </style>
-
 <div class="profile-container">
     <!-- Page Header -->
     <div class="page-header">
         <h1 class="page-title">👤 Moj Profil</h1>
     </div>
 
-    <!-- Profile Card -->
-    <div class="profile-card">
-        <div class="profile-image-container text-center " style=" padding-left : 50 px;">
-            <img src="@Model.urlSlike" class="profile-image" alt="Profilna slika" />
+    <div class="profile-row d-flex align-items-center justify-content-center" style="gap:40px;">
+        <!-- Lijevo: Slika + Upload -->
+        <div class="profile-img-col text-center">
+            <img src="@Model.urlSlike" alt="Profilna slika"
+                 class="profile-image-big mb-3" />
+            @if (Model.Id == User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier))
+            {
+                <form asp-action="PromijeniSliku" method="post" enctype="multipart/form-data" class="d-flex flex-column align-items-center gap-2">
+                    <input type="file" name="slika" accept="image/*" class="form-control" required style="max-width:210px;" />
+                    <button type="submit" class="btn btn-outline-primary btn-sm">Promijeni sliku</button>
+                </form>
+            }
         </div>
-        <div class="profile-info" style="padding-left: 50px;">
-            <h2>@Model.ime @Model.prezime</h2>
-            <table>
+
+        <!-- Desno: Informacije -->
+        <div class="profile-info-col" style="min-width:320px;">
+            <h2 class="mb-4 fw-bold">@Model.ime @Model.prezime</h2>
+            <table class="table">
                 <tr><th>Ime:</th><td>@Model.ime</td></tr>
                 <tr><th>Prezime:</th><td>@Model.prezime</td></tr>
                 <tr><th>Nickname:</th><td>@Model.nickname</td></tr>
                 <tr><th>Email:</th><td>@Model.Email</td></tr>
                 <tr><th>Smjer:</th><td>@Model.smjer</td></tr>
             </table>
-            @if (Model.Id == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            @if (Model.Id == User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier))
             {
-                <a asp-action="UrediProfil" class="btn btn-primary">Uredi moj profil</a>
+                <a asp-action="UrediProfil" class="btn btn-primary btn-lg mt-3">Uredi moj profil</a>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-row {
+        margin: 0 auto;
+        max-width: 900px;
+        gap: 60px;
+    }
+
+    .profile-img-col {
+        min-width: 220px;
+    }
+
+    .profile-image-big {
+        width: 210px;
+        height: 210px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 3px solid #3498db;
+        box-shadow: 0 0 15px rgba(0,0,0,0.08);
+        transition: 0.2s;
+    }
+
+        .profile-image-big:hover {
+            transform: scale(1.04);
+        }
+
+    .profile-info-col th {
+        width: 105px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .profile-info-col td {
+        color: #222;
+        font-size: 1.08em;
+        font-weight: 600;
+    }
+
+    .table {
+        background: none;
+    }
+</style>
+
+        <!-- Statistika aktivnosti -->
+    <div class="card shadow-sm mb-4" style="border-radius: 10px;">
+        <div class="card-body">
+            <h4 class="mb-3 text-success"><i class="fas fa-chart-line"></i> Statistika</h4>
+            <div class="row text-center">
+                <div class="col">
+                    <div class="fw-bold fs-4">@ViewBag.BrojPitanja</div>
+                    <div>Pitanja</div>
+                </div>
+                <div class="col">
+                    <div class="fw-bold fs-4">@ViewBag.BrojOdgovora</div>
+                    <div>Odgovora</div>
+                </div>
+                <div class="col">
+                    <div class="fw-bold fs-4">@ViewBag.BrojKomentara</div>
+                    <div>Komentara</div>
+                </div>
+                <div class="col">
+                    <div class="fw-bold fs-4">@ViewBag.BrojPrijatelja</div>
+                    <div>Prijatelja</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Pitanja i odgovori -->
+    <div class="card shadow-sm mb-4" style="border-radius: 10px;">
+        <div class="card-body">
+            <h5 class="mb-3"><i class="fas fa-question-circle"></i> Postavljena pitanja</h5>
+            @if (ViewBag.MojaPitanja != null && ((List<ETForum.Models.Pitanje>)ViewBag.MojaPitanja).Any())
+            {
+                <ul>
+                    @foreach (var p in (List<ETForum.Models.Pitanje>)ViewBag.MojaPitanja)
+                    {
+                        <li>
+                            <a href="@Url.Action("Details", "QnA", new { id = p.id })" class="fw-bold text-decoration-none" style="color:#2d7bf4;">
+                                <i class="fas fa-question-circle me-1"></i>
+                                @((p.naslov?.Length ?? 0) > 60 ? p.naslov.Substring(0, 60) + "..." : p.naslov)
+                            </a>
+                            <span class="text-muted" style="font-size: 0.95em;">(@p.datumPitanja.ToString("dd.MM.yyyy"))</span>
+
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+
+                <div class="text-muted">Nisi još postavio/la pitanje.</div>
             }
         </div>
     </div>
 
     <style>
+        a.fw-bold.text-decoration-none:hover {
+            color: #1653a3;
+            text-decoration: underline;
+            background: #f1f7ff;
+            border-radius: 5px;
+            transition: all 0.2s;
+            padding-left: 5px;
+        }
+
         .profile-image-container {
             position: relative;
             overflow: hidden;
@@ -246,27 +359,5 @@
             }
 
         </div>
-        <!-- Friends List Section -->
-        <div class="achievements-section mt-4">
-            <h3>👥 Prijatelji</h3>
-            @if (ViewBag.Prijatelji != null && ((List<ETForum.Models.Korisnik>)ViewBag.Prijatelji).Any())
-            {
-                <div class="achievements-list">
-                    @foreach (var prijatelj in (List<ETForum.Models.Korisnik>)ViewBag.Prijatelji)
-                    {
-                        <div class="achievement-badge">
-                            <div class="achievement-icon">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="achievement-name">@prijatelj.nickname</div>
-                            <div>
-                                <a asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="@prijatelj.Id" class="btn btn-primary btn-sm mt-2">
-                                    Pogledaj profil
-                                </a>
-                            </div>
-                        </div>
-                    }
-                </div>
-}
     </div>
 </div>
