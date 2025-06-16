@@ -31,7 +31,6 @@ namespace ETForum.Controllers
             return RedirectToAction("Index", "StudySessions");
         }
 
-
         public IActionResult LiveChat()
         {
             return View();
