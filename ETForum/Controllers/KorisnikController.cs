@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -38,13 +39,14 @@ namespace ETForum.Controllers
             return View(new RegistracijaDTO());
         }
         [HttpPost]
-        public async Task<IActionResult> Registracija (RegistracijaDTO noviKorisnik)
+        public async Task<IActionResult> Registracija(RegistracijaDTO noviKorisnik)
         {
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid)
+            {
                 return View(noviKorisnik);
             }
 
-            bool nicknameZauzet = await _context.Korisnici.AnyAsync(k => k.nickname ==  noviKorisnik.nickname);
+            bool nicknameZauzet = await _context.Korisnici.AnyAsync(k => k.nickname == noviKorisnik.nickname);
             if (nicknameZauzet)
             {
                 ModelState.AddModelError("nickname", "Nickname je već zauzet!");
@@ -74,6 +76,18 @@ namespace ETForum.Controllers
 
             if (result.Succeeded)
             {
+                var stringUloga = noviKorisnik.uloga.ToString();
+                // Dodaj korisnika u ulogu ako uloga nije null ili prazna
+                if (!string.IsNullOrEmpty(stringUloga))
+                {
+                    var roleExists = await _roleManager.RoleExistsAsync(stringUloga);
+                    if (!roleExists)
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(stringUloga));
+                    }
+                    await _userManager.AddToRoleAsync(korisnik, stringUloga);
+                }
+
                 return RedirectToAction("Login");
             }
             else
@@ -85,6 +99,7 @@ namespace ETForum.Controllers
                 return View(noviKorisnik);
             }
         }
+
         [HttpGet]
         public IActionResult Login () 
         {

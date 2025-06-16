@@ -56,12 +56,16 @@ namespace ETForum.Hubs
                 }
             }
 
+            var utcNow = DateTime.UtcNow;
+            TimeZoneInfo baZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+            var lokalnoVrijeme = TimeZoneInfo.ConvertTimeFromUtc(utcNow, baZone);
+
             var novaPoruka = new LiveChat
             {
                 korisnikId = korisnikId,
                 username = username,
                 poruka = message,
-                vrijeme = DateTime.Now
+                vrijeme = lokalnoVrijeme
             };
 
             _context.LiveChat.Add(novaPoruka);
