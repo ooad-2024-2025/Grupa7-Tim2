@@ -1,4 +1,4 @@
-﻿@{
+﻿﻿@{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
     var action = ViewContext.RouteData.Values["action"]?.ToString();
 }
@@ -17,14 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<<<<<<< HEAD
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Naslovna">ETForum</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                    aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-=======
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
             <div class="container-fluid">
@@ -40,12 +32,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="QnA" asp-action="Index">QnA</a>
                             </li>
-                            @if (!User.IsInRole("Profesor"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
-                                </li>
-                            }
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
                             </li>
@@ -58,8 +47,7 @@
                         }
                     </ul>
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        @if (User.Identity.IsAuthenticated)
-{
+                        @if (User.Identity.IsAuthenticated){
     @if (!(controller == "Home" && action == "Naslovna"))
     {
         <li class="nav-item ms-2">
@@ -70,163 +58,105 @@
     @if (
         User.Identity.IsAuthenticated &&
         !(controller == "Home" && action == "Naslovna") &&
-        !User.IsInRole("Administrator"))
+        !User.IsInRole("Administrator") && (controller != "Prijateljstvo" && action != "ListaPrijatelja"))
     {
         <li class="nav-item ms-2">
             <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#prijateljiModal">
                 Prijatelji
->>>>>>> acfbc986639265e2a756dab128cf82055ee07fbf
             </button>
-            <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    @if (!(controller == "Home" && action == "Naslovna") && !(controller == "Korisnik" && (action == "Login" || action == "Registracija")))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="QnA" asp-action="Index">QnA</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Dostignuce" asp-action="Index">Dostignuća</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="OcjenaPredmeta" asp-action="Smjer">Ocjene Predmeta</a>
-                        </li>
-                    }
-                </ul>
-                </ul>
+        </li>
+    }
 
-                @* --- CENTRALNI NAV (SREDINA) --- *@
-                @if (controller == "Home" && action == "Naslovna" && User.Identity.IsAuthenticated)
-                {
-                    <div class="position-absolute start-50 translate-middle-x d-flex align-items-center gap-3" style="z-index:2;">
-                        <!-- Inbox Dropdown -->
-                        <div class="dropdown">
-                            <a class="nav-link fs-4 dropdown-toggle" href="#" id="inboxDropdown" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false" title="Inbox - Privatni chatovi">
-                                <i class="fas fa-envelope"></i>
-                            </a>
-                            <div class="dropdown-menu p-2 shadow-lg" aria-labelledby="inboxDropdown" style="min-width: 320px; max-width: 100vw;">
-                                <div class="mb-2">
-                                    <input type="text" class="form-control form-control-sm" id="searchInboxInput" placeholder="Pretraži prijatelje...">
-                                </div>
-                                <ul id="inboxList" class="list-unstyled mb-0" style="max-height: 350px; overflow-y: auto;">
-                                    @if (ViewBag.InboxPrijatelji != null && ((List<ETForum.Models.Korisnik>)ViewBag.InboxPrijatelji).Any())
-                                    {
-                                        foreach (var prijatelj in (List<ETForum.Models.Korisnik>)ViewBag.InboxPrijatelji)
-                                        {
-                                            <li class="inbox-item">
-                                                <a class="dropdown-item d-flex align-items-center gap-2 py-2"
-                                                   asp-controller="PrivatniChat"
-                                                   asp-action="Chat"
-                                                   asp-route-prijateljId="@prijatelj.Id">
-                                                    <span class="avatar bg-primary rounded-circle text-white d-flex justify-content-center align-items-center" style="width: 36px; height: 36px;">
-                                                        @(string.IsNullOrEmpty(prijatelj.nickname) ? "?" : prijatelj.nickname.Substring(0, 1).ToUpper())
-                                                    </span>
-                                                    <span class="fw-semibold">@prijatelj.nickname</span>
-                                                </a>
-                                            </li>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <li><span class="dropdown-item text-muted">Nemaš aktivnih chatova.</span></li>
-                                    }
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Prijatelji -->
-                        <a class="nav-link fs-4" asp-controller="Prijateljstvo" asp-action="PrimljeniZahtjevi" title="Zahtjevi za prijateljstvo">
-                            <i class="fas fa-user-friends"></i>
-                        </a>
-                        <!-- Search -->
-                        <form asp-controller="Korisnik" asp-action="PretragaKorisnika" method="get" role="search">
-                            <button class="btn btn-gradient btn-lg rounded-pill px-4" type="submit"
-                                    style="background: linear-gradient(45deg, #1abc9c, #16a085); color: white; box-shadow: 0 4px 10px rgba(22, 160, 133, 0.6); transition: transform 0.2s ease;">
-                                <i class="fas fa-search me-2"></i> Pronađi korisnike
-                            </button>
-                        </form>
-                    </div>
-                }
+    <li class="nav-item ms-2">
+        @{
+    var brojNeprocitanih = ViewBag.NeprocitaneNotifikacije as int? ?? 0;
+}
 
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center gap-2">
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <li class="nav-item position-relative">
-                            <a class="nav-link" asp-controller="Notifikacije" asp-action="Index" title="Notifikacije">
-                                <i class="fas fa-bell fa-lg"></i>
-                                <span id="notifikacijeBadge"
-                                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                      style="font-size:10px; @(ViewBag.NeprocitaneNotifikacije > 0 ? "display:inline-block;" : "display:none;")">
-                                    @ViewBag.NeprocitaneNotifikacije
-                                </span>
-                            </a>
-                        </li>
-                        @if (!(controller == "Home" && action == "Naslovna"))
+<li class="nav-item ms-2 position-relative">
+    <a class="nav-link" asp-controller="Notifikacije" asp-action="Index" title="Notifikacije">
+        <i class="fas fa-bell fa-lg"></i>
+        <span id="notifikacijeBadge"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            style="font-size:10px; @(ViewBag.NeprocitaneNotifikacije > 0 ? "display:inline-block;" : "display:none;")">
+            @ViewBag.NeprocitaneNotifikacije
+        </span>
+    </a>
+</li>
+
+
+    </li>
+
+    <li class="nav-item ms-2">
+        <form asp-controller="Korisnik" asp-action="Logout" method="post" class="d-inline" id="LogoutForm">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
+        </form>
+    </li>
+}
+
+                        else if (!User.Identity.IsAuthenticated && !(controller == "QnA" && action == "Details") && !(controller == "Korisnik" && action == "Login"))
                         {
-                         
-                            <li class="nav-item dropdown">
-                                <a class="nav-link fs-4 dropdown-toggle" href="#" id="inboxDropdownRight" role="button"
-                                   data-bs-toggle="dropdown" aria-expanded="false" title="Inbox - Privatni chatovi">
-                                    <i class="fas fa-envelope"></i>
-                                </a>
-                                <div class="dropdown-menu p-2 shadow-lg" aria-labelledby="inboxDropdownRight" style="min-width: 320px; max-width: 100vw;">
-                                    <div class="mb-2">
-                                        <input type="text" class="form-control form-control-sm" id="searchInboxInputRight" placeholder="Pretraži prijatelje...">
-                                    </div>
-                                    <ul id="inboxListRight" class="list-unstyled mb-0" style="max-height: 350px; overflow-y: auto;">
-                                        @if (ViewBag.InboxPrijatelji != null && ((List<ETForum.Models.Korisnik>)ViewBag.InboxPrijatelji).Any())
-                                        {
-                                            foreach (var prijatelj in (List<ETForum.Models.Korisnik>)ViewBag.InboxPrijatelji)
-                                            {
-                                                <li class="inbox-item">
-                                                    <a class="dropdown-item d-flex align-items-center gap-2 py-2"
-                                                       asp-controller="PrivatniChat"
-                                                       asp-action="Chat"
-                                                       asp-route-prijateljId="@prijatelj.Id">
-                                                        <span class="avatar bg-primary rounded-circle text-white d-flex justify-content-center align-items-center" style="width: 36px; height: 36px;">
-                                                            @(string.IsNullOrEmpty(prijatelj.nickname) ? "?" : prijatelj.nickname.Substring(0, 1).ToUpper())
-                                                        </span>
-                                                        <span class="fw-semibold">@prijatelj.nickname</span>
-                                                    </a>
-                                                </li>
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <li><span class="dropdown-item text-muted">Nemaš aktivnih chatova.</span></li>
-                                        }
-                                    </ul>
-                                </div>
+                            <li class="nav-item">
+                                <form asp-controller="Korisnik" asp-action="Login" method="post" class="d-inline" id="Login">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="nav-link btn btn-link">Prijavi se</button>
+                                </form>
                             </li>
                         }
-                        <li class="nav-item ms-2">
-                            <a class="nav-link" asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="">Moj profil</a>
-                        </li>
-                        <li class="nav-item ms-2">
-                            <form asp-controller="Korisnik" asp-action="Logout" method="post" class="d-inline" id="LogoutForm">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="nav-link btn btn-link">Odjavi se</button>
-                            </form>
-                        </li>
-                    }
-                    else if (!User.Identity.IsAuthenticated && !(controller == "QnA" && action == "Details") && !(controller == "Korisnik" && action == "Login"))
+                    </ul>
+@if (controller == "Home" && action == "Naslovna" && User.Identity.IsAuthenticated)
+{
+    <div class="position-absolute start-50 translate-middle-x d-flex align-items-center gap-3" style="z-index:2;">
+        <!-- INBOX DROPDOWN -->
+        <div class="dropdown">
+            <a class="nav-link fs-4 dropdown-toggle" href="#" id="inboxDropdown" role="button"
+               data-bs-toggle="dropdown" aria-expanded="false" title="Inbox - Privatni chatovi">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <div class="dropdown-menu p-2 shadow-lg" aria-labelledby="inboxDropdown" style="min-width: 320px; max-width: 100vw;">
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" id="searchInboxInput" placeholder="Pretraži prijatelje...">
+                </div>
+                <ul id="inboxList" class="list-unstyled mb-0" style="max-height: 350px; overflow-y: auto;">
+                @if (ViewBag.InboxPrijatelji != null && ((List<ETForum.Models.Korisnik>)ViewBag.InboxPrijatelji).Any())
+                {
+                    foreach (var prijatelj in (List<ETForum.Models.Korisnik>)ViewBag.InboxPrijatelji)
                     {
-                        <li class="nav-item">
-                            <form asp-controller="Korisnik" asp-action="Login" method="post" class="d-inline" id="Login">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="nav-link btn btn-link">Prijavi se</button>
-                            </form>
+                        <li class="inbox-item">
+                            <a class="dropdown-item d-flex align-items-center gap-2 py-2"
+                               asp-controller="PrivatniChat"
+                               asp-action="Chat"
+                               asp-route-prijateljId="@prijatelj.Id">
+                                <span class="avatar bg-primary rounded-circle text-white d-flex justify-content-center align-items-center" style="width: 36px; height: 36px;">
+                                    @(string.IsNullOrEmpty(prijatelj.nickname) ? "?" : prijatelj.nickname.Substring(0,1).ToUpper())
+                                </span>
+                                <span class="fw-semibold">@prijatelj.nickname</span>
+                            </a>
                         </li>
                     }
+                }
+                else
+                {
+                    <li><span class="dropdown-item text-muted">Nemaš aktivnih chatova.</span></li>
+                }
                 </ul>
             </div>
         </div>
-    </nav>
+        <!-- PRIJATELJI -->
+        <a class="nav-link fs-4" asp-controller="Prijateljstvo" asp-action="PrimljeniZahtjevi" title="Zahtjevi za prijateljstvo">
+            <i class="fas fa-user-friends"></i>
+        </a>
+        <!-- SEARCH -->
+        <form asp-controller="Korisnik" asp-action="PretragaKorisnika" method="get" role="search">
+            <button class="btn btn-gradient btn-lg rounded-pill px-4" type="submit"
+                    style="background: linear-gradient(45deg, #1abc9c, #16a085); color: white; box-shadow: 0 4px 10px rgba(22, 160, 133, 0.6); transition: transform 0.2s ease;">
+                <i class="fas fa-search me-2"></i> Pronađi korisnike
+            </button>
+        </form>
+    </div>
+}
+
+        </nav>
     </header>
 
     <main class="container">
@@ -296,65 +226,58 @@
     }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Centralni
-            const searchInput = document.getElementById('searchInboxInput');
-            const inboxList = document.getElementById('inboxList');
-            if (searchInput && inboxList) {
-                searchInput.addEventListener('input', function () {
-                    const filter = searchInput.value.trim().toLowerCase();
-                    for (const li of inboxList.children) {
-                        const text = li.textContent.toLowerCase();
-                        li.style.display = text.includes(filter) ? '' : 'none';
-                    }
-                });
-            }
-            // Desni (na drugim stranicama)
-            const searchInputRight = document.getElementById('searchInboxInputRight');
-            const inboxListRight = document.getElementById('inboxListRight');
-            if (searchInputRight && inboxListRight) {
-                searchInputRight.addEventListener('input', function () {
-                    const filter = searchInputRight.value.trim().toLowerCase();
-                    for (const li of inboxListRight.children) {
-                        const text = li.textContent.toLowerCase();
-                        li.style.display = text.includes(filter) ? '' : 'none';
-                    }
-                });
-            }
-        });
-    </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
     const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/notificationHub")
-    .build();
+        .withUrl("/notificationHub")
+        .build();
 
     const toastEl = document.getElementById('liveToast');
     const toastBody = document.getElementById('toastBody');
     const toast = new bootstrap.Toast(toastEl);
 
     connection.on("ReceiveNotification", function (message) {
-    toastBody.textContent = message;
-    toast.show();
+        toastBody.textContent = message;
+        toast.show();
 
-    fetch('/Notifikacije/BrojNeprocitanih')
-    .then(res => res.json())
-    .then(data => {
-    var badge = document.getElementById("notifikacijeBadge");
-    if (badge) {
-    badge.innerText = data.broj > 0 ? data.broj : '';
-    badge.style.display = data.broj > 0 ? "inline-block" : "none";
-    }
-    });
+        // Povuci TAČAN broj iz baze
+        fetch('/Notifikacije/BrojNeprocitanih')
+            .then(res => res.json())
+            .then(data => {
+                var badge = document.getElementById("notifikacijeBadge");
+                if (badge) {
+                    badge.innerText = data.broj > 0 ? data.broj : '';
+                    badge.style.display = data.broj > 0 ? "inline-block" : "none";
+                }
+            });
     });
 
     connection.start().catch(function (err) {
-    return console.error(err.toString());
+        return console.error(err.toString());
     });
+});
+</script>
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInboxInput');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function () {
+        const filter = searchInput.value.trim().toLowerCase();
+        const list = document.getElementById('inboxList');
+        if (!list) return;
+
+        for (const li of list.children) {
+            // traži po nicku
+            const text = li.textContent.toLowerCase();
+            li.style.display = text.includes(filter) ? '' : 'none';
+        }
     });
-    </script>
+});
+</script>
+
+
 
     @await RenderSectionAsync("Scripts", required: false)
 
