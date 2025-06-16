@@ -32,9 +32,12 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="QnA" asp-action="Index">QnA</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
-                            </li>
+                            @if (!User.IsInRole("Profesor"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
                             </li>
