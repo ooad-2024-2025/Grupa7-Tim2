@@ -88,7 +88,7 @@
                                 @{
                                     var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                                 }
-                                @if (User.IsInRole("Administrator") || currentUserId == Model.korisnikId)
+                                @if (User.IsInRole("Administrator") || currentUserId == Model.korisnikId || User.IsInRole("Profesor"))
                                 {
                                     <form asp-action="DeleteQuestion" method="post" asp-route-id="@Model.id" class="delete-question-form">
                                         <button type="button" class="btn btn-sm btn-danger mt-3 delete-question-btn">
@@ -160,7 +160,7 @@
                                                             @answer.brojLajkova
                                                                 </div>
                                                                 <div class="stat-label small">Lajkova</div>
-                                                        @if (User.Identity.IsAuthenticated && (User.Identity.Name == answer.korisnik?.UserName || User.IsInRole("Administrator")))
+                                                        @if (User.Identity.IsAuthenticated && (User.Identity.Name == answer.korisnik?.UserName || User.IsInRole("Administrator") || User.IsInRole("Profesor")))
                                                         {
                                                             <form asp-action="DeleteAnswer" asp-controller="QnA" method="post" style="display:inline;" class="delete-answer-form">
                                                                 <input type="hidden" name="id" value="@answer.id" />

@@ -17,12 +17,65 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+<<<<<<< HEAD
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Naslovna">ETForum</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
                     aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
+=======
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Naslovna">ETForum</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        @if (!(controller == "Korisnik" && action == "Login") && !(controller == "Home" && action == "Naslovna"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="QnA" asp-action="Index">QnA</a>
+                            </li>
+                            @if (!User.IsInRole("Profesor"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="StudyRoom">Study Room</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="LiveChat">Live Chat</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Dostignuce" asp-action="Index">Dostignuća</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="OcjenaPredmeta" asp-action="Smjer">Ocjene Predmeta</a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        @if (User.Identity.IsAuthenticated)
+{
+    @if (!(controller == "Home" && action == "Naslovna"))
+    {
+        <li class="nav-item ms-2">
+            <a class="nav-link" asp-controller="Korisnik" asp-action="MojProfil" asp-route-id="">Moj profil</a>
+        </li>
+    }
+
+    @if (
+        User.Identity.IsAuthenticated &&
+        !(controller == "Home" && action == "Naslovna") &&
+        !User.IsInRole("Administrator"))
+    {
+        <li class="nav-item ms-2">
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#prijateljiModal">
+                Prijatelji
+>>>>>>> acfbc986639265e2a756dab128cf82055ee07fbf
             </button>
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">

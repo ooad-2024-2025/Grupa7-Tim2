@@ -14,9 +14,13 @@
         <div class="prosjek mt-3">
             <span class="badge bg-success fs-5">Prosječna ocjena: @prosjek.ToString("0.00")</span>
         </div>
-        <a href="@Url.Action("Ocijeni", new { predmetId = Model.id })" class="btn btn-primary mt-4">
-            <i class="fas fa-star"></i> Ocijeni ovaj predmet
+        @if (!User.IsInRole("Profesor"))
+        {
+            <a href="@Url.Action("Ocijeni", new { predmetId = Model.id })
+            " class="btn btn-primary mt-4">
+                <i class="fas fa-star"></i> Ocijeni ovaj predmet
         </a>
+        }
     </div>
 
     <h3 class="mb-3 mt-5 text-secondary"><i class="fas fa-comments"></i> Komentari i ocjene</h3>
