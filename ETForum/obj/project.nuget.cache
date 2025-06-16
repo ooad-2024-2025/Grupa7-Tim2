@@ -1,8 +1,14 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "LUb7TMSvHBE=",
   "success": true,
   "projectFilePath": "C:\\Users\\User\\Source\\Repos\\Grupa7-Tim2\\ETForum\\ETForum.csproj",
+=======
+  "dgSpecHash": "BSCGYJFjZ1U=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\User\\source\\repos\\ETForum\\ETForum\\ETForum.csproj",
+>>>>>>> aa8afdbb9d54c5f978990997568ad209698eb686
   "expectedPackageFiles": [
     "C:\\Users\\User\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
