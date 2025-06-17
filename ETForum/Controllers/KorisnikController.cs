@@ -387,6 +387,37 @@ namespace ETForum.Controllers
                 return RedirectToAction("SviKorisnici");
             }
 
+            // 1. Prvo obriši sve povezane entitete
+            var pitanja = _context.Pitanja.Where(p => p.korisnikId == user.Id);
+            _context.Pitanja.RemoveRange(pitanja);
+
+            var odgovori = _context.Odgovori.Where(o => o.korisnikId == user.Id);
+            _context.Odgovori.RemoveRange(odgovori);
+
+            var komentari = _context.Komentari.Where(k => k.korisnikId == user.Id);
+            _context.Komentari.RemoveRange(komentari);
+
+            var ocjene = _context.OcjenaPredmeta.Where(o => o.korisnikId == user.Id);
+            _context.OcjenaPredmeta.RemoveRange(ocjene);
+
+            var prijateljstva = _context.Prijateljstva.Where(p => p.korisnik1Id == user.Id || p.korisnik2Id == user.Id);
+            _context.Prijateljstva.RemoveRange(prijateljstva);
+
+            var korisnikDostignuca = _context.KorisnikDostignuca.Where(kd => kd.korisnikId == user.Id);
+            _context.KorisnikDostignuca.RemoveRange(korisnikDostignuca);
+
+            var privatniChatovi = _context.PrivatniChatovi.Where(kd => kd.posiljalacId == user.Id);
+            _context.PrivatniChatovi.RemoveRange(privatniChatovi);
+
+            privatniChatovi = _context.PrivatniChatovi.Where(kd => kd.primaocId == user.Id);
+            _context.PrivatniChatovi.RemoveRange(privatniChatovi);
+
+            var studySession = _context.StudySession.Where(kd => kd.korisnikId == user.Id);
+            _context.StudySession.RemoveRange(studySession);
+
+            var liveChat = _context.LiveChat.Where(kd => kd.korisnikId == user.Id);
+            _context.LiveChat.RemoveRange(liveChat);
+
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
                 TempData["PorukaZelena"] = "Korisnik uspješno obrisan!";
