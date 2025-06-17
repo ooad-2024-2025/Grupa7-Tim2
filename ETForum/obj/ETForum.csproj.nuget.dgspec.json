@@ -1,7 +1,6 @@
 {
   "format": 1,
   "restore": {
-<<<<<<< HEAD
     "C:\\Users\\User\\Source\\Repos\\Grupa7-Tim2\\ETForum\\ETForum.csproj": {}
   },
   "projects": {
@@ -13,25 +12,12 @@
         "projectPath": "C:\\Users\\User\\Source\\Repos\\Grupa7-Tim2\\ETForum\\ETForum.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\User\\Source\\Repos\\Grupa7-Tim2\\ETForum\\obj\\",
-=======
-    "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\ETForum.csproj": {}
-  },
-  "projects": {
-    "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\ETForum.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\ETForum.csproj",
-        "projectName": "ETForum",
-        "projectPath": "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\ETForum.csproj",
-        "packagesPath": "C:\\Users\\Korisnik\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Korisnik\\source\\repos\\ETForum\\ETForum\\obj\\",
->>>>>>> 5aeb639e9efd73db84792358afa277f3444cf842
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Korisnik\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -118,11 +104,7 @@
               "privateAssets": "all"
             }
           },
-<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
-=======
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
->>>>>>> 5aeb639e9efd73db84792358afa277f3444cf842
         }
       }
     }
