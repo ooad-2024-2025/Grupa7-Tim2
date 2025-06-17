@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -38,13 +39,14 @@ namespace ETForum.Controllers
             return View(new RegistracijaDTO());
         }
         [HttpPost]
-        public async Task<IActionResult> Registracija (RegistracijaDTO noviKorisnik)
+        public async Task<IActionResult> Registracija(RegistracijaDTO noviKorisnik)
         {
-            if (!ModelState.IsValid) {
+            if (!ModelState.IsValid)
+            {
                 return View(noviKorisnik);
             }
 
-            bool nicknameZauzet = await _context.Korisnici.AnyAsync(k => k.nickname ==  noviKorisnik.nickname);
+            bool nicknameZauzet = await _context.Korisnici.AnyAsync(k => k.nickname == noviKorisnik.nickname);
             if (nicknameZauzet)
             {
                 ModelState.AddModelError("nickname", "Nickname je već zauzet!");
@@ -74,6 +76,18 @@ namespace ETForum.Controllers
 
             if (result.Succeeded)
             {
+                var stringUloga = noviKorisnik.uloga.ToString();
+                // Dodaj korisnika u ulogu ako uloga nije null ili prazna
+                if (!string.IsNullOrEmpty(stringUloga))
+                {
+                    var roleExists = await _roleManager.RoleExistsAsync(stringUloga);
+                    if (!roleExists)
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(stringUloga));
+                    }
+                    await _userManager.AddToRoleAsync(korisnik, stringUloga);
+                }
+
                 return RedirectToAction("Login");
             }
             else
@@ -85,6 +99,7 @@ namespace ETForum.Controllers
                 return View(noviKorisnik);
             }
         }
+
         [HttpGet]
         public IActionResult Login () 
         {
@@ -363,6 +378,64 @@ namespace ETForum.Controllers
                 return View();
             }
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ObrisiProfil()
+        {
+            var korisnik = await _userManager.GetUserAsync(User);
+            if (korisnik == null) return NotFound();
+
+            // 1. Briši komentare
+            var komentari = await _context.Komentari
+                .Where(k => k.korisnikId == korisnik.Id)
+                .ToListAsync();
+            _context.Komentari.RemoveRange(komentari);
+
+            // 2. Briši odgovore
+            var odgovori = await _context.Odgovori
+                .Where(o => o.korisnikId == korisnik.Id)
+                .ToListAsync();
+            _context.Odgovori.RemoveRange(odgovori);
+
+            // 3. Briši pitanja
+            var pitanja = await _context.Pitanja
+                .Where(p => p.korisnikId == korisnik.Id)
+                .ToListAsync();
+            _context.Pitanja.RemoveRange(pitanja);
+
+            // 4. Briši notifikacije
+            var notifikacije = await _context.Notifikacije
+                .Where(n => n.KorisnikId == korisnik.Id)
+                .ToListAsync();
+            _context.Notifikacije.RemoveRange(notifikacije);
+
+            // 5. Briši prijateljstva
+            var prijateljstva = await _context.Prijateljstva
+                .Where(p => p.korisnik1Id == korisnik.Id || p.korisnik2Id == korisnik.Id)
+                .ToListAsync();
+            _context.Prijateljstva.RemoveRange(prijateljstva);
+
+            await _context.SaveChangesAsync();
+
+            // 6. Briši korisnika
+            await _signInManager.SignOutAsync();
+            var result = await _userManager.DeleteAsync(korisnik);
+
+            if (result.Succeeded)
+            {
+                TempData["PorukaZelena"] = "Vaš profil je uspješno obrisan.";
+                return RedirectToAction("Naslovna", "Home");
+            }
+
+            TempData["PorukaCrvena"] = "Greška prilikom brisanja profila.";
+            return RedirectToAction("MojProfil");
+        }
+
+
+
 
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> SviKorisnici()

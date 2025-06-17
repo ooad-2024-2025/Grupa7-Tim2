@@ -2,8 +2,10 @@
 using ETForum.Helper;
 using ETForum.Hubs;
 using ETForum.Models;
+using ETForum.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -17,13 +19,15 @@ namespace ETForum.Controllers
         private readonly ETForumDbContext _context;
         private readonly DostignucaHelper _dostignucaHelper;
         private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly EmailSender _emailSender;
 
-        public PrijateljstvoController(UserManager<Korisnik> userManager, ETForumDbContext context, DostignucaHelper dostignucaHelper, IHubContext<NotificationHub> hubContext)
+        public PrijateljstvoController(UserManager<Korisnik> userManager, ETForumDbContext context, DostignucaHelper dostignucaHelper, IHubContext<NotificationHub> hubContext, EmailSender emailSender)
         {
             _userManager = userManager;
             _context = context;
             _dostignucaHelper = dostignucaHelper;
             _hubContext = hubContext;
+            _emailSender = emailSender;
         }
 
         [HttpPost]
@@ -69,11 +73,25 @@ namespace ETForum.Controllers
             _context.Notifikacije.Add(notifikacija);
             await _context.SaveChangesAsync();
 
+            // EMAIL
+            var primalac = await _context.Users.FirstOrDefaultAsync(u => u.Id == Id);
+            var posiljalac = await _userManager.GetUserAsync(User);
+
+            if (primalac != null && posiljalac != null)
+            {
+                await _emailSender.PosaljiEmailAsync(primalac.Email,
+                    "Novi zahtjev za prijateljstvo",
+                    $"Pozdrav {primalac.nickname},<br><br>" +
+                    $"Korisnik <b>{posiljalac.nickname}</b> vam je poslao zahtjev za prijateljstvo.<br>" +
+                    $"<a href='{Url.Action("PrimljeniZahtjevi", "Prijateljstvo", null, Request.Scheme)}'>Pogledaj zahtjev</a>");
+            }
+
             await _hubContext.Clients.User(Id).SendAsync("ReceiveNotification", "Dobili ste novi zahtjev za prijateljstvo.");
 
             TempData["Poruka"] = "Zahtjev za prijateljstvo je poslan.";
             return RedirectToAction("PretragaKorisnika", "Korisnik", new { unos = unos1 });
         }
+
 
         [HttpGet]
         public async Task<IActionResult> PrimljeniZahtjevi()

@@ -190,8 +190,16 @@
             </table>
             @if (Model.Id == User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier))
             {
-                <a asp-action="UrediProfil" class="btn btn-primary btn-lg mt-3">Uredi moj profil</a>
+                <div class="d-flex gap-3 mt-3">
+                    <a asp-action="UrediProfil" class="btn btn-primary btn-lg">Uredi moj profil</a>
+
+                    <!-- Dugme koje otvara modal -->
+                    <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#obrisiProfilModal">
+                        Obriši profil
+                    </button>
+                </div>
             }
+
         </div>
     </div>
 </div>
@@ -358,6 +366,29 @@
                 </div>
             }
 
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ZA BRISANJE PROFILA -->
+<div class="modal fade" id="obrisiProfilModal" tabindex="-1" aria-labelledby="obrisiProfilModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-3 shadow">
+            <div class="modal-header bg-danger text-white rounded-top">
+                <h5 class="modal-title" id="obrisiProfilModalLabel">Potvrda brisanja profila</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Zatvori"></button>
+            </div>
+            <div class="modal-body">
+                <p>Jeste li sigurni da želite <strong>trajno obrisati</strong> svoj profil? Ova akcija se <strong>ne može poništiti</strong>.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Odustani</button>
+
+                <form asp-action="ObrisiProfil" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Obriši profil</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
