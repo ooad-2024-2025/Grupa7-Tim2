@@ -8570,19 +8570,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\User\\Source\\Repos\\Grupa7-Tim2\\ETForum\\ETForum.csproj",
       "projectName": "ETForum",
       "projectPath": "C:\\Users\\User\\Source\\Repos\\Grupa7-Tim2\\ETForum\\ETForum.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\User\\Source\\Repos\\Grupa7-Tim2\\ETForum\\obj\\",
-=======
-      "projectUniqueName": "C:\\Users\\User\\source\\repos\\ETForum\\ETForum\\ETForum.csproj",
-      "projectName": "ETForum",
-      "projectPath": "C:\\Users\\User\\source\\repos\\ETForum\\ETForum\\ETForum.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\source\\repos\\ETForum\\ETForum\\obj\\",
->>>>>>> aa8afdbb9d54c5f978990997568ad209698eb686
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -8675,11 +8667,7 @@
             "privateAssets": "all"
           }
         },
-<<<<<<< HEAD
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
-=======
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
->>>>>>> aa8afdbb9d54c5f978990997568ad209698eb686
       }
     }
   },
