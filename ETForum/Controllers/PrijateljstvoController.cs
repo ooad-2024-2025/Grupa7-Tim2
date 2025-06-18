@@ -122,12 +122,25 @@ namespace ETForum.Controllers
             // Provjeri je li korisnik postigao prvo prijateljstvo za oba korisnika
             var mojId = _userManager.GetUserId(User);
 
-            await _context.SaveChangesAsync();
-            _context.ChangeTracker.Clear();
 
             await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(mojId);
             await _dostignucaHelper.ProvjeriDostignucaZaKorisnika(zahtjev.korisnik1Id);
 
+            var notifikacija = new Notifikacija
+            {
+                KorisnikId = zahtjev.korisnik1Id, 
+                Tekst = "Vaš zahtjev za prijateljstvo je prihvaćen.",
+                Link = Url.Action("ListaPrijatelja", "Prijateljstvo"),
+                Procitano = false,
+                Vrijeme = DateTime.Now
+            };
+            _context.Notifikacije.Add(notifikacija);
+
+            await _context.SaveChangesAsync();
+            _context.ChangeTracker.Clear();
+
+
+            await _hubContext.Clients.User(zahtjev.korisnik1Id).SendAsync("ReceiveNotification", "Vaš zahtjev za prijateljstvo je prihvaćen!");
 
             TempData["PorukaZelena"] = "Zahtjev je prihvaćen.";
             return RedirectToAction("PrimljeniZahtjevi");

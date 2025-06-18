@@ -249,7 +249,7 @@ namespace ETForum.Controllers
 
 
 
-        //GET
+
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> UrediProfil()
@@ -265,13 +265,14 @@ namespace ETForum.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UrediProfil(Korisnik izmjene, IFormFile? novaSlika)
+        public async Task<IActionResult> UrediProfil(Korisnik izmjene, IFormFile? novaSlika, string NovaSifra, string PotvrdaSifre)
         {
             var userId = _userManager.GetUserId(User);
             var korisnik = await _context.Korisnici.FirstOrDefaultAsync(k => k.Id == userId);
 
             if (korisnik == null) return NotFound();
 
+            // 1. Validacija osnovnih polja
             korisnik.ime = izmjene.ime;
             korisnik.prezime = izmjene.prezime;
             korisnik.nickname = izmjene.nickname;
@@ -279,10 +280,15 @@ namespace ETForum.Controllers
             korisnik.Email = izmjene.Email;
             korisnik.smjer = izmjene.smjer;
 
+            // 2. Promjena slike
             if (novaSlika != null && novaSlika.Length > 0)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(novaSlika.FileName);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                var filePath = Path.Combine(folderPath, fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -292,10 +298,42 @@ namespace ETForum.Controllers
                 korisnik.urlSlike = "/images/" + fileName;
             }
 
-            await _userManager.UpdateAsync(korisnik);
+            // 3. Promjena šifre (ako je unesena)
+            if (!string.IsNullOrWhiteSpace(NovaSifra))
+            {
+                if (NovaSifra.Length < 8 || NovaSifra.Length > 20)
+                {
+                    ModelState.AddModelError("NovaSifra", "Lozinka mora imati između 8 i 20 karaktera, i mora sadžravati barem jedan specijalni znak.");
+                    return View(korisnik);
+                }
+                if (NovaSifra != PotvrdaSifre)
+                {
+                    ModelState.AddModelError("PotvrdaSifre", "Nova šifra i potvrda se ne poklapaju.");
+                    return View(korisnik);
+                }
+                // Dodatna validacija lozinke po Identity pravilima
+                var validator = HttpContext.RequestServices.GetService(typeof(IPasswordValidator<Korisnik>)) as IPasswordValidator<Korisnik>;
+                var hasher = HttpContext.RequestServices.GetService(typeof(IPasswordHasher<Korisnik>)) as IPasswordHasher<Korisnik>;
+                var result = await validator.ValidateAsync(_userManager, korisnik, NovaSifra);
 
-            TempData["SuccessMessage"] = "Profil uspješno ažuriran!";
-            return RedirectToAction("MojProfil");
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError("NovaSifra", error.Description);
+                    return View(korisnik);
+                }
+                korisnik.PasswordHash = hasher.HashPassword(korisnik, NovaSifra);
+            }
+
+            // 4. Spremi izmjene
+            var resultUpdate = await _userManager.UpdateAsync(korisnik);
+
+            if (resultUpdate.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Profil uspješno ažuriran!";
+                return RedirectToAction("MojProfil");
+            }
+            return View(korisnik);
         }
 
         [HttpGet]
@@ -561,6 +599,5 @@ namespace ETForum.Controllers
             TempData["PorukaZelena"] = "Profilna slika uspješno promijenjena!";
             return RedirectToAction("MojProfil");
         }
-
     }
 }

@@ -227,23 +227,31 @@
 </div>
 
     }
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+
+    // Jedna globalna konekcija za notifikacije!
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/notificationHub")
+        .withUrl("/notificationHub") 
         .build();
 
+    // 1. Handler za Bootstrap toast (ako koristiš Bootstrap Toast)
     const toastEl = document.getElementById('liveToast');
     const toastBody = document.getElementById('toastBody');
-    const toast = new bootstrap.Toast(toastEl);
+    let toast;
+    if (toastEl && bootstrap && bootstrap.Toast)
+        toast = new bootstrap.Toast(toastEl);
 
+    // 2. Primi notifikaciju i prikaži je
     connection.on("ReceiveNotification", function (message) {
-        toastBody.textContent = message;
-        toast.show();
+        // Ako imaš toast
+        if (toast && toastBody) {
+            toastBody.textContent = message;
+            toast.show();
+        }
 
-        // Povuci TAČAN broj iz baze
+        // Osvježi badge
         fetch('/Notifikacije/BrojNeprocitanih')
             .then(res => res.json())
             .then(data => {
@@ -255,31 +263,27 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     });
 
+    // 3. Start konekciju
     connection.start().catch(function (err) {
         return console.error(err.toString());
     });
-});
-</script>
-<script>
 
-document.addEventListener('DOMContentLoaded', function () {
+    // 4. Search za inbox (ostaje nepromijenjeno)
     const searchInput = document.getElementById('searchInboxInput');
-    if (!searchInput) return;
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            const filter = searchInput.value.trim().toLowerCase();
+            const list = document.getElementById('inboxList');
+            if (!list) return;
 
-    searchInput.addEventListener('input', function () {
-        const filter = searchInput.value.trim().toLowerCase();
-        const list = document.getElementById('inboxList');
-        if (!list) return;
-
-        for (const li of list.children) {
-            // traži po nicku
-            const text = li.textContent.toLowerCase();
-            li.style.display = text.includes(filter) ? '' : 'none';
-        }
-    });
+            for (const li of list.children) {
+                const text = li.textContent.toLowerCase();
+                li.style.display = text.includes(filter) ? '' : 'none';
+            }
+        });
+    }
 });
 </script>
-
 
 
     @await RenderSectionAsync("Scripts", required: false)

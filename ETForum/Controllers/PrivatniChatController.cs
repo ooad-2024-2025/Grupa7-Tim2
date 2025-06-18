@@ -13,12 +13,13 @@ namespace ETForum.Controllers
         private readonly UserManager<Korisnik> _userManager;
         private readonly ETForumDbContext _context;
         private readonly IHubContext<ChatHub> _hubContext;
-
-        public PrivatniChatController(UserManager<Korisnik> userManager, ETForumDbContext context, IHubContext<ChatHub> hubContext)
+        private readonly IHubContext<NotificationHub> _notContext;
+        public PrivatniChatController(UserManager<Korisnik> userManager, ETForumDbContext context, IHubContext<ChatHub> hubContext, IHubContext<NotificationHub> notContext)
         {
             _userManager = userManager;
             _context = context;
             _hubContext = hubContext;
+            _notContext = notContext;
         }
 
         [HttpGet]
@@ -87,6 +88,7 @@ namespace ETForum.Controllers
                 return RedirectToAction("ListaPrijatelja", "Prijateljstvo");
             }
 
+            // 1. Upis poruke u bazu
             var novaPoruka = new PrivatniChat
             {
                 posiljalacId = mojId,
@@ -99,10 +101,33 @@ namespace ETForum.Controllers
             _context.PrivatniChatovi.Add(novaPoruka);
             await _context.SaveChangesAsync();
 
-            // Pošalji poruku preko SignalR-a
+            // 2. Kreiraj notifikaciju u bazi
             var posiljalac = await _context.Users.FindAsync(mojId);
-            await _hubContext.Clients.User(prijateljId).SendAsync("ReceivePrivateMessage",
-                posiljalac.UserName, poruka, DateTime.Now.ToString("HH:mm"));
+
+            var notifikacija = new Notifikacija
+            {
+                KorisnikId = prijateljId,
+                Tekst = $"Nova privatna poruka od korisnika {posiljalac.nickname}.",
+                Link = Url.Action("Chat", "PrivatniChat", new { prijateljId = mojId }),
+                Procitano = false,
+                Vrijeme = DateTime.Now
+            };
+            _context.Notifikacije.Add(notifikacija);
+            await _context.SaveChangesAsync();
+
+            // 3. Realtime push poruke preko SignalR
+            await _notContext.Clients.User(prijateljId).SendAsync(
+                "ReceivePrivateMessage",
+                posiljalac.nickname, // ili UserName
+                poruka,
+                DateTime.Now.ToString("HH:mm")
+            );
+
+            // 4. RealTime notifikacija preko SignalR
+            await _notContext.Clients.User(prijateljId).SendAsync(
+                "ReceiveNotification",
+                $"Nova privatna poruka od korisnika {posiljalac.nickname}."
+            );
 
             return RedirectToAction("Chat", new { prijateljId });
         }

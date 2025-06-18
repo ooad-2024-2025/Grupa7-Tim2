@@ -21,7 +21,5 @@ namespace ETForum.Models
         public ICollection<KorisnikDostignuce> KorisnikDostignuca { get; set; }
         public DateTime? BanDo { get; set; } 
         public string? BanRazlog { get; set; }
-
-
     }
 }

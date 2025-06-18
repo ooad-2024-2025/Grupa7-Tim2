@@ -98,16 +98,13 @@
 </style>
 
 <div class="profile-container">
-    <!-- Page Header -->
     <div class="page-header">
         <h1 class="page-title">✏️ Uredi profil</h1>
     </div>
 
-    <!-- Profile Edit Form -->
     <div class="profile-form">
         <form asp-action="UrediProfil" enctype="multipart/form-data" method="post">
             @Html.AntiForgeryToken()
-
             <input type="hidden" asp-for="Id" />
 
             <!-- Ime & Prezime -->
@@ -138,6 +135,23 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
+            <!-- Nova šifra -->
+            <div class="mb-3">
+                <label class="form-label">Nova šifra</label>
+                <input type="password" name="NovaSifra" class="form-control" />
+                <span class="text-danger">
+                    @Html.Raw(ViewData.ModelState["NovaSifra"]?.Errors.FirstOrDefault()?.ErrorMessage)
+                </span>
+
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Potvrdi novu šifru</label>
+                <input type="password" name="PotvrdaSifre" class="form-control" />
+                <span class="text-danger">
+                    @Html.Raw(ViewData.ModelState["PotvrdaSifre"]?.Errors.FirstOrDefault()?.ErrorMessage)
+                </span>
+
+            </div>
             <!-- Smjer -->
             <div class="mb-3">
                 <label asp-for="smjer" class="form-label">Smjer</label>

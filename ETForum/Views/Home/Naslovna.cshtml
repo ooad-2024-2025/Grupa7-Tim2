@@ -21,7 +21,7 @@
             </a>
         </div>
         }
-        @if (!User.IsInRole("Administrator") && !User.IsInRole("Gost")){
+        @if (!User.IsInRole("Administrator") && !User.IsInRole("Gost") && User.Identity.IsAuthenticated){
         <div class="col">
             <a asp-controller="PrivatniChat" asp-action="Chat" class="text-decoration-none">
                 <div class="card h-100 text-center shadow-sm border-0 hover-scale bg-light">
